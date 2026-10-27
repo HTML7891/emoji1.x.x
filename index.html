@@ -3,265 +3,134 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>emoji打怪1.2.0</title>
+<title>emoji打怪1.2.1</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{
-    background:#222;
-    color:white;
-    font-family:system-ui;
-    height:100dvh;
-    overflow:hidden;
-}
-.stroke{
-    -webkit-text-stroke:1px black;
-}
-.page{
-    display:none;
-    position:absolute;
-    top:0;left:0;
-    width:100vw;
-    height:100dvh;
-    overflow-y:auto;
-    -webkit-overflow-scrolling:touch;
-    text-align:center;
-    padding:60px 12px 140px 12px;
-}
-.page.active{
-    display:block;
-}
+html,body{background:#222;color:white;font-family:system-ui;height:100dvh;overflow:hidden;}
+.stroke{-webkit-text-stroke:1px black;}
+.page{display:none;position:absolute;top:0;left:0;width:100vw;height:100dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;text-align:center;padding:60px 12px 140px 12px;}
+.page.active{display:block;}
 .monster{font-size:120px;margin-bottom:12px;}
 .player{font-size:100px;margin-top:12px;}
 .info{font-size:18px;margin:8px 0;}
-.crit-text{
-    color:#ff4444;
-    font-weight:bold;
-    font-size:20px;
-}
-button{
-    border:none;
-    padding:9px 16px;
-    font-size:16px;
-    border-radius:6px;
-    margin:4px;
-}
+.crit-text{color:#ff4444;font-weight:bold;font-size:20px;}
+
+button{border:none;padding:9px 16px;font-size:16px;border-radius:6px;margin:4px;}
 button:disabled{opacity:0.35;pointer-events:none;}
+.level-btn{width:110px;min-height:110px;padding:10px 5px;font-size:18px;background:#ff5566;color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.2;white-space:nowrap;}
+.level-btn small{font-size:13px;margin-top:4px;white-space:nowrap;}
+.boss-btn{background:#e02424;}
+.boss-btn:disabled{background:#7c1313 !important;opacity:0.35;}
+.mini-boss-btn{background:#b84428;}
+.mini-boss-btn:disabled{background:#682c1c !important;opacity:0.35;}
 
-/* 关卡按钮 */
-.level-btn{
-    width:110px;
-    min-height:110px;
-    padding: 10px 5px;
-    font-size:18px;
-    background:#ff5566;
-    color:white;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    line-height: 1.2;
-    white-space: nowrap;
-}
-.level-btn small {
-    font-size: 13px;
-    margin-top: 4px;
-    white-space: nowrap;
-}
-.boss-btn{ background:#e02424; }
-.boss-btn:disabled{ background:#7c1313 !important; opacity:0.35; }
-.mini-boss-btn{ background:#b84428; }
-.mini-boss-btn:disabled{ background:#682c1c !important; opacity:0.35; }
-
-/* 其他基础按钮 */
 .btn-back{background:#4488ff;color:#fff;}
-.btn-sound{background:#00aaaa;color:white;}
-.btn-clear{background:#aa2222;color:white;}
-.btn-equip{
-    background:#22aa66;
-    color:white;
-    font-size:17px;
-    flex:0 0 auto;
-    outline:none;
-}
-.btn-equip:disabled{
-    background:#3a3a3a !important;
-    color:#888 !important;
-    opacity:0.6;
-    cursor:not-allowed;
-}
-.btn-equip.equip-active{
-    outline:4px solid #ffdd00;
-    outline-offset:2px;
-}
-.btn-special{
-    background:#3377dd;
-    color:white;
-    font-size:15px;
-    width:90px;
-    height:64px;
-    flex:0 0 90px;
-    border-radius:6px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-}
-.btn-special-locked{ background:#444444; color:#aaaaaa; }
-.btn-special-equipped{ outline:3px solid #ffdd00; outline-offset:2px; }
+.btn-equip{background:#22aa66;color:white;font-size:17px;flex:0 0 auto;outline:none;}
+.btn-equip:disabled{background:#3a3a3a !important;color:#888 !important;opacity:0.6;cursor:not-allowed;}
+.btn-equip.equip-active{outline:4px solid #ffdd00;outline-offset:2px;}
+.btn-special{background:#3377dd;color:white;font-size:15px;width:90px;height:64px;flex:0 0 90px;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.btn-special-locked{background:#444444;color:#aaaaaa;}
+.btn-special-equipped{outline:3px solid #ffdd00;outline-offset:2px;}
 
-/* 弹窗提示 */
-.pop{ position:fixed; top:40%;left:50%; transform:translate(-50%,-50%); background:#111; border:2px solid #ffdd44; padding:20px 30px; font-size:20px; z-index:99; display:none; }
-.modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:200; display:none; align-items:center; justify-content:center; padding:16px; }
-.modal-box{ background:#1b1b1b; border:2px solid #ff3333; border-radius:10px; padding:24px; max-width:420px; width:90%; }
-.modal-box p{ font-size:17px; line-height:1.6; margin-bottom:20px; }
-.modal-confirm{ background:#c62828; color:#fff; }
-.modal-cancel{ background:#444; color:#fff; }
-.weapon-detail-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:300; display:none; align-items:center; justify-content:center; padding:16px; }
-.weapon-detail-box{ background:#222; border:2px solid #4488ff; border-radius:10px; width:90%; max-width:380px; padding:16px; text-align:left; }
-.weapon-header{ display:flex; gap:12px; align-items:flex-start; margin-bottom:12px; }
-.weapon-icon{ font-size:44px; }
-.weapon-name{ font-size:20px; font-weight:bold; margin-top:4px; }
-.weapon-attr{ font-size:15px; color:#ffdd88; margin-bottom:6px; }
-.weapon-trait{ font-size:15px; color:#aaddff; margin-bottom:6px; }
-.weapon-unlock-condition{ font-size:14px; color:#bbbbbb; margin-bottom:16px; }
-.detail-btn-row{ display:flex; gap:10px; }
-.btn-equip-special{ flex:1; background:#27ae60; color:white; }
-.btn-cancel-special{ flex:1; background:#555555; color:white; }
-.special-progress-text{ font-size:17px; color:#ffdd44; margin-bottom:8px; }
-.rename-input{ width:100%; padding:10px; font-size:17px; border-radius:6px; border:1px solid #444; background:#2a2a2a; color:white; margin-bottom:16px; }
-.avatar-modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:250; display:none; flex-direction:column; padding:16px; }
-.avatar-modal-top-text{ font-size:22px; margin-bottom:10px; }
-.avatar-preview-box{ font-size:70px; margin:10px 0; }
-.avatar-scroll-wrap{ flex:1; overflow-y:auto; background:#2a2a2a; border-radius:8px; padding:12px; }
-.avatar-item{ font-size:44px; display:inline-block; padding:6px; margin:3px; border-radius:6px; }
-.avatar-item.selected{ outline:4px solid #ffdd00; outline-offset:2px; }
-.avatar-modal-bottom{ display:flex; gap:12px; margin-top:14px; }
-.avatar-modal-bottom button{ flex:1; background:#27ae60; color:white; padding:12px; font-size:18px; }
-.page-btn-row{ display:flex; gap:10px; justify-content:center; margin-top:16px; }
-.inpage-green-btn{ background:#27ae60; color:white; font-size:16px; border-radius:30px; padding:10px 16px; }
+.pop{position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);background:#111;border:2px solid #ffdd44;padding:20px 30px;font-size:20px;z-index:999;display:none;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;display:none;align-items:center;justify-content:center;padding:16px;}
+.modal-box{background:#1b1b1b;border:2px solid #ff3333;border-radius:10px;padding:24px;max-width:420px;width:90%;}
+.modal-box p{font-size:17px;line-height:1.6;margin-bottom:20px;}
+.modal-confirm{background:#c62828;color:#fff;}
+.modal-cancel{background:#444;color:#fff;}
 
-/* 属性面板 */
-.attr-modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:260; display:none; align-items:center; justify-content:center; padding:16px; }
-.attr-modal-box{ background:#1b1b1b; border:2px solid #27ae60; border-radius:12px; width:90%; max-width:360px; padding:20px; position:relative; }
-.attr-avatar{ position:absolute; top:12px; right:16px; font-size:42px; }
-.attr-name{ position:absolute; top:76px; right:16px; font-size:14px; color:#76d8ff; cursor:pointer; background:#2a2a2a; border:1px solid #444; border-radius:8px; padding:2px 8px; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.attr-power{ font-size:26px; color:#ffdd44; font-weight:bold; margin-bottom:14px; margin-top:8px; padding-right:90px; text-align:left; }
-.attr-level-line{ font-size:18px; color:#ffdd44; font-weight:bold; text-align:left; margin:4px 0 6px 0; }
-.exp-bar-wrap{ position:relative; width:100%; height:16px; background:#333; border-radius:8px; overflow:hidden; margin:0 0 16px 0; }
-.exp-bar{ height:100%; width:0%; background:#ffdd00; border-radius:8px; transition:width 0.3s; }
-.exp-text{ position:absolute; top:0;left:0;right:0;bottom:0; text-align:center; font-size:12px; line-height:16px; color:#111; font-weight:bold; }
-.attr-line{ font-size:18px; margin:10px 0; text-align:left; }
-.attr-close{ margin-top:18px; background:#27ae60; color:white; width:100%; padding:10px; font-size:17px; }
+/* 设置弹窗面板 */
+.settings-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:400;display:none;align-items:center;justify-content:center;padding:16px;}
+.settings-box{background:#1b1b1b;border:2px solid #27ae60;border-radius:12px;width:90%;max-width:320px;padding:20px;display:flex;flex-direction:column;gap:12px;}
+.settings-box button{width:100%;margin:0;padding:12px;font-size:17px;border-radius:8px;}
+.btn-set-sound{background:#00aaaa;color:white;}
+.btn-set-avatar{background:#27ae60;color:white;}
+.btn-set-clear{background:#aa2222;color:white;}
+.btn-set-close{background:#555;color:white;}
 
-/* 背包滚动 */
-.scroll-wrap{ width:100%; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling: touch; }
-.scroll-inner{ display:flex; flex-wrap:nowrap; gap:10px; padding:4px 8px; width:max-content; }
-.scroll-wrap::-webkit-scrollbar{ height:4px; }
-.scroll-wrap::-webkit-scrollbar-thumb{ background:#666; border-radius:2px; }
-.badge-wrap{ position:relative; display:inline-block; }
-.badge{ position:absolute; top:-6px; right:-6px; background:#ff3333; color:#fff; font-size:12px; font-weight:bold; border-radius:12px; min-width:20px; height:20px; display:flex; align-items:center; justify-content:center; z-index:10; }
-.badge.hide{ display:none; }
+/* 左上角设置按钮 */
+.top-left-set-btn{position:absolute;top:16px;left:16px;background:#27ae60;color:white;padding:8px 14px;font-size:16px;border-radius:20px;z-index:100;margin:0;}
 
-/* 日志页面 */
-.log-page-title{ font-size:28px; margin-bottom:30px; font-weight:bold; }
-.log-ver-title{ font-size:22px; margin-bottom:16px; color:#76d8ff; }
-.log-content{ text-align:left; max-width:500px; margin:0 auto 60px auto; font-size:17px; line-height:1.8; padding:0 10px; }
-.log-pager-wrap{ position:fixed; bottom: 24px; left:0; width:100%; display:flex; align-items:center; justify-content:center; gap:24px; z-index:102; }
-.log-page-num{ font-size:17px; }
-.log-arrow-btn{ background:#333; color:white; font-size:22px; width:44px; height:44px; padding:0; border-radius:50%; }
+.weapon-detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;display:none;align-items:center;justify-content:center;padding:16px;}
+.weapon-detail-box{background:#222;border:2px solid #4488ff;border-radius:10px;width:90%;max-width:380px;padding:16px;text-align:left;}
+.weapon-header{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;}
+.weapon-icon{font-size:44px;}
+.weapon-name{font-size:20px;font-weight:bold;margin-top:4px;}
+.weapon-attr{font-size:15px;color:#ffdd88;margin-bottom:6px;}
+.weapon-trait{font-size:15px;color:#aaddff;margin-bottom:6px;}
+.weapon-unlock-condition{font-size:14px;color:#bbbbbb;margin-bottom:16px;}
+.detail-btn-row{display:flex;gap:10px;}
+.btn-equip-special{flex:1;background:#27ae60;color:white;}
+.btn-cancel-special{flex:1;background:#555555;color:white;}
+.special-progress-text{font-size:17px;color:#ffdd44;margin-bottom:8px;}
+.rename-input{width:100%;padding:10px;font-size:17px;border-radius:6px;border:1px solid #444;background:#2a2a2a;color:white;margin-bottom:16px;}
+.avatar-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:250;display:none;flex-direction:column;padding:16px;}
+.avatar-modal-top-text{font-size:22px;margin-bottom:10px;}
+.avatar-preview-box{font-size:70px;margin:10px 0;}
+.avatar-scroll-wrap{flex:1;overflow-y:auto;background:#2a2a2a;border-radius:8px;padding:12px;}
+.avatar-item{font-size:44px;display:inline-block;padding:6px;margin:3px;border-radius:6px;}
+.avatar-item.selected{outline:4px solid #ffdd00;outline-offset:2px;}
+.avatar-modal-bottom{display:flex;gap:12px;margin-top:14px;}
+.avatar-modal-bottom button{flex:1;background:#27ae60;color:white;padding:12px;font-size:18px;}
 
-/* ======= 底部固定悬浮栏 ======= */
-.bottom-fixed-bar {
-    position: fixed;
-    bottom: 15px;
-    left: 0;
-    width: 100%;
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    padding: 0 12px;
-    z-index: 100;
-}
-.bottom-fixed-bar button {
-    flex: 1;
-    max-width: 115px;
-    background: #27ae60;
-    color: white;
-    font-size: 15px;
-    border-radius: 30px;
-    padding: 10px 0;
-    white-space: nowrap;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-    margin: 0;
-}
-.bottom-fixed-bar.hide {
-    display: none;
-}
+/* 更新日志按钮居中样式 */
+.page-btn-row{display:flex;gap:10px;justify-content:center;margin-top:16px;}
+.inpage-green-btn{background:#27ae60;color:white;font-size:16px;border-radius:30px;padding:10px 24px;}
+
+.attr-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:260;display:none;align-items:center;justify-content:center;padding:16px;}
+.attr-modal-box{background:#1b1b1b;border:2px solid #27ae60;border-radius:12px;width:90%;max-width:360px;padding:20px;position:relative;}
+.attr-avatar{position:absolute;top:12px;right:16px;font-size:42px;}
+.attr-name{position:absolute;top:76px;right:16px;font-size:14px;color:#76d8ff;cursor:pointer;background:#2a2a2a;border:1px solid #444;border-radius:8px;padding:2px 8px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.attr-power{font-size:26px;color:#ffdd44;font-weight:bold;margin-bottom:14px;margin-top:8px;padding-right:90px;text-align:left;}
+.attr-level-line{font-size:18px;color:#ffdd44;font-weight:bold;text-align:left;margin:4px 0 6px 0;}
+.exp-bar-wrap{position:relative;width:100%;height:16px;background:#333;border-radius:8px;overflow:hidden;margin:0 0 16px 0;}
+.exp-bar{height:100%;width:0%;background:#ffdd00;border-radius:8px;transition:width 0.3s;}
+.exp-text{position:absolute;top:0;left:0;right:0;bottom:0;text-align:center;font-size:12px;line-height:16px;color:#111;font-weight:bold;}
+.attr-line{font-size:18px;margin:10px 0;text-align:left;}
+.attr-close{margin-top:18px;background:#27ae60;color:white;width:100%;padding:10px;font-size:17px;}
+
+.scroll-wrap{width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;}
+.scroll-inner{display:flex;flex-wrap:nowrap;gap:10px;padding:4px 8px;width:max-content;}
+.scroll-wrap::-webkit-scrollbar{height:4px;}
+.scroll-wrap::-webkit-scrollbar-thumb{background:#666;border-radius:2px;}
+.badge-wrap{position:relative;display:inline-block;}
+.badge{position:absolute;top:-6px;right:-6px;background:#ff3333;color:#fff;font-size:12px;font-weight:bold;border-radius:12px;min-width:20px;height:20px;display:flex;align-items:center;justify-content:center;z-index:10;}
+.badge.hide{display:none;}
+
+.log-page-title{font-size:28px;margin-bottom:30px;font-weight:bold;}
+.log-ver-title{font-size:22px;margin-bottom:16px;color:#76d8ff;}
+.log-content{text-align:left;max-width:500px;margin:0 auto 60px auto;font-size:17px;line-height:1.8;padding:0 10px;}
+.log-pager-wrap{position:fixed;bottom:24px;left:0;width:100%;display:flex;align-items:center;justify-content:center;gap:24px;z-index:102;}
+.log-page-num{font-size:17px;}
+.log-arrow-btn{background:#333;color:white;font-size:22px;width:44px;height:44px;padding:0;border-radius:50%;}
+
+.bottom-fixed-bar{position:fixed;bottom:15px;left:0;width:100%;display:flex;gap:8px;justify-content:center;padding:0 12px;z-index:100;}
+.bottom-fixed-bar button{flex:1;max-width:115px;background:#27ae60;color:white;font-size:15px;border-radius:30px;padding:10px 0;white-space:nowrap;box-shadow:0 4px 8px rgba(0,0,0,0.4);margin:0;}
+.bottom-fixed-bar.hide{display:none;}
 </style>
 </head>
 <body>
-<div class="weapon-detail-overlay" id="weaponDetailOverlay">
-    <div class="weapon-detail-box">
-        <div class="weapon-header">
-            <div class="weapon-icon" id="detailIcon">⚔️</div>
-            <div class="weapon-name" id="detailName">武器名称</div>
-        </div>
-        <div class="weapon-attr">🔓解锁属性：<span id="detailUnlockAttr"></span></div>
-        <div class="weapon-attr">⚔装备属性：<span id="detailEquipAttr"></span></div>
-        <div class="weapon-trait">✨特性：<span id="detailTrait"></span></div>
-        <div class="weapon-unlock-condition">📜解锁途径：<span id="detailUnlockWay"></span></div>
-        <div class="detail-btn-row">
-            <button class="btn-equip-special" id="doEquipSpecialBtn">装备</button>
-            <button class="btn-cancel-special" id="cancelDetailBtn">取消</button>
-        </div>
+<div class="weapon-detail-overlay" id="weaponDetailOverlay"><div class="weapon-detail-box"><div class="weapon-header"><div class="weapon-icon" id="detailIcon">⚔️</div><div class="weapon-name" id="detailName">武器名称</div></div><div class="weapon-attr">🔓解锁属性：<span id="detailUnlockAttr"></span></div><div class="weapon-attr">⚔装备属性：<span id="detailEquipAttr"></span></div><div class="weapon-trait">✨特性：<span id="detailTrait"></span></div><div class="weapon-unlock-condition">📜解锁途径：<span id="detailUnlockWay"></span></div><div class="detail-btn-row"><button class="btn-equip-special" id="doEquipSpecialBtn">装备</button><button class="btn-cancel-special" id="cancelDetailBtn">取消</button></div></div></div>
+<div id="popMsg" class="pop"></div>
+
+<!-- 设置弹窗 -->
+<div id="settingsModal" class="settings-modal-overlay">
+    <div class="settings-box">
+        <button id="soundToggleBtn" class="btn-set-sound">🔊 音效:关</button>
+        <button id="openAvatarModalBtn" class="btn-set-avatar">😃 更改头像</button>
+        <button id="openClearModalBtn" class="btn-set-clear">🗑️ 清除存档</button>
+        <button id="closeSettingsBtn" class="btn-set-close">关闭</button>
     </div>
 </div>
 
-<div id="popMsg" class="pop"></div>
-<div id="confirmModal" class="modal-overlay">
-    <div class="modal-box">
-        <p>⚠警告：确定要清除全部存档吗？<br>所有装备、关卡进度、等级经验将永久丢失，后果自行负担！</p>
-        <div>
-            <button id="modalConfirmBtn" class="modal-confirm">确认清除存档</button>
-            <button id="modalCancelBtn" class="modal-cancel">取消</button>
-        </div>
-    </div>
-</div>
-<div id="renameModal" class="modal-overlay">
-    <div class="modal-box">
-        <p>请输入新名称（最多12个字）</p>
-        <input id="renameInput" class="rename-input" maxlength="12">
-        <div>
-            <button id="renameCancelBtn" class="modal-cancel">取消</button>
-            <button id="renameSaveBtn" class="modal-confirm">保存</button>
-        </div>
-    </div>
-</div>
-<div id="avatarModal" class="avatar-modal-overlay">
-    <div class="avatar-modal-top-text">当前选中头像</div>
-    <div id="avatarPreview" class="avatar-preview-box">😃</div>
-    <div class="avatar-scroll-wrap" id="avatarScrollWrap"></div>
-    <div class="avatar-modal-bottom">
-        <button id="avatarModalCancel">取消</button>
-        <button id="avatarModalSave">保存</button>
-    </div>
-</div>
-<div id="attrModal" class="attr-modal-overlay">
-    <div class="attr-modal-box">
-        <div id="attrAvatarShow" class="attr-avatar">😃</div>
-        <div id="attrPlayerName" class="attr-name">打怪升级117</div>
-        <div id="attrPowerText" class="attr-power"></div>
-        <div class="attr-level-line">Lv.<span id="attrLevel">1</span></div>
-        <div class="exp-bar-wrap">
-            <div class="exp-bar" id="attrExpBar"></div>
-            <div class="exp-text" id="attrExpText">0/2</div>
-        </div>
-        <div class="attr-line">最大生命值：<span id="attrHp"></span></div>
-        <div class="attr-line">攻击力：<span id="attrAtk"></span></div>
-        <div class="attr-line">防御力：<span id="attrDef"></span></div>
-        <button id="attrCloseBtn" class="attr-close">关闭</button>
-    </div>
-</div>
+<!-- 清除存档弹窗 -->
+<div id="confirmModal" class="modal-overlay"><div class="modal-box"><p>⚠警告：确定要清除全部存档吗？<br>所有装备、关卡进度、等级经验将永久丢失，后果自行负担！</p><div><button id="modalConfirmBtn" class="modal-confirm">确认清除存档</button><button id="modalCancelBtn" class="modal-cancel">取消</button></div></div></div>
+<!-- 改名弹窗 -->
+<div id="renameModal" class="modal-overlay"><div class="modal-box"><p>请输入新名称（最多12个字）</p><input id="renameInput" class="rename-input" maxlength="12"><div><button id="renameCancelBtn" class="modal-cancel">取消</button><button id="renameSaveBtn" class="modal-confirm">保存</button></div></div></div>
+<!-- 头像弹窗 -->
+<div id="avatarModal" class="avatar-modal-overlay"><div class="avatar-modal-top-text">当前选中头像</div><div id="avatarPreview" class="avatar-preview-box">😃</div><div class="avatar-scroll-wrap" id="avatarScrollWrap"></div><div class="avatar-modal-bottom"><button id="avatarModalCancel">取消</button><button id="avatarModalSave">保存</button></div></div>
+<!-- 属性弹窗 -->
+<div id="attrModal" class="attr-modal-overlay"><div class="attr-modal-box"><div id="attrAvatarShow" class="attr-avatar">😃</div><div id="attrPlayerName" class="attr-name">打怪升级117</div><div id="attrPowerText" class="attr-power"></div><div class="attr-level-line">Lv.<span id="attrLevel">1</span></div><div class="exp-bar-wrap"><div class="exp-bar" id="attrExpBar"></div><div class="exp-text" id="attrExpText">0/2</div></div><div class="attr-line">最大生命值：<span id="attrHp"></span></div><div class="attr-line">攻击力：<span id="attrAtk"></span></div><div class="attr-line">防御力：<span id="attrDef"></span></div><button id="attrCloseBtn" class="attr-close">关闭</button></div></div>
 
 <!-- 底部悬浮栏 -->
 <div class="bottom-fixed-bar" id="bottomBtnBar">
@@ -271,15 +140,10 @@ button:disabled{opacity:0.35;pointer-events:none;}
 </div>
 
 <div id="selectPage" class="page active">
-    <h2 style="font-size:32px;margin-bottom:12px">选择关卡</h2>
-    <div class="scroll-wrap">
-        <div id="levelWrap" class="scroll-inner"></div>
-    </div>
-    <div style="margin:16px 0">
-        <button id="soundToggleBtn" class="btn-sound">🔊 音效:关</button>
-        <button id="clearSaveBtn" class="btn-clear">清除存档</button>
-    </div>
-    <div class="info">
+    <button class="top-left-set-btn" id="openSettingsBtn">☸️ 设置</button>
+    <h2 style="font-size:32px;margin-bottom:12px;margin-top:20px;">选择关卡</h2>
+    <div class="scroll-wrap"><div id="levelWrap" class="scroll-inner"></div></div>
+    <div class="info" style="margin-top:16px;">
         <div>当前武器：<span id="selWeap">🗡️锈铁剑</span></div>
         <div>当前头盔：<span id="selHelm">🪖布帽</span></div>
         <div>当前盔甲：<span id="selArmor">👕布甲</span></div>
@@ -287,160 +151,34 @@ button:disabled{opacity:0.35;pointer-events:none;}
     </div>
     
     <div class="page-btn-row">
-        <button class="inpage-green-btn" id="avatarSetBtn">😃 更改头像</button>
         <button class="inpage-green-btn" id="logSetBtn">📘 更新日志</button>
     </div>
 </div>
-<div id="equipPage" class="page">
-    <h2 style="font-size:30px;margin-bottom:12px">装备背包</h2>
-    <div class="info">
-        <h3>武器</h3>
-        <div class="scroll-wrap">
-            <div id="weapBtns" class="scroll-inner"></div>
-        </div>
-    </div>
-    <div class="info">
-        <h3>头盔</h3>
-        <div class="scroll-wrap">
-            <div id="helmBtns" class="scroll-inner"></div>
-        </div>
-    </div>
-    <div class="info">
-        <h3>盔甲</h3>
-        <div class="scroll-wrap">
-            <div id="armorBtns" class="scroll-inner"></div>
-        </div>
-    </div>
-    <div style="margin-top:20px">
-        <button class="btn-back" id="equipBackBtn">返回选关</button>
-    </div>
-</div>
-<div id="specialPage" class="page">
-    <h2 style="font-size:30px;margin-bottom:8px">特殊装备</h2>
-    <div class="special-progress-text" id="specialProgressText">已解锁：0 / 6</div>
-    <div class="info">
-        <h3>武器</h3>
-        <div class="scroll-wrap">
-            <div id="specialWeapBtns" class="scroll-inner"></div>
-        </div>
-    </div>
-    <div style="margin-top:20px">
-        <button class="btn-back" id="specialBackBtn">返回选关</button>
-    </div>
-</div>
-<div id="battlePage" class="page">
-    <div class="info">关卡：第<span id="levelText">1</span>关</div>
-    <div class="info">武器：<span id="battleWeap">🗡️锈铁剑</span>｜头盔：<span id="battleHelm">🪖布帽</span></div>
-    <div class="info">盔甲：<span id="battleArmor">👕布甲</span></div>
-    <div class="monster stroke" id="monsterEmoji">👹</div>
-    <div class="info">怪物血量：<span id="monsterHp">100</span></div>
-    <div class="player stroke" id="playerEmoji">😃</div>
-    <div class="info">你的血量：<span id="playerHp">100</span> / <span id="playerMaxHp">100</span></div>
-    <div class="info" id="msg">战斗开始！点击攻击！</div>
-    <button id="atkBtn">攻击</button>
-    <button id="resetBtn">重试本关</button>
-    <button class="btn-back" id="backBtn">返回选关</button>
-</div>
-<div id="logPage" class="page">
-    <h2 class="log-page-title">更新日志</h2>
-    <div class="log-ver-title" id="logVerTitle"></div>
-    <div class="log-content" id="logContent"></div>
-    <button class="btn-back" id="logBackBtn">返回选关</button>
-    <div class="log-pager-wrap">
-        <button class="log-arrow-btn" id="logPrevBtn">◀</button>
-        <div class="log-page-num" id="logPageNum"></div>
-        <button class="log-arrow-btn" id="logNextBtn">▶</button>
-    </div>
-</div>
+<div id="equipPage" class="page"><h2 style="font-size:30px;margin-bottom:12px">装备背包</h2><div class="info"><h3>武器</h3><div class="scroll-wrap"><div id="weapBtns" class="scroll-inner"></div></div></div><div class="info"><h3>头盔</h3><div class="scroll-wrap"><div id="helmBtns" class="scroll-inner"></div></div></div><div class="info"><h3>盔甲</h3><div class="scroll-wrap"><div id="armorBtns" class="scroll-inner"></div></div></div><div style="margin-top:20px"><button class="btn-back" id="equipBackBtn">返回选关</button></div></div>
+<div id="specialPage" class="page"><h2 style="font-size:30px;margin-bottom:8px">特殊装备</h2><div class="special-progress-text" id="specialProgressText">已解锁：0 / 6</div><div class="info"><h3>武器</h3><div class="scroll-wrap"><div id="specialWeapBtns" class="scroll-inner"></div></div></div><div style="margin-top:20px"><button class="btn-back" id="specialBackBtn">返回选关</button></div></div>
+<div id="battlePage" class="page"><div class="info">关卡：第<span id="levelText">1</span>关</div><div class="info">武器：<span id="battleWeap">🗡️锈铁剑</span>｜头盔：<span id="battleHelm">🪖布帽</span></div><div class="info">盔甲：<span id="battleArmor">👕布甲</span></div><div class="monster stroke" id="monsterEmoji">👹</div><div class="info">怪物血量：<span id="monsterHp">100</span></div><div class="player stroke" id="playerEmoji">😃</div><div class="info">你的血量：<span id="playerHp">100</span> / <span id="playerMaxHp">100</span></div><div class="info" id="msg">战斗开始！点击攻击！</div><button id="atkBtn">攻击</button><button id="resetBtn">重试本关</button><button class="btn-back" id="backBtn">返回选关</button></div>
+<div id="logPage" class="page"><h2 class="log-page-title">更新日志</h2><div class="log-ver-title" id="logVerTitle"></div><div class="log-content" id="logContent"></div><button class="btn-back" id="logBackBtn">返回选关</button><div class="log-pager-wrap"><button class="log-arrow-btn" id="logPrevBtn">◀</button><div class="log-page-num" id="logPageNum"></div><button class="log-arrow-btn" id="logNextBtn">▶</button></div></div>
 
 <script>
-let audioCtx = null;
-let soundEnabled = false;
-function initAudio(){
-    if(!audioCtx){
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-}
-function playUiClickSound(){
-    if(!soundEnabled || !audioCtx) return;
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.type = "sine";
-    osc.frequency.value = 1760;
-    gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime+0.045);
-    osc.start();
-    osc.stop(audioCtx.currentTime+0.045);
-}
-function playAttackSound(){
-    if(!soundEnabled || !audioCtx) return;
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.type = "sine";
-    osc.frequency.value = 1320;
-    gain.gain.setValueAtTime(0.22, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime+0.06);
-    osc.start();
-    osc.stop(audioCtx.currentTime+0.06);
-}
-function playHitSound(){
-    if(!soundEnabled || !audioCtx) return;
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.type = "square";
-    osc.frequency.setValueAtTime(320, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime+0.12);
-    gain.gain.setValueAtTime(0.32, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime+0.12);
-    osc.start();
-    osc.stop(audioCtx.currentTime+0.12);
-}
-function playMonsterDeathOuhSound(){
-    if(!soundEnabled || !audioCtx) return;
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.type = "sine";
-    const t = audioCtx.currentTime;
-    osc.frequency.setValueAtTime(440, t);
-    osc.frequency.exponentialRampToValueAtTime(880, t+0.14);
-    gain.gain.setValueAtTime(0.25, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t+0.14);
-    osc.start(t);
-    osc.stop(t+0.14);
-}
-function formatNum(n){
-    n = Number(n)||0;
-    n = Math.round(n);
-    if(isNaN(n)) return "0";
-    if(n >= 100000000){
-        return (n / 100000000).toFixed(2)+"亿";
-    }else if(n >= 10000){
-        return (n / 10000).toFixed(2)+"万";
-    }else{
-        return n.toString();
-    }
-}
-function calcMonsterPower(hp,atk){
-    return Math.round((Number(hp)||0)+(Number(atk)||0)*2);
-}
+let audioCtx = null, soundEnabled = false, tempSelectAvatar = "";
+let currentLevel = 0, monsterHp, playerHp, playerMaxHp, logCurrentPage = 0, currentSpecialIndex = 0;
+const $ = id => document.getElementById(id);
+function initAudio(){ if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+function playUiClickSound(){ if(!soundEnabled || !audioCtx) return; const o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type="sine"; o.frequency.value=1760; g.gain.setValueAtTime(0.18,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.045); o.start(); o.stop(audioCtx.currentTime+0.045); }
+function playAttackSound(){ if(!soundEnabled || !audioCtx) return; const o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type="sine"; o.frequency.value=1320; g.gain.setValueAtTime(0.22,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.06); o.start(); o.stop(audioCtx.currentTime+0.06); }
+function playHitSound(){ if(!soundEnabled || !audioCtx) return; const o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type="square"; o.frequency.setValueAtTime(320,audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(180,audioCtx.currentTime+0.12); g.gain.setValueAtTime(0.32,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.12); o.start(); o.stop(audioCtx.currentTime+0.12); }
+function playMonsterDeathOuhSound(){ if(!soundEnabled || !audioCtx) return; const o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type="sine"; const t=audioCtx.currentTime; o.frequency.setValueAtTime(440,t); o.frequency.exponentialRampToValueAtTime(880,t+0.14); g.gain.setValueAtTime(0.25,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.14); o.start(t); o.stop(t+0.14); }
+function formatNum(n){ n=Number(n)||0; n=Math.round(n); if(isNaN(n)) return "0"; if(n>=100000000) return (n/100000000).toFixed(2)+"亿"; if(n>=10000) return (n/10000).toFixed(2)+"万"; return n.toString(); }
+function calcMonsterPower(hp,atk){ return Math.round((Number(hp)||0)+(Number(atk)||0)*2); }
+
 const avatarList = ["😀","😃","😄","😁","😆","😅","😂","🤣","😊","😇","🙂","🙃","😉","😌","😍","🥰","😘","😗","😙","😚","😋","😜","😝","😛","🤑","🤪","🤨","🧐","🤓","😎","🥸","🤩","🥳","😏","😒","🙄","😬","😔","😪","😴","😷","🤒","🤕","🤢","🤮","🤧","🥺","😢","😭","😱","😨","😰","😥","😓","🤗","🤔","🤭","🤫"];
-let tempSelectAvatar = "";
 const logData = [
     {ver:"正式发布 1.0.0",list:["1.增加基础功能","2.更新背包"]},
     {ver:"1.1.0",list:["1.更新头像功能","2.修改武器名称","3.修复bug","4.更新日志"]},
-    {ver:"1.1.5",list:["1.修复了一些bug","2.增加属性面板","3.增加改名系统"]}, /* 已修改 */
-    {ver:"1.2.0",list:["1.增加特殊武器","2.修复一些bug"]}
+    {ver:"1.1.5",list:["1.修复了一些bug","2.增加属性面板","3.增加改名系统"]},
+    {ver:"1.2.0",list:["1.增加特殊武器","2.修复一些bug","3.增加了攻击间隔特性"]},
+    {ver:"1.2.1",list:["1.修复了一些bug","2.更新了设置"]}
 ];
-let logCurrentPage = 0;
-
 const specialWeaponList = [
     { id:0, emoji:"⚔️", name:"星陨剑", unlockAttr:"玩家生命值加150，攻击力加100", equipAttr:"装备后增加玩家1500攻击力，25%暴击率", trait:"攻击时有25%概率造成3倍伤害", unlockWay:"第1关有1%概率掉落" },
     { id:1, emoji:"🗡️", name:"虚空刃", unlockAttr:"玩家生命值加150，攻击力加100", equipAttr:"装备后增加玩家3000攻击力，15%伤害吸血", trait:"攻击时有1%概率直接回满血，5%概率扣除对手10%最大生命值的当前生命值", unlockWay:"首次通关第10关掉落" },
@@ -449,658 +187,151 @@ const specialWeaponList = [
     { id:4, emoji:"✨", name:"圣光权杖", unlockAttr:"玩家生命值加2000，攻击力加500，最终减伤5%", equipAttr:"装备后增加玩家20%闪避率，10%最终减伤", trait:"玩家攻击时回复2%的血量，受到伤害减50%", unlockWay:"累计战败64次" },
     { id:5, emoji:"🪓", name:"熔岩巨斧", unlockAttr:"玩家生命值增加数值增加1.5倍，玩家攻击力增加数值增加2倍", equipAttr:"装备后提供100%的伤害加成，生命值50%的护盾", trait:"玩家攻击时有2%的概率直接秒杀，10%的概率削减掉对手的50%血量，攻击时必定造成3倍伤害", unlockWay:"通关全部关卡，解锁全部武器" }
 ];
-
 const levelConfig = [
-    {hp:100,   atk:5,    emoji:"👹",isBoss:false,isMiniBoss:false, exp:1},
-    {hp:250,   atk:20,   emoji:"👺",isBoss:false,isMiniBoss:false, exp:4},
-    {hp:400,   atk:50,   emoji:"👻",isBoss:false,isMiniBoss:false, exp:10},
-    {hp:1500,  atk:150,  emoji:"🤖",isBoss:false,isMiniBoss:false, exp:30},
-    {hp:5000,  atk:500,  emoji:"👿",isBoss:false,isMiniBoss:true, exp:100},
-    {hp:6000,  atk:550,  emoji:"👹",isBoss:false,isMiniBoss:false, exp:80},
-    {hp:8000,  atk:730,  emoji:"👺",isBoss:false,isMiniBoss:false, exp:90},
-    {hp:8500,  atk:800,  emoji:"👻",isBoss:false,isMiniBoss:false, exp:95},
-    {hp:9100,  atk:888,  emoji:"🤖",isBoss:false,isMiniBoss:false, exp:105},
-    {hp:20000, atk:2222, emoji:"😈",isBoss:true,isMiniBoss:false,  exp:200},
-    {hp:19000, atk:1900, emoji:"👹",isBoss:false,isMiniBoss:false, exp:195},
-    {hp:20000, atk:2000, emoji:"👺",isBoss:false,isMiniBoss:false, exp:195},
-    {hp:21500, atk:2100, emoji:"👻",isBoss:false,isMiniBoss:false, exp:205},
-    {hp:35500, atk:3650, emoji:"🤖",isBoss:false,isMiniBoss:false, exp:250},
-    {hp:42000, atk:4000, emoji:"😈",isBoss:false,isMiniBoss:true,  exp:255},
-    {hp:42800, atk:4100, emoji:"👹",isBoss:false,isMiniBoss:false, exp:270}
+    {hp:100,atk:5,emoji:"👹",isBoss:false,isMiniBoss:false,exp:1},{hp:250,atk:20,emoji:"👺",isBoss:false,isMiniBoss:false,exp:4},{hp:400,atk:50,emoji:"👻",isBoss:false,isMiniBoss:false,exp:10},{hp:1500,atk:150,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:30},{hp:5000,atk:500,emoji:"👿",isBoss:false,isMiniBoss:true,exp:100},{hp:6000,atk:550,emoji:"👹",isBoss:false,isMiniBoss:false,exp:80},{hp:8000,atk:730,emoji:"👺",isBoss:false,isMiniBoss:false,exp:90},{hp:8500,atk:800,emoji:"👻",isBoss:false,isMiniBoss:false,exp:95},{hp:9100,atk:888,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:105},{hp:20000,atk:2222,emoji:"😈",isBoss:true,isMiniBoss:false,exp:200},{hp:19000,atk:1900,emoji:"👹",isBoss:false,isMiniBoss:false,exp:195},{hp:20000,atk:2000,emoji:"👺",isBoss:false,isMiniBoss:false,exp:195},{hp:21500,atk:2100,emoji:"👻",isBoss:false,isMiniBoss:false,exp:205},{hp:35500,atk:3650,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:250},{hp:42000,atk:4000,emoji:"😈",isBoss:false,isMiniBoss:true,exp:255},{hp:42800,atk:4100,emoji:"👹",isBoss:false,isMiniBoss:false,exp:270}
 ];
-const weaponList = [
-    {name:"锈铁剑",emoji:"🗡️",atk:1,maxTotal:1000},
-    {name:"柴刀剑",emoji:"🗡️",atk:3,maxTotal:1500},
-    {name:"清风剑",emoji:"🗡️",atk:30,maxTotal:2500},
-    {name:"百炼剑",emoji:"🗡️",atk:80,maxTotal:4000},
-    {name:"寒铁剑",emoji:"🗡️",atk:150,maxTotal:5000},
-    {name:"精钢剑",emoji:"🗡️",atk:600,maxTotal:6000},
-    {name:"玄铁重剑",emoji:"🗡️",atk:1000,maxTotal:6500},
-    {name:"秋水剑",emoji:"🗡️",atk:1300,maxTotal:7000},
-    {name:"断石剑",emoji:"🗡️",atk:1300,maxTotal:7000},
-    {name:"斩风剑",emoji:"🗡️",atk:2000,maxTotal:8000}
-];
-const helmList = [
-    {name:"布帽",emoji:"🪖",hp:1,maxTotal:200},
-    {name:"草帽",emoji:"🪖",hp:2,maxTotal:400},
-    {name:"斗笠帽",emoji:"🪖",hp:3,maxTotal:800},
-    {name:"麻布帽",emoji:"🪖",hp:10,maxTotal:1000},
-    {name:"皮帽",emoji:"🪖",hp:30,maxTotal:1500},
-    {name:"毡帽",emoji:"🪖",hp:80,maxTotal:2000},
-    {name:"竹编帽",emoji:"🪖",hp:160,maxTotal:3000},
-    {name:"青布头巾帽",emoji:"🪖",hp:300,maxTotal:4000},
-    {name:"防风帽",emoji:"🪖",hp:550,maxTotal:4500},
-    {name:"遮雨帽",emoji:"🪖",hp:800,maxTotal:5000}
-];
-const armorList = [
-    {name:"布甲",emoji:"👕",baseDef:0.5,maxDef:80},
-    {name:"皮甲",emoji:"👕",baseDef:1,maxDef:100},
-    {name:"藤甲",emoji:"👕",baseDef:9,maxDef:200},
-    {name:"木甲",emoji:"👕",baseDef:20,maxDef:300},
-    {name:"麻甲",emoji:"👕",baseDef:50,maxDef:350},
-    {name:"硬片甲",emoji:"👕",baseDef:100,maxDef:400},
-    {name:"铁皮甲",emoji:"👕",baseDef:250,maxDef:500},
-    {name:"锁子甲",emoji:"👕",baseDef:600,maxDef:600},
-    {name:"札甲",emoji:"👕",baseDef:1300,maxDef:800},
-    {name:"青鳞甲",emoji:"👕",baseDef:2000,maxDef:1000}
-];
+const weaponList = [{name:"锈铁剑",emoji:"🗡️",atk:1,maxTotal:1000},{name:"柴刀剑",emoji:"🗡️",atk:3,maxTotal:1500},{name:"清风剑",emoji:"🗡️",atk:30,maxTotal:2500},{name:"百炼剑",emoji:"🗡️",atk:80,maxTotal:4000},{name:"寒铁剑",emoji:"🗡️",atk:150,maxTotal:5000},{name:"精钢剑",emoji:"🗡️",atk:600,maxTotal:6000},{name:"玄铁重剑",emoji:"🗡️",atk:1000,maxTotal:6500},{name:"秋水剑",emoji:"🗡️",atk:1300,maxTotal:7000},{name:"断石剑",emoji:"🗡️",atk:1300,maxTotal:7000},{name:"斩风剑",emoji:"🗡️",atk:2000,maxTotal:8000}];
+const helmList = [{name:"布帽",emoji:"🪖",hp:1,maxTotal:200},{name:"草帽",emoji:"🪖",hp:2,maxTotal:400},{name:"斗笠帽",emoji:"🪖",hp:3,maxTotal:800},{name:"麻布帽",emoji:"🪖",hp:10,maxTotal:1000},{name:"皮帽",emoji:"🪖",hp:30,maxTotal:1500},{name:"毡帽",emoji:"🪖",hp:80,maxTotal:2000},{name:"竹编帽",emoji:"🪖",hp:160,maxTotal:3000},{name:"青布头巾帽",emoji:"🪖",hp:300,maxTotal:4000},{name:"防风帽",emoji:"🪖",hp:550,maxTotal:4500},{name:"遮雨帽",emoji:"🪖",hp:800,maxTotal:5000}];
+const armorList = [{name:"布甲",emoji:"👕",baseDef:0.5,maxDef:80},{name:"皮甲",emoji:"👕",baseDef:1,maxDef:100},{name:"藤甲",emoji:"👕",baseDef:9,maxDef:200},{name:"木甲",emoji:"👕",baseDef:20,maxDef:300},{name:"麻甲",emoji:"👕",baseDef:50,maxDef:350},{name:"硬片甲",emoji:"👕",baseDef:100,maxDef:400},{name:"铁皮甲",emoji:"👕",baseDef:250,maxDef:500},{name:"锁子甲",emoji:"👕",baseDef:600,maxDef:600},{name:"札甲",emoji:"👕",baseDef:1300,maxDef:800},{name:"青鳞甲",emoji:"👕",baseDef:2000,maxDef:1000}];
 const weaponWeight = [[95,60,25,0,0],[3,20,25,45,20],[1,10,25,25,49],[0.9,8,15,15,15],[0.1,2,10,10,10],[0,0,0,2,2],[0,0,0,1.8,2],[0,0,0,0.7,1],[0,0,0,0.5,1]];
 const helmWeight = [[96,40,20,0,0],[3,30,30,45,25],[0.8,20,30,30,45],[0.1,7,14,14,19],[0.1,3,6,6,6],[0,0,0,3,3],[0,0,0,1,1],[0,0,0,0.5,0.5],[0,0,0,0.5,0.5]];
 const armorWeight = [[94,45,21,0,0],[4,30,30,42,15],[1,18,23,23,45],[0.5,5,18,18,18],[0.5,2,12,12,12],[0,0,0,3,5],[0,0,0,1,2.5],[0,0,0,0.5,1.5],[0,0,0,0.5,1]];
 
-function getDefaultData(){
-    return {
-        unlockLevel:1, currWeap:0, currHelm:0, currArmor:0, playerAvatar:"😃", playerName:"打怪升级117",
-        playerLevel:1, playerExp:0,
-        weaponCount:[1,0,0,0,0,0,0,0,0,0], helmCount:[1,0,0,0,0,0,0,0,0,0], armorCount:[1,0,0,0,0,0,0,0,0,0],
-        specialUnlocked:[false,false,false,false,false,false], specialEquipped:-1, loseCount:0, bossKillCount:0, boss10KillCount:0
-    }
-}
+function getDefaultData(){ return {unlockLevel:1,currWeap:0,currHelm:0,currArmor:0,playerAvatar:"😃",playerName:"打怪升级117",playerLevel:1,playerExp:0,weaponCount:[1,0,0,0,0,0,0,0,0,0],helmCount:[1,0,0,0,0,0,0,0,0,0],armorCount:[1,0,0,0,0,0,0,0,0,0],specialUnlocked:[false,false,false,false,false,false],specialEquipped:-1,loseCount:0,bossKillCount:0,boss10KillCount:0}; }
 let saveData;
 function loadSave(){
-    const str = localStorage.getItem("emojiGameSave");
-    let temp = null, isValid = true;
-    if(str){
-        try{
-            temp = JSON.parse(str);
-            if(!temp.unlockLevel||!Array.isArray(temp.weaponCount)||!Array.isArray(temp.helmCount)||!Array.isArray(temp.armorCount)) isValid = false;
-        }catch(e){ isValid = false; }
-    }else isValid=false;
-    
-    if(isValid){
-        saveData = temp;
-        if(saveData.playerLevel===undefined) saveData.playerLevel=1;
-        if(saveData.playerExp===undefined) saveData.playerExp=0;
-        if(saveData.playerName===undefined) saveData.playerName="打怪升级117";
-        if(!saveData.playerAvatar) saveData.playerAvatar="😃";
-        if(!saveData.specialUnlocked) saveData.specialUnlocked = [false,false,false,false,false,false];
-        if(saveData.specialEquipped === undefined) saveData.specialEquipped = -1;
-        if(saveData.loseCount === undefined) saveData.loseCount = 0;
-        if(saveData.bossKillCount === undefined) saveData.bossKillCount = 0;
-        if(saveData.boss10KillCount === undefined) saveData.boss10KillCount = 0;
-    }else{
-        saveData = getDefaultData();
-        localStorage.setItem("emojiGameSave", JSON.stringify(saveData));
-    }
+    const str = localStorage.getItem("emojiGameSave"); let temp=null, isValid=true;
+    if(str){ try{ temp=JSON.parse(str); if(!temp.unlockLevel||!Array.isArray(temp.weaponCount)) isValid=false; }catch(e){ isValid=false; } }else isValid=false;
+    if(isValid){ saveData=temp; if(!saveData.playerAvatar) saveData.playerAvatar="😃"; if(!saveData.specialUnlocked) saveData.specialUnlocked=[false,false,false,false,false,false]; if(saveData.specialEquipped===undefined) saveData.specialEquipped=-1; }
+    else{ saveData=getDefaultData(); localStorage.setItem("emojiGameSave",JSON.stringify(saveData)); }
 }
-function saveGame(){ localStorage.setItem("emojiGameSave", JSON.stringify(saveData)); }
-function clearSave(){
-    localStorage.removeItem("emojiGameSave");
-    saveData = getDefaultData();
-    showPopup("全部数据已删除！重新开始！");
-    renderAll();
-}
-let currentLevel = 0, monsterHp, playerHp, playerMaxHp;
-function expNeeded(level){ return Math.floor(level * 10 * (level / 5)); }
-function gainExp(amount){
-    saveData.playerExp += amount;
-    let leveled = false;
-    while(saveData.playerExp >= expNeeded(saveData.playerLevel)){
-        saveData.playerExp -= expNeeded(saveData.playerLevel);
-        saveData.playerLevel++;
-        leveled = true;
-    }
-    return leveled;
-}
-function getUnlockedSpecialCount(){
-    let cnt=0;
-    for(let b of saveData.specialUnlocked){ if(b) cnt++; }
-    return cnt;
-}
-function refreshSpecialProgress(){
-    document.getElementById("specialProgressText").innerText = `已解锁：${getUnlockedSpecialCount()} / ${specialWeaponList.length}`;
-}
-function tryUnlockSpecial(idx){
-    if(saveData.specialUnlocked[idx]) return false;
-    saveData.specialUnlocked[idx]=true;
-    saveGame();
-    showPopup(`✨解锁特殊武器：${specialWeaponList[idx].name}`);
-    renderSpecialEquipButtons();
-    refreshSpecialProgress();
-    return true;
-}
-function equipSpecialWeapon(idx){
-    if(!saveData.specialUnlocked[idx]){ showPopup("该武器尚未解锁！"); return; }
-    if(saveData.specialEquipped === idx){
-        saveData.specialEquipped = -1;
-        showPopup(`卸下特殊武器：${specialWeaponList[idx].name}`);
-    }else{
-        saveData.specialEquipped = idx;
-        showPopup(`装备特殊武器：${specialWeaponList[idx].name}`);
-    }
-    saveGame();
-    renderSpecialEquipButtons();
-}
+function saveGame(){ localStorage.setItem("emojiGameSave",JSON.stringify(saveData)); }
+function clearSave(){ localStorage.removeItem("emojiGameSave"); saveData=getDefaultData(); showPopup("全部数据已删除！重新开始！"); renderAll(); }
+function expNeeded(l){ return Math.floor(l*10*(l/5)); }
+function gainExp(a){ saveData.playerExp+=a; let l=false; while(saveData.playerExp>=expNeeded(saveData.playerLevel)){ saveData.playerExp-=expNeeded(saveData.playerLevel); saveData.playerLevel++; l=true; } return l; }
+function getUnlockedSpecialCount(){ let c=0; for(let b of saveData.specialUnlocked){ if(b) c++; } return c; }
+function refreshSpecialProgress(){ $("specialProgressText").innerText=`已解锁：${getUnlockedSpecialCount()} / ${specialWeaponList.length}`; }
+function tryUnlockSpecial(i){ if(saveData.specialUnlocked[i]) return false; saveData.specialUnlocked[i]=true; saveGame(); showPopup(`✨解锁特殊武器：${specialWeaponList[i].name}`); renderSpecialEquipButtons(); refreshSpecialProgress(); return true; }
+function equipSpecialWeapon(i){ if(!saveData.specialUnlocked[i]){ showPopup("该武器尚未解锁！"); return; } if(saveData.specialEquipped===i){ saveData.specialEquipped=-1; showPopup(`卸下特殊武器：${specialWeaponList[i].name}`); }else{ saveData.specialEquipped=i; showPopup(`装备特殊武器：${specialWeaponList[i].name}`); } saveGame(); renderSpecialEquipButtons(); }
 function getPlayerStats(){
-    const lv = saveData.playerLevel||1;
-    const baseHp = 100 * Math.pow(1.1, lv-1);
-    const baseAtk = 10 * Math.pow(1.05, lv-1);
-    const baseDef = 0;
-    const wi = saveData.currWeap??0, hi = saveData.currHelm??0, ai = saveData.currArmor??0;
-    const addHp = calcHelmHp(hi), addAtk = calcWeaponAtk(wi), addDef = calcArmorDef(ai);
-    let hp = Math.round(baseHp + addHp), atk = Math.round(baseAtk + addAtk), def = Math.round(baseDef + addDef);
-    const sIdx = saveData.specialEquipped;
-    if(sIdx === 0 || sIdx === 1) { hp += 150; atk += 100; }
-    else if(sIdx === 2) { hp += 300; atk += 500; }
-    else if(sIdx === 3) { hp += 50; atk += 1000; }
-    else if(sIdx === 4) { hp += 2000; atk += 500; }
-    else if(sIdx === 5) { hp = Math.round(hp * 1.5); atk = Math.round(atk * 2); }
-    const power = Math.round(hp + atk*2 + def/2);
-    return {hp, atk, def, power};
+    const lv=saveData.playerLevel||1, baseHp=100*Math.pow(1.1,lv-1), baseAtk=10*Math.pow(1.05,lv-1);
+    const wi=saveData.currWeap??0, hi=saveData.currHelm??0, ai=saveData.currArmor??0;
+    let hp=Math.round(baseHp+calcHelmHp(hi)), atk=Math.round(baseAtk+calcWeaponAtk(wi)), def=Math.round(calcArmorDef(ai));
+    const s=saveData.specialEquipped;
+    if(s===0||s===1){hp+=150;atk+=100;} else if(s===2){hp+=300;atk+=500;} else if(s===3){hp+=50;atk+=1000;} else if(s===4){hp+=2000;atk+=500;} else if(s===5){hp=Math.round(hp*1.5);atk=Math.round(atk*2);}
+    return {hp,atk,def,power:Math.round(hp+atk*2+def/2)};
 }
+function openWeaponDetail(i){ currentSpecialIndex=i; const item=specialWeaponList[i]; $("detailIcon").innerText=item.emoji; $("detailName").innerText=item.name; $("detailUnlockAttr").innerText=item.unlockAttr; $("detailEquipAttr").innerText=item.equipAttr; $("detailTrait").innerText=item.trait; $("detailUnlockWay").innerText=item.unlockWay; if(saveData.specialUnlocked[i]){ $("doEquipSpecialBtn").disabled=false; $("doEquipSpecialBtn").innerText=(saveData.specialEquipped===i)?"卸下":"装备"; }else{ $("doEquipSpecialBtn").disabled=true; $("doEquipSpecialBtn").innerText="🔒未解锁"; } $("weaponDetailOverlay").style.display="flex"; }
+function closeWeaponDetail(){ $("weaponDetailOverlay").style.display="none"; }
+function clickEquipSpecial(){ initAudio(); playUiClickSound(); equipSpecialWeapon(currentSpecialIndex); closeWeaponDetail(); }
+function renderSpecialEquipButtons(){ $("specialWeapBtns").innerHTML=""; specialWeaponList.forEach((item,i)=>{ const btn=document.createElement("button"); btn.className="btn-special"; if(!saveData.specialUnlocked[i]) btn.classList.add("btn-special-locked"); if(saveData.specialEquipped===i&&saveData.specialUnlocked[i]) btn.classList.add("btn-special-equipped"); btn.innerHTML=`${item.emoji}<br><small>${item.name}</small>`; btn.onclick=()=>{ initAudio(); playUiClickSound(); openWeaponDetail(i); }; $("specialWeapBtns").appendChild(btn); }); refreshSpecialProgress(); }
+function openAttrModal(){ initAudio(); playUiClickSound(); const s=getPlayerStats(); $("attrAvatarShow").innerText=saveData.playerAvatar; $("attrPlayerName").innerText=saveData.playerName||"打怪升级117"; $("attrPowerText").innerText="战斗力："+formatNum(s.power); const lv=saveData.playerLevel||1, need=expNeeded(lv); $("attrLevel").innerText=lv; $("attrExpBar").style.width=Math.min(100,(saveData.playerExp/need)*100)+"%"; $("attrExpText").innerText=`${saveData.playerExp}/${need}`; $("attrHp").innerText=formatNum(s.hp); $("attrAtk").innerText=formatNum(s.atk); $("attrDef").innerText=formatNum(s.def); $("attrModal").style.display="flex"; }
+function closeAttrModal(){ initAudio(); playUiClickSound(); $("attrModal").style.display="none"; }
+function openRenameModal(){ initAudio(); playUiClickSound(); $("renameInput").value=saveData.playerName||"打怪升级117"; $("renameModal").style.display="flex"; }
+function saveRename(){ initAudio(); playUiClickSound(); let v=$("renameInput").value.trim(); if(v.length===0) v="打怪升级117"; if(v.length>12) v=v.slice(0,12); saveData.playerName=v; saveGame(); $("attrPlayerName").innerText=v; $("renameModal").style.display="none"; }
+function closeRenameModal(){ initAudio(); playUiClickSound(); $("renameModal").style.display="none"; }
+function renderLogPage(){ const p=logData[logCurrentPage]; $("logVerTitle").innerText=p.ver; $("logContent").innerHTML=p.list.map(i=>`<div>• ${i}</div>`).join(""); $("logPageNum").innerText=`${logCurrentPage+1} / ${logData.length}`; $("logPrevBtn").disabled=logCurrentPage<=0; $("logNextBtn").disabled=logCurrentPage>=logData.length-1; }
+function renderAvatarList(){ $("avatarScrollWrap").innerHTML=""; avatarList.forEach(av=>{ const s=document.createElement("span"); s.className="avatar-item"; s.textContent=av; if(tempSelectAvatar===av) s.classList.add("selected"); s.onclick=()=>{ initAudio(); playUiClickSound(); tempSelectAvatar=av; $("avatarPreview").textContent=av; renderAvatarList(); }; $("avatarScrollWrap").appendChild(s); }); }
+function openAvatarModal(){ initAudio(); playUiClickSound(); $("settingsModal").style.display="none"; tempSelectAvatar=saveData.playerAvatar||"😃"; $("avatarPreview").textContent=tempSelectAvatar; renderAvatarList(); $("avatarModal").style.display="flex"; }
+function closeAvatarModalCancel(){ initAudio(); playUiClickSound(); $("avatarModal").style.display="none"; }
+function saveAvatarChange(){ initAudio(); playUiClickSound(); saveData.playerAvatar=tempSelectAvatar; saveGame(); $("playerEmoji").textContent=saveData.playerAvatar; $("avatarModal").style.display="none"; }
 
-const soundToggleBtn = document.getElementById("soundToggleBtn");
-const clearSaveBtn = document.getElementById("clearSaveBtn");
-const modalConfirmBtn = document.getElementById("modalConfirmBtn");
-const modalCancelBtn = document.getElementById("modalCancelBtn");
-const confirmModal = document.getElementById("confirmModal");
-const renameModal = document.getElementById("renameModal");
-const renameInput = document.getElementById("renameInput");
-const renameCancelBtn = document.getElementById("renameCancelBtn");
-const renameSaveBtn = document.getElementById("renameSaveBtn");
-const avatarSetBtn = document.getElementById("avatarSetBtn");
-const logSetBtn = document.getElementById("logSetBtn");
-const attrSetBtn = document.getElementById("attrSetBtn");
-const attrModal = document.getElementById("attrModal");
-const attrAvatarShow = document.getElementById("attrAvatarShow");
-const attrPlayerName = document.getElementById("attrPlayerName");
-const attrPowerText = document.getElementById("attrPowerText");
-const attrLevel = document.getElementById("attrLevel");
-const attrExpBar = document.getElementById("attrExpBar");
-const attrExpText = document.getElementById("attrExpText");
-const attrHp = document.getElementById("attrHp");
-const attrAtk = document.getElementById("attrAtk");
-const attrDef = document.getElementById("attrDef");
-const attrCloseBtn = document.getElementById("attrCloseBtn");
-const avatarModal = document.getElementById("avatarModal");
-const avatarScrollWrap = document.getElementById("avatarScrollWrap");
-const avatarPreview = document.getElementById("avatarPreview");
-const avatarModalCancel = document.getElementById("avatarModalCancel");
-const avatarModalSave = document.getElementById("avatarModalSave");
-const selectPage = document.getElementById("selectPage");
-const battlePage = document.getElementById("battlePage");
-const equipPage = document.getElementById("equipPage");
-const specialPage = document.getElementById("specialPage");
-const logPage = document.getElementById("logPage");
-const popMsg = document.getElementById("popMsg");
-const levelWrap = document.getElementById("levelWrap");
-const monsterHpEl = document.getElementById("monsterHp");
-const playerHpEl = document.getElementById("playerHp");
-const playerMaxHpEl = document.getElementById("playerMaxHp");
-const levelText = document.getElementById("levelText");
-const monsterEmoji = document.getElementById("monsterEmoji");
-const playerEmoji = document.getElementById("playerEmoji");
-const msgEl = document.getElementById("msg");
-const atkBtn = document.getElementById("atkBtn");
-const resetBtn = document.getElementById("resetBtn");
-const backBtn = document.getElementById("backBtn");
-const equipBackBtn = document.getElementById("equipBackBtn");
-const specialBackBtn = document.getElementById("specialBackBtn");
-const logBackBtn = document.getElementById("logBackBtn");
-const logPrevBtn = document.getElementById("logPrevBtn");
-const logNextBtn = document.getElementById("logNextBtn");
-const logPageNum = document.getElementById("logPageNum");
-const logVerTitle = document.getElementById("logVerTitle");
-const logContent = document.getElementById("logContent");
-const openEquipPageBtn = document.getElementById("openEquipPageBtn");
-const openSpecialPageBtn = document.getElementById("openSpecialPageBtn");
-const selWeapText = document.getElementById("selWeap");
-const selHelmText = document.getElementById("selHelm");
-const selArmorText = document.getElementById("selArmor");
-const battleWeapText = document.getElementById("battleWeap");
-const battleHelmText = document.getElementById("battleHelm");
-const battleArmorText = document.getElementById("battleArmor");
-const weapBtnsDiv = document.getElementById("weapBtns");
-const helmBtnsDiv = document.getElementById("helmBtns");
-const armorBtnsDiv = document.getElementById("armorBtns");
-const specialWeapBtnsDiv = document.getElementById("specialWeapBtns");
-const weaponDetailOverlay = document.getElementById("weaponDetailOverlay");
-const detailIcon = document.getElementById("detailIcon");
-const detailName = document.getElementById("detailName");
-const detailUnlockAttr = document.getElementById("detailUnlockAttr");
-const detailEquipAttr = document.getElementById("detailEquipAttr");
-const detailTrait = document.getElementById("detailTrait");
-const detailUnlockWay = document.getElementById("detailUnlockWay");
-const doEquipSpecialBtn = document.getElementById("doEquipSpecialBtn");
-const cancelDetailBtn = document.getElementById("cancelDetailBtn");
-const bottomBtnBar = document.getElementById("bottomBtnBar");
+function showPage(p){ document.querySelectorAll(".page").forEach(el=>el.classList.remove("active")); p.classList.add("active"); if(p===$("battlePage")||p===$("logPage")||p===$("specialPage")){ $("bottomBtnBar").classList.add("hide"); }else{ $("bottomBtnBar").classList.remove("hide"); } }
+function showPopup(t){ $("popMsg").innerText=t; $("popMsg").style.display="block"; setTimeout(()=>{ $("popMsg").style.display="none"; },1400); }
 
-let currentSpecialIndex = 0;
+function renderLevelButtons(){ $("levelWrap").innerHTML=""; levelConfig.forEach((lv,i)=>{ const btn=document.createElement("button"); btn.classList.add("level-btn"); if(lv.isBoss) btn.classList.add("boss-btn"); if(lv.isMiniBoss) btn.classList.add("mini-boss-btn"); btn.innerHTML=`<div>${i+1}</div><div>${lv.emoji}</div><small>战力:${formatNum(calcMonsterPower(lv.hp,lv.atk))}</small>`; btn.disabled=i>=saveData.unlockLevel; btn.onclick=()=>{ initAudio(); playUiClickSound(); currentLevel=i; loadLevel(i); showPage($("battlePage")); }; $("levelWrap").appendChild(btn); }); }
+function makeBadgeWrap(text,cnt,fn,dis,act){ const w=document.createElement("div"); w.className="badge-wrap"; const b=document.createElement("button"); b.className="btn-equip"; if(act) b.classList.add("equip-active"); b.innerText=text; b.disabled=dis; b.onclick=()=>{ initAudio(); playUiClickSound(); fn(); }; const bd=document.createElement("span"); bd.className="badge"; bd.textContent=cnt; if(cnt<=0) bd.classList.add("hide"); w.appendChild(b); w.appendChild(bd); return w; }
+function renderEquipButtons(){ $("weapBtns").innerHTML=""; weaponList.forEach((w,i)=>{ const wrap=makeBadgeWrap(`${w.emoji}${w.name}`,saveData.weaponCount[i],()=>{ saveData.currWeap=i; saveGame(); refreshEquipUi(); renderEquipButtons(); },saveData.weaponCount[i]<=0,i===saveData.currWeap); $("weapBtns").appendChild(wrap); }); $("helmBtns").innerHTML=""; helmList.forEach((h,i)=>{ const wrap=makeBadgeWrap(`${h.emoji}${h.name}`,saveData.helmCount[i],()=>{ saveData.currHelm=i; saveGame(); refreshEquipUi(); renderEquipButtons(); },saveData.helmCount[i]<=0,i===saveData.currHelm); $("helmBtns").appendChild(wrap); }); $("armorBtns").innerHTML=""; armorList.forEach((a,i)=>{ const wrap=makeBadgeWrap(`${a.emoji}${a.name}`,saveData.armorCount[i],()=>{ saveData.currArmor=i; saveGame(); refreshEquipUi(); renderEquipButtons(); },saveData.armorCount[i]<=0,i===saveData.currArmor); $("armorBtns").appendChild(wrap); }); }
+function refreshEquipUi(){ const wi=saveData.currWeap??0,hi=saveData.currHelm??0,ai=saveData.currArmor??0; $("selWeap").innerText=`${weaponList[wi].emoji}${weaponList[wi].name}`; $("selHelm").innerText=`${helmList[hi].emoji}${helmList[hi].name}`; $("selArmor").innerText=`${armorList[ai].emoji}${armorList[ai].name}`; $("battleWeap").innerText=`${weaponList[wi].emoji}${weaponList[wi].name}`; $("battleHelm").innerText=`${helmList[hi].emoji}${helmList[hi].name}`; $("battleArmor").innerText=`${armorList[ai].emoji}${armorList[ai].name}`; }
+function getPoolSeg(n){ if(n>=2&&n<=4)return 0; if(n>=5&&n<=7)return 1; if(n>=8&&n<=10)return 2; if(n>=11&&n<=13)return 3; return 4; }
+function weightedSelect(l){ let t=0; l.forEach(x=>t+=x.w); let r=Math.random()*t; for(let i of l){ r-=i.w; if(r<=0) return i; } return l[l.length-1]; }
+function tryDropEquipment(){ const n=currentLevel+1; if(n===1){ const r=Math.random(); if(r<0.33){saveData.weaponCount[0]++;showPopup(`获得：${weaponList[0].emoji}${weaponList[0].name}`);}else if(r<0.66){saveData.helmCount[0]++;showPopup(`获得：${helmList[0].emoji}${helmList[0].name}`);}else{saveData.armorCount[0]++;showPopup(`获得：${armorList[0].emoji}${armorList[0].name}`);} saveGame(); renderEquipButtons(); return; } if(Math.random()>0.8) return; const seg=getPoolSeg(n), pr=Math.random(); let pt=pr<0.33?"weapon":(pr<0.66?"helm":"armor"), pool=[]; if(pt==="weapon"){ for(let i=1;i<weaponWeight.length;i++){ if(weaponWeight[i][seg]>0) pool.push({type:"weapon",idx:i,w:weaponWeight[i][seg]}); } }else if(pt==="helm"){ for(let i=0;i<helmWeight.length;i++){ if(helmWeight[i][seg]>0) pool.push({type:"helm",idx:i,w:helmWeight[i][seg]}); } }else{ for(let i=0;i<armorWeight.length;i++){ if(armorWeight[i][seg]>0) pool.push({type:"armor",idx:i,w:armorWeight[i][seg]}); } } const pick=weightedSelect(pool); if(!pick) return; if(pick.type==="weapon"){ saveData.weaponCount[pick.idx]++; showPopup(`获得：${weaponList[pick.idx].emoji}${weaponList[pick.idx].name}`); }else if(pick.type==="helm"){ saveData.helmCount[pick.idx]++; showPopup(`获得：${helmList[pick.idx].emoji}${helmList[pick.idx].name}`); }else{ saveData.armorCount[pick.idx]++; showPopup(`获得：${armorList[pick.idx].emoji}${armorList[pick.idx].name}`); } saveGame(); renderEquipButtons(); }
+function calcWeaponAtk(i){ const w=weaponList[i]||weaponList[0],c=saveData.weaponCount[i]||0; return Math.min(w.atk*c,w.maxTotal); }
+function calcHelmHp(i){ const h=helmList[i]||helmList[0],c=saveData.helmCount[i]||0; return Math.min(h.hp*c,h.maxTotal); }
+function calcArmorDef(i){ const a=armorList[i]||armorList[0],c=saveData.armorCount[i]||0; return Math.min(a.baseDef*c,a.maxDef); }
+function loadLevel(i){ currentLevel=i; const lv=levelConfig[i]; monsterHp=lv.hp; $("monsterEmoji").innerText=lv.emoji; $("levelText").innerText=i+1; const s=getPlayerStats(); playerMaxHp=s.hp; playerHp=playerMaxHp; $("msg").className="info"; $("msg").innerText=lv.isBoss?`⚠ Boss关卡！准备战斗！`:`第${i+1}关，准备战斗！`; $("atkBtn").disabled=false; render(); }
+function render(){ $("monsterHp").innerText=formatNum(Math.max(0,monsterHp)); $("playerHp").innerText=formatNum(Math.max(0,playerHp)); $("playerMaxHp").innerText=formatNum(Math.max(0,playerMaxHp)); $("playerEmoji").textContent=saveData.playerAvatar||"😃"; }
 
-function openWeaponDetail(idx){
-    currentSpecialIndex = idx;
-    const item = specialWeaponList[idx];
-    detailIcon.innerText = item.emoji;
-    detailName.innerText = item.name;
-    detailUnlockAttr.innerText = item.unlockAttr;
-    detailEquipAttr.innerText = item.equipAttr;
-    detailTrait.innerText = item.trait;
-    detailUnlockWay.innerText = item.unlockWay;
-    if(saveData.specialUnlocked[idx]){
-        doEquipSpecialBtn.disabled = false;
-        doEquipSpecialBtn.innerText = (saveData.specialEquipped === idx) ? "卸下" : "装备";
-    }else{
-        doEquipSpecialBtn.disabled = true;
-        doEquipSpecialBtn.innerText = "🔒未解锁";
-    }
-    weaponDetailOverlay.style.display = "flex";
-}
-function closeWeaponDetail(){ weaponDetailOverlay.style.display = "none"; }
-function clickEquipSpecial(){
-    initAudio(); playUiClickSound();
-    equipSpecialWeapon(currentSpecialIndex);
-    closeWeaponDetail();
-}
-
-function renderSpecialEquipButtons(){
-    specialWeapBtnsDiv.innerHTML = "";
-    specialWeaponList.forEach((item,idx)=>{
-        const btn = document.createElement("button");
-        btn.className = "btn-special";
-        if(!saveData.specialUnlocked[idx]) btn.classList.add("btn-special-locked");
-        if(saveData.specialEquipped === idx && saveData.specialUnlocked[idx]) btn.classList.add("btn-special-equipped");
-        btn.innerHTML = `${item.emoji}<br><small>${item.name}</small>`;
-        btn.onclick = function(){
-            initAudio(); playUiClickSound();
-            openWeaponDetail(idx);
-        };
-        specialWeapBtnsDiv.appendChild(btn);
-    })
-    refreshSpecialProgress();
-}
-
-function openAttrModal(){
-    initAudio(); playUiClickSound();
-    const stats = getPlayerStats();
-    attrAvatarShow.innerText = saveData.playerAvatar;
-    attrPlayerName.innerText = saveData.playerName || "打怪升级117";
-    attrPowerText.innerText = "战斗力："+formatNum(stats.power);
-    const lv = saveData.playerLevel||1;
-    const need = expNeeded(lv);
-    attrLevel.innerText = lv;
-    attrExpBar.style.width = Math.min(100, (saveData.playerExp/need)*100)+"%";
-    attrExpText.innerText = `${saveData.playerExp}/${need}`;
-    attrHp.innerText = formatNum(stats.hp);
-    attrAtk.innerText = formatNum(stats.atk);
-    attrDef.innerText = formatNum(stats.def);
-    attrModal.style.display = "flex";
-}
-function closeAttrModal(){ initAudio(); playUiClickSound(); attrModal.style.display = "none"; }
-function openRenameModal(){ initAudio(); playUiClickSound(); renameInput.value = saveData.playerName || "打怪升级117"; renameModal.style.display = "flex"; }
-function saveRename(){
-    initAudio(); playUiClickSound();
-    let v = renameInput.value.trim();
-    if(v.length===0) v = "打怪升级117";
-    if(v.length>12) v = v.slice(0,12);
-    saveData.playerName = v;
-    saveGame();
-    attrPlayerName.innerText = v;
-    renameModal.style.display = "none";
-}
-function closeRenameModal(){ initAudio(); playUiClickSound(); renameModal.style.display = "none"; }
-function renderLogPage(){
-    const page = logData[logCurrentPage];
-    logVerTitle.innerText = page.ver;
-    logContent.innerHTML = page.list.map(item=>`<div>• ${item}</div>`).join("");
-    logPageNum.innerText = `${logCurrentPage+1} / ${logData.length}`;
-    logPrevBtn.disabled = logCurrentPage <= 0;
-    logNextBtn.disabled = logCurrentPage >= logData.length-1;
-}
-function renderAvatarList(){
-    avatarScrollWrap.innerHTML = "";
-    avatarList.forEach(av=>{
-        const span = document.createElement("span");
-        span.className = "avatar-item";
-        span.textContent = av;
-        span.dataset.avatar = av;
-        if(tempSelectAvatar === av) span.classList.add("selected");
-        span.onclick = ()=>{
-            initAudio(); playUiClickSound();
-            tempSelectAvatar = av;
-            avatarPreview.textContent = tempSelectAvatar;
-            renderAvatarList();
-        };
-        avatarScrollWrap.appendChild(span);
-    });
-}
-function openAvatarModal(){
-    initAudio(); playUiClickSound();
-    tempSelectAvatar = saveData.playerAvatar || "😃";
-    avatarPreview.textContent = tempSelectAvatar;
-    renderAvatarList();
-    avatarModal.style.display = "flex";
-}
-function closeAvatarModalCancel(){ initAudio(); playUiClickSound(); avatarModal.style.display = "none"; }
-function saveAvatarChange(){
-    initAudio(); playUiClickSound();
-    saveData.playerAvatar = tempSelectAvatar;
-    saveGame();
-    playerEmoji.textContent = saveData.playerAvatar;
-    avatarModal.style.display = "none";
-}
-
-soundToggleBtn.onclick = function(){
-    initAudio();
-    soundEnabled = !soundEnabled;
-    this.innerText = soundEnabled ? "🔊 音效:开" : "🔇 音效:关";
-    playUiClickSound();
-};
-clearSaveBtn.onclick = function(){ initAudio(); playUiClickSound(); confirmModal.style.display = "flex"; };
-modalConfirmBtn.onclick = function(){ initAudio(); playUiClickSound(); confirmModal.style.display = "none"; clearSave(); };
-modalCancelBtn.onclick = function(){ initAudio(); playUiClickSound(); confirmModal.style.display = "none"; };
-avatarSetBtn.onclick = openAvatarModal;
-avatarModalCancel.onclick = closeAvatarModalCancel;
-avatarModalSave.onclick = saveAvatarChange;
-attrSetBtn.onclick = openAttrModal;
-attrCloseBtn.onclick = closeAttrModal;
-attrPlayerName.onclick = openRenameModal;
-renameCancelBtn.onclick = closeRenameModal;
-renameSaveBtn.onclick = saveRename;
-
-logSetBtn.onclick = function(){ initAudio(); playUiClickSound(); logCurrentPage = logData.length-1; renderLogPage(); showPage(logPage); };
-logBackBtn.onclick = function(){ initAudio(); playUiClickSound(); showPage(selectPage); };
-logPrevBtn.onclick = function(){ initAudio(); playUiClickSound(); if(logCurrentPage>0){ logCurrentPage--; renderLogPage(); } };
-logNextBtn.onclick = function(){ initAudio(); playUiClickSound(); if(logCurrentPage < logData.length-1){ logCurrentPage++; renderLogPage(); } };
-
-openEquipPageBtn.onclick = ()=> {initAudio(); playUiClickSound(); showPage(equipPage);};
-openSpecialPageBtn.onclick = ()=> {initAudio(); playUiClickSound(); renderSpecialEquipButtons(); showPage(specialPage);};
-equipBackBtn.onclick = ()=> {initAudio(); playUiClickSound(); showPage(selectPage);};
-specialBackBtn.onclick = ()=> {initAudio(); playUiClickSound(); showPage(selectPage);};
-resetBtn.onclick = function(){
-    initAudio(); playUiClickSound();
-    const stats = getPlayerStats();
-    playerMaxHp = stats.hp;
-    playerHp = playerMaxHp;
-    loadLevel(currentLevel);
-};
-backBtn.onclick = function(){ initAudio(); playUiClickSound(); showPage(selectPage); };
-cancelDetailBtn.onclick = closeWeaponDetail;
-doEquipSpecialBtn.onclick = clickEquipSpecial;
-weaponDetailOverlay.onclick = function(e){ if(e.target === weaponDetailOverlay) closeWeaponDetail(); };
-
-function showPage(pageDom){
-    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-    pageDom.classList.add("active");
-    
-    // 进入战斗页、日志页、特殊装备页时隐藏悬浮按钮
-    if(pageDom === battlePage || pageDom === logPage || pageDom === specialPage){
-        bottomBtnBar.classList.add("hide");
-    }else{
-        bottomBtnBar.classList.remove("hide");
-    }
-}
-function showPopup(text){
-    popMsg.innerText = text;
-    popMsg.style.display="block";
-    setTimeout(()=>{popMsg.style.display="none"},1400);
-}
-function renderLevelButtons(){
-    levelWrap.innerHTML = "";
-    levelConfig.forEach((lv,i)=>{
-        const btn = document.createElement("button");
-        btn.classList.add("level-btn");
-        if(lv.isBoss) btn.classList.add("boss-btn");
-        if(lv.isMiniBoss) btn.classList.add("mini-boss-btn");
-        const mPower = calcMonsterPower(lv.hp, lv.atk);
-        btn.innerHTML = `<div>${i+1}</div><div>${lv.emoji}</div><small>战力:${formatNum(mPower)}</small>`;
-        btn.disabled = i >= saveData.unlockLevel;
-        btn.onclick = ()=>{
-            initAudio(); playUiClickSound();
-            currentLevel = i;
-            loadLevel(i);
-            showPage(battlePage);
-        };
-        levelWrap.appendChild(btn);
-    });
-}
-function makeBadgeWrap(labelText,count,onClickHandler,isDisabled,isActive){
-    const wrap = document.createElement("div"); wrap.className = "badge-wrap";
-    const btn = document.createElement("button"); btn.className="btn-equip";
-    if(isActive) btn.classList.add("equip-active");
-    btn.innerText = labelText;
-    btn.disabled = isDisabled;
-    btn.onclick = ()=>{ initAudio(); playUiClickSound(); onClickHandler(); };
-    const badge = document.createElement("span"); badge.className = "badge";
-    badge.textContent = count;
-    if(count<=0) badge.classList.add("hide");
-    wrap.appendChild(btn); wrap.appendChild(badge);
-    return wrap;
-}
-function renderEquipButtons(){
-    weapBtnsDiv.innerHTML = "";
-    weaponList.forEach((w,i)=>{
-        const cnt = saveData.weaponCount[i];
-        const wrap = makeBadgeWrap(`${w.emoji}${w.name}`, cnt, ()=>{
-            saveData.currWeap=i; saveGame(); refreshEquipUi(); renderEquipButtons();
-        }, cnt <=0, i === saveData.currWeap);
-        weapBtnsDiv.appendChild(wrap);
-    });
-    helmBtnsDiv.innerHTML = "";
-    helmList.forEach((h,i)=>{
-        const cnt = saveData.helmCount[i];
-        const wrap = makeBadgeWrap(`${h.emoji}${h.name}`, cnt, ()=>{
-            saveData.currHelm=i; saveGame(); refreshEquipUi(); renderEquipButtons();
-        }, cnt <=0, i === saveData.currHelm);
-        helmBtnsDiv.appendChild(wrap);
-    });
-    armorBtnsDiv.innerHTML = "";
-    armorList.forEach((a,i)=>{
-        const cnt = saveData.armorCount[i];
-        const wrap = makeBadgeWrap(`${a.emoji}${a.name}`, cnt, ()=>{
-            saveData.currArmor=i; saveGame(); refreshEquipUi(); renderEquipButtons();
-        }, cnt <=0, i === saveData.currArmor);
-        armorBtnsDiv.appendChild(wrap);
-    });
-}
-function refreshEquipUi(){
-    const wi = saveData.currWeap??0, hi = saveData.currHelm??0, ai = saveData.currArmor??0;
-    const w = weaponList[wi], h = helmList[hi], a = armorList[ai];
-    selWeapText.innerText = `${w.emoji}${w.name}`;
-    selHelmText.innerText = `${h.emoji}${h.name}`;
-    selArmorText.innerText = `${a.emoji}${a.name}`;
-    battleWeapText.innerText = `${w.emoji}${w.name}`;
-    battleHelmText.innerText = `${h.emoji}${h.name}`;
-    battleArmorText.innerText = `${a.emoji}${a.name}`;
-}
-function getPoolSeg(lvNum){
-    if(lvNum>=2 && lvNum<=4) return 0;
-    if(lvNum>=5 && lvNum<=7) return 1;
-    if(lvNum>=8 && lvNum<=10) return 2;
-    if(lvNum>=11 && lvNum<=13) return 3;
-    return 4;
-}
-function weightedSelect(list){
-    let total=0; list.forEach(x=>total+=x.w);
-    let r=Math.random()*total;
-    for(let item of list){ r -= item.w; if(r<=0) return item; }
-    return list[list.length-1];
-}
-function tryDropEquipment(){
-    const lvNum = currentLevel+1;
-    if(lvNum===1){
-        const roll = Math.random();
-        if(roll<0.33){ saveData.weaponCount[0]++; showPopup(`获得：${weaponList[0].emoji}${weaponList[0].name}`); }
-        else if(roll<0.66){ saveData.helmCount[0]++; showPopup(`获得：${helmList[0].emoji}${helmList[0].name}`); }
-        else{ saveData.armorCount[0]++; showPopup(`获得：${armorList[0].emoji}${armorList[0].name}`); }
-        saveGame(); renderEquipButtons(); return;
-    }
-    if(Math.random()>0.8) return;
-    const seg = getPoolSeg(lvNum);
-    const poolRoll = Math.random();
-    let poolType = poolRoll < 0.33 ? "weapon" : (poolRoll < 0.66 ? "helm" : "armor");
-    let pool = [];
-    if(poolType==="weapon"){
-        for(let i=1;i<weaponWeight.length;i++){ if(weaponWeight[i][seg]>0) pool.push({type:"weapon",idx:i,w:weaponWeight[i][seg]}); }
-    }else if(poolType==="helm"){
-        for(let i=0;i<helmWeight.length;i++){ if(helmWeight[i][seg]>0) pool.push({type:"helm",idx:i,w:helmWeight[i][seg]}); }
-    }else{
-        for(let i=0;i<armorWeight.length;i++){ if(armorWeight[i][seg]>0) pool.push({type:"armor",idx:i,w:armorWeight[i][seg]}); }
-    }
-    const pick = weightedSelect(pool);
-    if(!pick) return;
-    if(pick.type==="weapon"){ saveData.weaponCount[pick.idx]++; showPopup(`获得：${weaponList[pick.idx].emoji}${weaponList[pick.idx].name}`); }
-    else if(pick.type==="helm"){ saveData.helmCount[pick.idx]++; showPopup(`获得：${helmList[pick.idx].emoji}${helmList[pick.idx].name}`); }
-    else{ saveData.armorCount[pick.idx]++; showPopup(`获得：${armorList[pick.idx].emoji}${armorList[pick.idx].name}`); }
-    saveGame(); renderEquipButtons();
-}
-function calcWeaponAtk(wi){ const w = weaponList[wi]||weaponList[0]; const cnt = saveData.weaponCount[wi]||0; return Math.min(w.atk * cnt, w.maxTotal); }
-function calcHelmHp(hi){ const h = helmList[hi]||helmList[0]; const cnt = saveData.helmCount[hi]||0; return Math.min(h.hp * cnt, h.maxTotal); }
-function calcArmorDef(ai){ const a = armorList[ai]||armorList[0]; const cnt = saveData.armorCount[ai]||0; return Math.min(a.baseDef * cnt, a.maxDef); }
-
-function loadLevel(lvIndex){
-    currentLevel = lvIndex;
-    const lv = levelConfig[currentLevel];
-    monsterHp = lv.hp;
-    monsterEmoji.innerText = lv.emoji;
-    levelText.innerText = currentLevel+1;
-    const stats = getPlayerStats();
-    playerMaxHp = stats.hp;
-    playerHp = playerMaxHp;
-    msgEl.className = "info";
-    msgEl.innerText = lv.isBoss ? `⚠ Boss关卡！准备战斗！` : `第${currentLevel+1}关，准备战斗！`;
-    atkBtn.disabled = false;
-    render();
-}
-function render(){
-    monsterHpEl.innerText = formatNum(Math.max(0, monsterHp));
-    playerHpEl.innerText = formatNum(Math.max(0, playerHp));
-    playerMaxHpEl.innerText = formatNum(Math.max(0, playerMaxHp));
-    playerEmoji.textContent = saveData.playerAvatar || "😃";
-}
 function monsterAttack(){
-    playHitSound();
-    const lv = levelConfig[currentLevel];
-    const stats = getPlayerStats();
-    let dodgeChance = 0;
-    if (saveData.specialEquipped === 3) dodgeChance += 0.10;
-    if (saveData.specialEquipped === 4) dodgeChance += 0.20;
-    if (Math.random() < dodgeChance) {
-        msgEl.innerText = "✨ 你闪避了怪物的攻击！";
-        render(); return;
-    }
-    let dmg = Math.max(1, lv.atk - stats.def);
-    if (saveData.specialEquipped === 3) dmg = Math.floor(dmg * 1.5);
-    else if (saveData.specialEquipped === 4) { dmg = Math.floor(dmg * 0.5); dmg = Math.floor(dmg * 0.9); }
-    
-    playerHp -= dmg;
-    if(playerHp <= 0){
-        playerHp = 0; render();
-        msgEl.innerText = "💀 你被打败了...";
-        atkBtn.disabled = true;
-        saveData.loseCount = (saveData.loseCount || 0) + 1;
-        if(saveData.loseCount >= 64 && !saveData.specialUnlocked[4]) tryUnlockSpecial(4);
-        saveGame(); return;
-    }
-    render();
-    msgEl.innerText = `怪物反击！你受到了 ${formatNum(dmg)} 点伤害。`;
+    playHitSound(); const lv=levelConfig[currentLevel], s=getPlayerStats();
+    let dc=0; if(saveData.specialEquipped===3) dc+=0.1; if(saveData.specialEquipped===4) dc+=0.2;
+    if(Math.random()<dc){ $("msg").innerText="✨ 你闪避了怪物的攻击！"; render(); return; }
+    let dmg=Math.max(1,lv.atk-s.def);
+    if(saveData.specialEquipped===3) dmg=Math.floor(dmg*1.5); else if(saveData.specialEquipped===4){ dmg=Math.floor(dmg*0.5); dmg=Math.floor(dmg*0.9); }
+    playerHp-=dmg;
+    if(playerHp<=0){ playerHp=0; render(); $("msg").innerText="💀 你被打败了..."; $("atkBtn").disabled=true; saveData.loseCount=(saveData.loseCount||0)+1; if(saveData.loseCount>=64&&!saveData.specialUnlocked[4]) tryUnlockSpecial(4); saveGame(); return; }
+    render(); $("msg").innerText=`怪物反击！你受到了 ${formatNum(dmg)} 点伤害。`;
 }
 
-atkBtn.onclick = function(){
-    initAudio(); playAttackSound();
-    if(monsterHp <= 0 || playerHp <= 0) return;
-    const stats = getPlayerStats();
-    const lv = levelConfig[currentLevel];
-    let baseDmg = stats.atk, isCrit = false, extraMsg = "", healMsg = "";
-
-    if (saveData.specialEquipped !== -1) {
-        const sIdx = saveData.specialEquipped;
-        if (sIdx === 0) {
-            if (Math.random() < 0.25) { baseDmg *= 3; isCrit = true; extraMsg += "✨星陨爆发！"; }
-        } else if (sIdx === 1) {
-            if (Math.random() < 0.15) { 
-                const heal = Math.floor(baseDmg * 0.15);
-                playerHp = Math.min(playerMaxHp, playerHp + heal);
-                healMsg = ` 吸血${formatNum(heal)}！`;
-            }
-            if (Math.random() < 0.01) { playerHp = playerMaxHp; extraMsg += "✨虚空吞噬回满血！"; }
-            if (Math.random() < 0.05) { 
-                const bonusDmg = Math.floor(monsterHp * 0.1);
-                monsterHp -= bonusDmg;
-                extraMsg += `✨虚空撕裂额外扣除${formatNum(bonusDmg)}血！`;
-            }
-        } else if (sIdx === 2) {
-            const bonusDmg = Math.floor(baseDmg * 0.5);
-            monsterHp -= bonusDmg;
-            extraMsg += `⚡雷霆万钧附加${formatNum(bonusDmg)}伤害！`;
-        } else if (sIdx === 3) {
-            baseDmg *= 2;
-        } else if (sIdx === 4) {
-            const heal = Math.floor(playerMaxHp * 0.02);
-            playerHp = Math.min(playerMaxHp, playerHp + heal);
-            healMsg = ` 圣光回血${formatNum(heal)}！`;
-        } else if (sIdx === 5) {
-            baseDmg = Math.floor(baseDmg * 1.5);
-            if (Math.random() < 0.02) { monsterHp = 0; extraMsg += "🪓熔岩斩杀！秒杀！"; }
-            else if (Math.random() < 0.10) { 
-                const cutDmg = Math.floor(monsterHp * 0.5);
-                monsterHp -= cutDmg;
-                extraMsg += `🪓熔岩重击削减50%血！`;
-            } else { baseDmg *= 3; isCrit = true; }
+$("atkBtn").onclick=function(){
+    initAudio(); playAttackSound(); if(monsterHp<=0||playerHp<=0) return;
+    const s=getPlayerStats(), lv=levelConfig[currentLevel]; let baseDmg=s.atk, isCrit=false, extra="", heal="";
+    if(saveData.specialEquipped!==-1){
+        const i=saveData.specialEquipped;
+        if(i===0){ if(Math.random()<0.25){ baseDmg*=3; isCrit=true; extra+="✨星陨爆发！"; } }
+        else if(i===1){
+            if(Math.random()<0.15){ const h=Math.floor(baseDmg*0.15); playerHp=Math.min(playerMaxHp,playerHp+h); heal=` 吸血${formatNum(h)}！`; }
+            if(Math.random()<0.01){ playerHp=playerMaxHp; extra+="✨虚空吞噬回满血！"; }
+            if(Math.random()<0.05){ const b=Math.floor(monsterHp*0.1); monsterHp-=b; extra+=`✨虚空撕裂额外扣除${formatNum(b)}血！`; }
+        }
+        else if(i===2){ const b=Math.floor(baseDmg*0.5); monsterHp-=b; extra+=`⚡雷霆万钧附加${formatNum(b)}伤害！`; }
+        else if(i===3){ baseDmg*=2; }
+        else if(i===4){ const h=Math.floor(playerMaxHp*0.02); playerHp=Math.min(playerMaxHp,playerHp+h); heal=` 圣光回血${formatNum(h)}！`; }
+        else if(i===5){
+            baseDmg=Math.floor(baseDmg*1.5);
+            if(Math.random()<0.02){ monsterHp=0; extra+="🪓熔岩斩杀！秒杀！"; }
+            else if(Math.random()<0.1){ const c=Math.floor(monsterHp*0.5); monsterHp-=c; extra+=`🪓熔岩重击削减50%血！`; }
+            else{ baseDmg*=3; isCrit=true; }
         }
     }
-    if (!isCrit && Math.random() < 0.05) { baseDmg *= 2; isCrit = true; }
-    if (monsterHp > 0) monsterHp -= baseDmg;
-
+    if(!isCrit&&Math.random()<0.05){ baseDmg*=2; isCrit=true; }
+    if(monsterHp>0) monsterHp-=baseDmg;
     playHitSound();
-    if(monsterHp <= 0){
-        monsterHp = 0;
-        playMonsterDeathOuhSound();
-        render();
-        msgEl.innerHTML = `击败怪物！造成伤害 ${formatNum(baseDmg)} ${healMsg} <br><span style="color:#ffaa00">${extraMsg}</span>`;
-        const leveled = gainExp(lv.exp);
-        tryDropEquipment();
-        if (lv.isBoss || lv.isMiniBoss) {
-            saveData.bossKillCount = (saveData.bossKillCount || 0) + 1;
-            if (saveData.bossKillCount >= 200 && !saveData.specialUnlocked[2]) tryUnlockSpecial(2);
-        }
-        if (currentLevel === 9) {
-            saveData.boss10KillCount = (saveData.boss10KillCount || 0) + 1;
-            if (saveData.boss10KillCount >= 100 && !saveData.specialUnlocked[3]) tryUnlockSpecial(3);
-            if (!saveData.specialUnlocked[1]) tryUnlockSpecial(1);
-        }
-        if (currentLevel === 0 && Math.random() < 0.01 && !saveData.specialUnlocked[0]) tryUnlockSpecial(0);
-        if(currentLevel + 1 >= saveData.unlockLevel && currentLevel + 1 < levelConfig.length) saveData.unlockLevel = currentLevel + 2;
-        if(saveData.unlockLevel >= levelConfig.length && !saveData.specialUnlocked[5]) tryUnlockSpecial(5);
+    if(monsterHp<=0){
+        monsterHp=0; playMonsterDeathOuhSound(); render();
+        $("msg").innerHTML=`击败怪物！造成伤害 ${formatNum(baseDmg)} ${heal} <br><span style="color:#ffaa00">${extra}</span>`;
+        const leveled=gainExp(lv.exp); tryDropEquipment();
+        if(lv.isBoss||lv.isMiniBoss){ saveData.bossKillCount=(saveData.bossKillCount||0)+1; if(saveData.bossKillCount>=200&&!saveData.specialUnlocked[2]) tryUnlockSpecial(2); }
+        if(currentLevel===9){ saveData.boss10KillCount=(saveData.boss10KillCount||0)+1; if(saveData.boss10KillCount>=100&&!saveData.specialUnlocked[3]) tryUnlockSpecial(3); if(!saveData.specialUnlocked[1]) tryUnlockSpecial(1); }
+        if(currentLevel===0&&Math.random()<0.01&&!saveData.specialUnlocked[0]) tryUnlockSpecial(0);
+        if(currentLevel+1>=saveData.unlockLevel&&currentLevel+1<levelConfig.length) saveData.unlockLevel=currentLevel+2;
+        if(saveData.unlockLevel>=levelConfig.length&&!saveData.specialUnlocked[5]) tryUnlockSpecial(5);
         if(leveled) showPopup("🎉 升级啦！");
-        saveGame(); renderLevelButtons(); atkBtn.disabled = true; return;
+        saveGame(); renderLevelButtons(); $("atkBtn").disabled=true; return;
     }
-    let critText = isCrit ? "<span class='crit-text'>暴击！</span>" : "";
-    msgEl.innerHTML = `你造成 ${formatNum(baseDmg)} 伤害 ${critText} ${healMsg} <br><span style="color:#88ccff">${extraMsg}</span>`;
-    atkBtn.disabled = true;
-    setTimeout(()=>{
-        if(playerHp > 0 && monsterHp > 0){ monsterAttack(); atkBtn.disabled = false; }
-    }, 300);
+    let ct=isCrit?"<span class='crit-text'>暴击！</span>":"";
+    $("msg").innerHTML=`你造成 ${formatNum(baseDmg)} 伤害 ${ct} ${heal} <br><span style="color:#88ccff">${extra}</span>`;
+    $("atkBtn").disabled=true;
+    setTimeout(()=>{ if(playerHp>0&&monsterHp>0){ monsterAttack(); $("atkBtn").disabled=false; } },300);
 }
 
-function renderAll(){
-    refreshEquipUi(); renderEquipButtons(); renderSpecialEquipButtons(); renderLevelButtons();
-    playerEmoji.textContent = saveData.playerAvatar || "😃";
-    attrAvatarShow.innerText = saveData.playerAvatar || "😃";
-    render();
-}
-loadSave();
-renderAll();
-showPage(selectPage);
+function renderAll(){ refreshEquipUi(); renderEquipButtons(); renderSpecialEquipButtons(); renderLevelButtons(); $("playerEmoji").textContent=saveData.playerAvatar||"😃"; $("attrAvatarShow").innerText=saveData.playerAvatar||"😃"; render(); }
+
+// 事件绑定
+$("openSettingsBtn").onclick=()=>{ initAudio(); playUiClickSound(); $("settingsModal").style.display="flex"; };
+$("closeSettingsBtn").onclick=()=>{ initAudio(); playUiClickSound(); $("settingsModal").style.display="none"; };
+$("soundToggleBtn").onclick=function(){ initAudio(); soundEnabled=!soundEnabled; this.innerText=soundEnabled?"🔊 音效:开":"🔇 音效:关"; playUiClickSound(); };
+$("openClearModalBtn").onclick=()=>{ initAudio(); playUiClickSound(); $("settingsModal").style.display="none"; $("confirmModal").style.display="flex"; };
+$("openAvatarModalBtn").onclick=openAvatarModal;
+$("modalConfirmBtn").onclick=()=>{ initAudio(); playUiClickSound(); $("confirmModal").style.display="none"; clearSave(); };
+$("modalCancelBtn").onclick=()=>{ initAudio(); playUiClickSound(); $("confirmModal").style.display="none"; };
+$("avatarModalCancel").onclick=closeAvatarModalCancel; $("avatarModalSave").onclick=saveAvatarChange;
+$("attrSetBtn").onclick=openAttrModal; $("attrCloseBtn").onclick=closeAttrModal; $("attrPlayerName").onclick=openRenameModal;
+$("renameCancelBtn").onclick=closeRenameModal; $("renameSaveBtn").onclick=saveRename;
+$("logSetBtn").onclick=()=>{ initAudio(); playUiClickSound(); logCurrentPage=logData.length-1; renderLogPage(); showPage($("logPage")); };
+$("logBackBtn").onclick=()=>{ initAudio(); playUiClickSound(); showPage($("selectPage")); };
+$("logPrevBtn").onclick=()=>{ initAudio(); playUiClickSound(); if(logCurrentPage>0){ logCurrentPage--; renderLogPage(); } };
+$("logNextBtn").onclick=()=>{ initAudio(); playUiClickSound(); if(logCurrentPage<logData.length-1){ logCurrentPage++; renderLogPage(); } };
+$("openEquipPageBtn").onclick=()=>{ initAudio(); playUiClickSound(); showPage($("equipPage")); };
+$("openSpecialPageBtn").onclick=()=>{ initAudio(); playUiClickSound(); renderSpecialEquipButtons(); showPage($("specialPage")); };
+$("equipBackBtn").onclick=()=>{ initAudio(); playUiClickSound(); showPage($("selectPage")); };
+$("specialBackBtn").onclick=()=>{ initAudio(); playUiClickSound(); showPage($("selectPage")); };
+$("resetBtn").onclick=()=>{ initAudio(); playUiClickSound(); playerMaxHp=getPlayerStats().hp; playerHp=playerMaxHp; loadLevel(currentLevel); };
+$("backBtn").onclick=()=>{ initAudio(); playUiClickSound(); showPage($("selectPage")); };
+$("cancelDetailBtn").onclick=closeWeaponDetail; $("doEquipSpecialBtn").onclick=clickEquipSpecial;
+$("weaponDetailOverlay").onclick=e=>{ if(e.target===$("weaponDetailOverlay")) closeWeaponDetail(); };
+
+loadSave(); renderAll(); showPage($("selectPage"));
 </script>
 </body>
-    </html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </html>
