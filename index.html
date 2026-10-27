@@ -13,7 +13,6 @@ html,body{background:#222;color:white;font-family:system-ui;height:100dvh;overfl
 .monster{font-size:120px;margin-bottom:12px;}
 .player{font-size:100px;margin-top:12px;}
 .info{font-size:18px;margin:8px 0;}
-/* 锁定战斗文字框高度，防止按钮跳动 */
 #msg { display: block; min-height: 80px; }
 .crit-text{color:#ff4444;font-weight:bold;font-size:20px;}
 button{border:none;padding:9px 16px;font-size:16px;border-radius:6px;margin:4px;}
@@ -144,7 +143,21 @@ button:disabled{opacity:0.35;pointer-events:none;}
 </div>
 <div id="equipPage" class="page"><h2 style="font-size:30px;margin-bottom:12px">装备背包</h2><div class="info"><h3>武器</h3><div class="scroll-wrap"><div id="weapBtns" class="scroll-inner"></div></div></div><div class="info"><h3>头盔</h3><div class="scroll-wrap"><div id="helmBtns" class="scroll-inner"></div></div></div><div class="info"><h3>盔甲</h3><div class="scroll-wrap"><div id="armorBtns" class="scroll-inner"></div></div></div><div style="margin-top:20px"><button class="btn-back" id="equipBackBtn">返回选关</button></div></div>
 <div id="specialPage" class="page"><h2 style="font-size:30px;margin-bottom:8px">特殊装备</h2><div class="special-progress-text" id="specialProgressText">已解锁：0 / 6</div><div class="info"><h3>武器</h3><div class="scroll-wrap"><div id="specialWeapBtns" class="scroll-inner"></div></div></div><div style="margin-top:20px"><button class="btn-back" id="specialBackBtn">返回选关</button></div></div>
-<div id="battlePage" class="page"><div class="info">关卡：第<span id="levelText">1</span>关</div><div class="info">武器：<span id="battleWeap">🗡️锈铁剑</span>｜头盔：<span id="battleHelm">🪖布帽</span></div><div class="info">盔甲：<span id="battleArmor">👕布甲</span></div><div class="monster stroke" id="monsterEmoji">👹</div><div class="info">怪物血量：<span id="monsterHp">100</span></div><div class="player stroke" id="playerEmoji">😃</div><div class="info">你的血量：<span id="playerHp">100</span> / <span id="playerMaxHp">100</span></div><div class="info" id="msg">战斗开始！点击攻击！</div><button id="atkBtn">攻击</button><button id="resetBtn">重试本关</button><button class="btn-back" id="backBtn">返回选关</button></div>
+<div id="battlePage" class="page">
+    <div class="info">关卡：第<span id="levelText">1</span>关</div>
+    <div class="info">武器：<span id="battleWeap">🗡️锈铁剑</span>｜头盔：<span id="battleHelm">🪖布帽</span></div>
+    <div class="info">盔甲：<span id="battleArmor">👕布甲</span></div>
+    <div class="monster stroke" id="monsterEmoji">👹</div>
+    <div class="info">怪物血量：<span id="monsterHp">100</span></div>
+    
+    <!-- 这里加上了玩家名字 -->
+    <div class="player stroke" id="playerEmoji">😃</div>
+    <div class="info" style="font-size:20px; font-weight:bold; color:#76d8ff;" id="battlePlayerName">打怪升级117</div>
+    
+    <div class="info">你的血量：<span id="playerHp">100</span> / <span id="playerMaxHp">100</span></div>
+    <div class="info" id="msg">战斗开始！点击攻击！</div>
+    <button id="atkBtn">攻击</button><button id="resetBtn">重试本关</button><button class="btn-back" id="backBtn">返回选关</button>
+</div>
 <div id="logPage" class="page"><h2 class="log-page-title">更新日志</h2><div class="log-ver-title" id="logVerTitle"></div><div class="log-content" id="logContent"></div><button class="btn-back" id="logBackBtn">返回选关</button><div class="log-pager-wrap"><button class="log-arrow-btn" id="logPrevBtn">◀</button><div class="log-page-num" id="logPageNum"></div><button class="log-arrow-btn" id="logNextBtn">▶</button></div></div>
 
 <script>
@@ -160,8 +173,8 @@ const formatNum = n => { n=Number(n)||0; n=Math.round(n); if(isNaN(n)) return "0
 const calcMonsterPower = (hp,atk) => Math.round((Number(hp)||0)+(Number(atk)||0)*2);
 
 const avatarList = ["😀","😃","😄","😁","😆","😅","😂","🤣","😊","😇","🙂","🙃","😉","😌","😍","🥰","😘","😗","😙","😚","😋","😜","😝","😛","🤑","🤪","🤨","🧐","🤓","😎","🥸","🤩","🥳","😏","😒","🙄","😬","😔","😪","😴","😷","🤒","🤕","🤢","🤮","🤧","🥺","😢","😭","😱","😨","😰","😥","😓","🤗","🤔","🤭","🤫"];
-const logData = [{ver:"正式发布 1.0.0",list:["1.增加基础功能","2.更新背包"]},{ver:"1.1.0",list:["1.更新头像功能","2.修改武器名称","3.修复bug","4.更新日志"]},{ver:"1.1.5",list:["1.修复了一些bug","2.增加属性面板","3.增加改名系统"]},{ver:"1.2.0",list:["1.增加特殊武器","2.修复一些bug","3.增加了攻击间隔特性"]},{ver:"1.2.1",list:["1.修复了一些bug","2.更新了设置","3.攻击间隔可以开关了","4.优化了特殊武器的强度"]}];
-const specialWeaponList = [{ id:0, emoji:"⚔️", name:"星陨剑", unlockAttr:"玩家生命值加150，攻击力加100", equipAttr:"装备后增加玩家1500攻击力，25%暴击率", trait:"攻击时有25%概率造成3倍伤害", unlockWay:"第1关有1%概率掉落" },{ id:1, emoji:"🗡️", name:"虚空刃", unlockAttr:"玩家生命值加150，攻击力加100", equipAttr:"装备后增加玩家3000攻击力，15%伤害吸血", trait:"攻击时有1%概率直接回满血，5%概率扣除对手10%最大生命值的当前生命值", unlockWay:"首次通关第10关掉落" },{ id:2, emoji:"🔱", name:"雷霆长枪", unlockAttr:"玩家生命值加300，攻击力加500", equipAttr:"装备后增加玩家5555攻击力，20%暴击率", trait:"攻击时召唤⚡️劈向对手，造成50+x%玩家伤害的附加伤害，每击败一次对手附加伤害永久加0.1%", unlockWay:"击败200(x/x)次任意boss，小boss" },{ id:3, emoji:"🗡️", name:"暗影匕首", unlockAttr:"玩家生命值加50，攻击力加1000", equipAttr:"装备后增加玩家6767攻击力", trait:"玩家受到的伤害加50%，造成的伤害2倍，受到攻击时有10%的概率闪避", unlockWay:"击败100(x/x)只第10关Boss" },{ id:4, emoji:"✨", name:"圣光权杖", unlockAttr:"玩家生命值加2000，攻击力加500，最终减伤5%", equipAttr:"装备后增加玩家15%闪避率，10%最终减伤", trait:"玩家攻击时回复2%的血量，受到伤害减30%", unlockWay:"累计战败100(x/x)次" },{ id:5, emoji:"🪓", name:"熔岩巨斧", unlockAttr:"玩家生命值增加数值增加1.5倍，玩家攻击力增加数值增加2倍", equipAttr:"装备后提供100%的伤害加成，生命值50%的护盾", trait:"玩家攻击时有10%的概率直接秒杀，25%的概率削减掉对手的50%血量，攻击时必定造成3倍伤害", unlockWay:"通关全部关卡(x/x)，解锁全部普通武器(x/x)" }];
+const logData = [{ver:"正式发布 1.0.0",list:["1.增加基础功能","2.更新背包"]},{ver:"1.1.0",list:["1.更新头像功能","2.修改武器名称","3.修复bug","4.更新日志"]},{ver:"1.1.5",list:["1.修复了一些bug","2.增加属性面板","3.增加改名系统"]},{ver:"1.2.0",list:["1.增加特殊武器","2.修复一些bug","3.增加了攻击间隔特性"]},{ver:"1.2.1",list:["1.修复了一些bug","2.更新了设置","3.攻击间隔可以开关了","4.优化了特殊武器的强度","5.优化了各种奇奇怪怪的东西"]}];
+const specialWeaponList = [{ id:0, emoji:"⚔️", name:"星陨剑", unlockAttr:"玩家生命值加150，攻击力加100", equipAttr:"装备后增加玩家1500攻击力，25%暴击率", trait:"攻击时有25%概率造成3倍伤害", unlockWay:"第1关有1%概率掉落" },{ id:1, emoji:"🗡️", name:"虚空刃", unlockAttr:"玩家生命值加150，攻击力加100", equipAttr:"装备后增加玩家3000攻击力，15%伤害吸血", trait:"攻击时有1%概率直接回满血，5%概率扣除对手10%最大生命值的当前生命值", unlockWay:"首次通关第10关掉落" },{ id:2, emoji:"🔱", name:"雷霆长枪", unlockAttr:"玩家生命值加300，攻击力加500", equipAttr:"装备后增加玩家5555攻击力，20%暴击率", trait:"攻击时召唤⚡️劈向对手，造成50+x%玩家伤害的附加伤害，使用雷霆长枪击败怪物可永久增加0.1%", unlockWay:"击败200(x/x)次任意boss，小boss" },{ id:3, emoji:"🗡️", name:"暗影匕首", unlockAttr:"玩家生命值加50，攻击力加1000", equipAttr:"装备后增加玩家6767攻击力", trait:"玩家受到的伤害加50%，造成的伤害2倍，受到攻击时有10%的概率闪避", unlockWay:"击败100(x/x)只第10关Boss" },{ id:4, emoji:"✨", name:"圣光权杖", unlockAttr:"玩家生命值加2000，攻击力加500，最终减伤5%", equipAttr:"装备后增加玩家15%闪避率，10%最终减伤", trait:"玩家攻击时回复2%的血量，受到伤害减30%", unlockWay:"累计战败100(x/x)次" },{ id:5, emoji:"🪓", name:"熔岩巨斧", unlockAttr:"玩家生命值增加数值增加1.5倍，玩家攻击力增加数值增加2倍", equipAttr:"装备后提供100%的伤害加成，生命值50%的护盾", trait:"玩家攻击时有10%的概率直接秒杀，25%的概率削减掉对手的50%血量，攻击时必定造成3倍伤害", unlockWay:"通关全部关卡(x/x)，解锁全部普通武器(x/x)" }];
 const levelConfig = [{hp:100,atk:5,emoji:"👹",isBoss:false,isMiniBoss:false,exp:1},{hp:250,atk:20,emoji:"👺",isBoss:false,isMiniBoss:false,exp:4},{hp:400,atk:50,emoji:"👻",isBoss:false,isMiniBoss:false,exp:10},{hp:1500,atk:150,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:30},{hp:5000,atk:500,emoji:"👿",isBoss:false,isMiniBoss:true,exp:100},{hp:6000,atk:550,emoji:"👹",isBoss:false,isMiniBoss:false,exp:80},{hp:8000,atk:730,emoji:"👺",isBoss:false,isMiniBoss:false,exp:90},{hp:8500,atk:800,emoji:"👻",isBoss:false,isMiniBoss:false,exp:95},{hp:9100,atk:888,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:105},{hp:20000,atk:2222,emoji:"😈",isBoss:true,isMiniBoss:false,exp:200},{hp:19000,atk:1900,emoji:"👹",isBoss:false,isMiniBoss:false,exp:195},{hp:20000,atk:2000,emoji:"👺",isBoss:false,isMiniBoss:false,exp:195},{hp:21500,atk:2100,emoji:"👻",isBoss:false,isMiniBoss:false,exp:205},{hp:35500,atk:3650,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:250},{hp:42000,atk:4000,emoji:"😈",isBoss:false,isMiniBoss:true,exp:255},{hp:42800,atk:4100,emoji:"👹",isBoss:false,isMiniBoss:false,exp:270}];
 const weaponList = [{name:"锈铁剑",emoji:"🗡️",atk:1,maxTotal:1000},{name:"柴刀剑",emoji:"🗡️",atk:3,maxTotal:1500},{name:"清风剑",emoji:"🗡️",atk:30,maxTotal:2500},{name:"百炼剑",emoji:"🗡️",atk:80,maxTotal:4000},{name:"寒铁剑",emoji:"🗡️",atk:150,maxTotal:5000},{name:"精钢剑",emoji:"🗡️",atk:600,maxTotal:6000},{name:"玄铁重剑",emoji:"🗡️",atk:1000,maxTotal:6500},{name:"秋水剑",emoji:"🗡️",atk:1300,maxTotal:7000},{name:"断石剑",emoji:"🗡️",atk:1300,maxTotal:7000},{name:"斩风剑",emoji:"🗡️",atk:2000,maxTotal:8000}];
 const helmList = [{name:"布帽",emoji:"🪖",hp:1,maxTotal:200},{name:"草帽",emoji:"🪖",hp:2,maxTotal:400},{name:"斗笠帽",emoji:"🪖",hp:3,maxTotal:800},{name:"麻布帽",emoji:"🪖",hp:10,maxTotal:1000},{name:"皮帽",emoji:"🪖",hp:30,maxTotal:1500},{name:"毡帽",emoji:"🪖",hp:80,maxTotal:2000},{name:"竹编帽",emoji:"🪖",hp:160,maxTotal:3000},{name:"青布头巾帽",emoji:"🪖",hp:300,maxTotal:4000},{name:"防风帽",emoji:"🪖",hp:550,maxTotal:4500},{name:"遮雨帽",emoji:"🪖",hp:800,maxTotal:5000}];
@@ -187,7 +200,16 @@ function getPlayerStats(){ const lv=saveData.playerLevel||1, baseHp=100*Math.pow
 function openWeaponDetail(i){
     currentSpecialIndex=i; const item=specialWeaponList[i];
     $("detailIcon").innerText=item.emoji; $("detailName").innerText=item.name;
-    $("detailUnlockAttr").innerText=item.unlockAttr; $("detailEquipAttr").innerText=item.equipAttr; $("detailTrait").innerText=item.trait;
+    $("detailUnlockAttr").innerText=item.unlockAttr; $("detailEquipAttr").innerText=item.equipAttr; 
+    
+    let dynamicTrait = item.trait;
+    if (i === 2) {
+        let currentX = (saveData.thunderKillCount || 0) * 0.1;
+        if (currentX > 100) currentX = 100;
+        dynamicTrait = dynamicTrait.replace("x", currentX.toFixed(1));
+    }
+    $("detailTrait").innerText = dynamicTrait;
+
     let way = item.unlockWay;
     if(i===2) way = way.replace("(x/x)", `(${Math.min(saveData.bossKillCount||0,200)}/200)`);
     else if(i===3) way = way.replace("(x/x)", `(${Math.min(saveData.boss10KillCount||0,100)}/100)`);
@@ -209,7 +231,7 @@ function renderSpecialEquipButtons(){ $("specialWeapBtns").innerHTML=""; special
 function openAttrModal(){ initAudio(); playUiClickSound(); const s=getPlayerStats(); $("attrAvatarShow").innerText=saveData.playerAvatar; $("attrPlayerName").innerText=saveData.playerName||"打怪升级117"; $("attrPowerText").innerText="战斗力："+formatNum(s.power); const lv=saveData.playerLevel||1, need=expNeeded(lv); $("attrLevel").innerText=lv; $("attrExpBar").style.width=Math.min(100,(saveData.playerExp/need)*100)+"%"; $("attrExpText").innerText=`${saveData.playerExp}/${need}`; $("attrHp").innerText=formatNum(s.hp); $("attrAtk").innerText=formatNum(s.atk); $("attrDef").innerText=formatNum(s.def); $("attrModal").style.display="flex"; }
 function closeAttrModal(){ initAudio(); playUiClickSound(); $("attrModal").style.display="none"; }
 function openRenameModal(){ initAudio(); playUiClickSound(); $("renameInput").value=saveData.playerName||"打怪升级117"; $("renameModal").style.display="flex"; }
-function saveRename(){ initAudio(); playUiClickSound(); let v=$("renameInput").value.trim(); if(v.length===0) v="打怪升级117"; if(v.length>12) v=v.slice(0,12); saveData.playerName=v; saveGame(); $("attrPlayerName").innerText=v; $("renameModal").style.display="none"; }
+function saveRename(){ initAudio(); playUiClickSound(); let v=$("renameInput").value.trim(); if(v.length===0) v="打怪升级117"; if(v.length>12) v=v.slice(0,12); saveData.playerName=v; saveGame(); $("attrPlayerName").innerText=v; $("battlePlayerName").innerText=v; $("renameModal").style.display="none"; }
 function closeRenameModal(){ initAudio(); playUiClickSound(); $("renameModal").style.display="none"; }
 function renderLogPage(){ const p=logData[logCurrentPage]; $("logVerTitle").innerText=p.ver; $("logContent").innerHTML=p.list.map(i=>`<div>• ${i}</div>`).join(""); $("logPageNum").innerText=`${logCurrentPage+1} / ${logData.length}`; $("logPrevBtn").disabled=logCurrentPage<=0; $("logNextBtn").disabled=logCurrentPage>=logData.length-1; }
 function renderAvatarList(){ $("avatarScrollWrap").innerHTML=""; avatarList.forEach(av=>{ const s=document.createElement("span"); s.className="avatar-item"; s.textContent=av; if(tempSelectAvatar===av) s.classList.add("selected"); s.onclick=()=>{ initAudio(); playUiClickSound(); tempSelectAvatar=av; $("avatarPreview").textContent=av; renderAvatarList(); }; $("avatarScrollWrap").appendChild(s); }); }
@@ -229,7 +251,7 @@ function tryDropEquipment(){ const n=currentLevel+1; if(n===1){ const r=Math.ran
 function calcWeaponAtk(i){ const w=weaponList[i]||weaponList[0],c=saveData.weaponCount[i]||0; return Math.min(w.atk*c,w.maxTotal); }
 function calcHelmHp(i){ const h=helmList[i]||helmList[0],c=saveData.helmCount[i]||0; return Math.min(h.hp*c,h.maxTotal); }
 function calcArmorDef(i){ const a=armorList[i]||armorList[0],c=saveData.armorCount[i]||0; return Math.min(a.baseDef*c,a.maxDef); }
-function loadLevel(i){ currentLevel=i; const lv=levelConfig[i]; monsterHp=lv.hp; $("monsterEmoji").innerText=lv.emoji; $("levelText").innerText=i+1; const s=getPlayerStats(); playerMaxHp=s.hp; playerHp=playerMaxHp; $("msg").className="info"; $("msg").innerText=lv.isBoss?`⚠ Boss关卡！准备战斗！`:`第${i+1}关，准备战斗！`; $("atkBtn").disabled=false; render(); }
+function loadLevel(i){ currentLevel=i; const lv=levelConfig[i]; monsterHp=lv.hp; $("monsterEmoji").innerText=lv.emoji; $("levelText").innerText=i+1; const s=getPlayerStats(); playerMaxHp=s.hp; playerHp=playerMaxHp; $("msg").className="info"; $("msg").innerText=lv.isBoss?`⚠ Boss关卡！准备战斗！`:`第${i+1}关，准备战斗！`; $("atkBtn").disabled=false; render(); $("battlePlayerName").innerText=saveData.playerName||"打怪升级117"; }
 function render(){ $("monsterHp").innerText=formatNum(Math.max(0,monsterHp)); $("playerHp").innerText=formatNum(Math.max(0,playerHp)); $("playerMaxHp").innerText=formatNum(Math.max(0,playerMaxHp)); $("playerEmoji").textContent=saveData.playerAvatar||"😃"; }
 
 function monsterAttack(){
@@ -255,7 +277,9 @@ $("atkBtn").onclick=function(){
             if(Math.random()<0.05){ const b=Math.floor(monsterHp*0.1); monsterHp-=b; extra+=`✨虚空撕裂额外扣除${formatNum(b)}血！`; }
         }
         else if(i===2){
-            const rate = 0.5 + (saveData.thunderKillCount * 0.001); 
+            let bonusRate = saveData.thunderKillCount * 0.001;
+            if (bonusRate > 1.0) bonusRate = 1.0; 
+            const rate = 0.5 + bonusRate; 
             const b=Math.floor(baseDmg*rate); monsterHp-=b; extra+=`⚡雷霆万钧附加${formatNum(b)}伤害！`;
             if(Math.random()<0.20){ isCrit=true; extra+="⚡暴击！"; }
         }
@@ -282,7 +306,12 @@ $("atkBtn").onclick=function(){
         if(saveData.unlockLevel>=levelConfig.length&&!saveData.specialUnlocked[5]) tryUnlockSpecial(5);
         if(leveled) showPopup("🎉 升级啦！");
         saveGame(); renderLevelButtons(); $("atkBtn").disabled=true; 
-        saveData.thunderKillCount = (saveData.thunderKillCount || 0) + 1; saveGame();
+        
+        // 限制：只有装备了雷霆长枪击杀才加层数
+        if (saveData.specialEquipped === 2) {
+            saveData.thunderKillCount = (saveData.thunderKillCount || 0) + 1; 
+            saveGame();
+        }
         return;
     }
     let ct=isCrit?"<span class='crit-text'>暴击！</span>":"";
@@ -291,7 +320,7 @@ $("atkBtn").onclick=function(){
     setTimeout(()=>{ if(playerHp>0&&monsterHp>0){ monsterAttack(); $("atkBtn").disabled=false; } },attackIntervalEnabled?300:0);
 }
 
-function renderAll(){ refreshEquipUi(); renderEquipButtons(); renderSpecialEquipButtons(); renderLevelButtons(); $("playerEmoji").textContent=saveData.playerAvatar||"😃"; $("attrAvatarShow").innerText=saveData.playerAvatar||"😃"; render(); }
+function renderAll(){ refreshEquipUi(); renderEquipButtons(); renderSpecialEquipButtons(); renderLevelButtons(); $("playerEmoji").textContent=saveData.playerAvatar||"😃"; $("attrAvatarShow").innerText=saveData.playerAvatar||"😃"; $("battlePlayerName").innerText=saveData.playerName||"打怪升级117"; render(); }
 
 $("openSettingsBtn").onclick=()=>{ initAudio(); playUiClickSound(); $("settingsModal").style.display="flex"; };
 $("closeSettingsBtn").onclick=()=>{ initAudio(); playUiClickSound(); $("settingsModal").style.display="none"; };
@@ -320,4 +349,4 @@ $("weaponDetailOverlay").onclick=e=>{ if(e.target===$("weaponDetailOverlay")) cl
 loadSave(); renderAll(); showPage($("selectPage"));
 </script>
 </body>
-</html>
+    </html>
