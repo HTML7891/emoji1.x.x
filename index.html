@@ -25,7 +25,7 @@ html,body{
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
     text-align:center;
-    padding:60px 12px 140px 12px; /* 底部留白，防止内容被悬浮按钮挡住 */
+    padding:60px 12px 140px 12px;
 }
 .page.active{
     display:block;
@@ -170,32 +170,32 @@ button:disabled{opacity:0.35;pointer-events:none;}
 .log-page-num{ font-size:17px; }
 .log-arrow-btn{ background:#333; color:white; font-size:22px; width:44px; height:44px; padding:0; border-radius:50%; }
 
-/* ======= 你需要的固定在屏幕最下方的绿色悬浮按钮 ======= */
+/* ======= 底部固定悬浮栏 ======= */
 .bottom-fixed-bar {
     position: fixed;
-    bottom: 15px; /* 距离屏幕底部 */
+    bottom: 15px;
     left: 0;
     width: 100%;
     display: flex;
     gap: 8px;
     justify-content: center;
     padding: 0 12px;
-    z-index: 100; /* 保证浮在最上层 */
+    z-index: 100;
 }
 .bottom-fixed-bar button {
     flex: 1;
     max-width: 115px;
-    background: #27ae60; /* 统一绿色 */
+    background: #27ae60;
     color: white;
     font-size: 15px;
     border-radius: 30px;
     padding: 10px 0;
-    white-space: nowrap; /* 文字绝不换行 */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.4); /* 加一点阴影更有质感 */
+    white-space: nowrap;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
     margin: 0;
 }
 .bottom-fixed-bar.hide {
-    display: none; /* 进战斗页时隐藏 */
+    display: none;
 }
 </style>
 </head>
@@ -263,7 +263,7 @@ button:disabled{opacity:0.35;pointer-events:none;}
     </div>
 </div>
 
-<!-- 固定在屏幕底部的悬浮按钮组 -->
+<!-- 底部悬浮栏 -->
 <div class="bottom-fixed-bar" id="bottomBtnBar">
     <button id="openSpecialPageBtn">🔮特殊装备</button>
     <button id="openEquipPageBtn">🎒装备</button>
@@ -286,7 +286,6 @@ button:disabled{opacity:0.35;pointer-events:none;}
         <div style="margin-top:8px">点左下角🎒装备按钮管理装备</div>
     </div>
     
-    <!-- 页面内的头像和日志按钮 -->
     <div class="page-btn-row">
         <button class="inpage-green-btn" id="avatarSetBtn">😃 更改头像</button>
         <button class="inpage-green-btn" id="logSetBtn">📘 更新日志</button>
@@ -437,7 +436,7 @@ let tempSelectAvatar = "";
 const logData = [
     {ver:"正式发布 1.0.0",list:["1.增加基础功能","2.更新背包"]},
     {ver:"1.1.0",list:["1.更新头像功能","2.修改武器名称","3.修复bug","4.更新日志"]},
-    {ver:"1.1.5",list:["1.属性面板","2.boss颜色区分","3.新增🔮特殊装备页面"]},
+    {ver:"1.1.5",list:["1.修复了一些bug","2.增加属性面板","3.增加改名系统"]}, /* 已修改 */
     {ver:"1.2.0",list:["1.增加特殊武器","2.修复一些bug"]}
 ];
 let logCurrentPage = 0;
@@ -843,7 +842,7 @@ function showPage(pageDom){
     document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
     pageDom.classList.add("active");
     
-    // 当你进入战斗页、日志页、装备页时，把底部悬浮按钮隐藏掉
+    // 进入战斗页、日志页、特殊装备页时隐藏悬浮按钮
     if(pageDom === battlePage || pageDom === logPage || pageDom === specialPage){
         bottomBtnBar.classList.add("hide");
     }else{
