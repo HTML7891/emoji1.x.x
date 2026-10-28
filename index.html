@@ -407,4 +407,9 @@ $("specialBackBtn").onclick=()=>{ initAudio(); playUiClickSound(); showPage($("s
 $("resetBtn").onclick=()=>{ initAudio(); playUiClickSound(); playerMaxHp=getPlayerStats().hp; playerHp=playerMaxHp; loadLevel(currentLevel); };
 $("backBtn").onclick=()=>{ initAudio(); playUiClickSound(); showPage($("selectPage")); };
 $("cancelDetailBtn").onclick=closeWeaponDetail; $("doEquipSpecialBtn").onclick=clickEquipSpecial;
-$("weaponDetailOverlay").
+$("weaponDetailOverlay").onclick=e=>{ if(e.target===$("weaponDetailOverlay")) closeWeaponDetail(); };
+
+loadSave(); renderAll(); showPage($("selectPage"));
+</script>
+</body>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </html>
