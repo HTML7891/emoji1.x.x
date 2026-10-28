@@ -150,7 +150,6 @@ button:disabled{opacity:0.35;pointer-events:none;}
     <div class="monster stroke" id="monsterEmoji">👹</div>
     <div class="info">怪物血量：<span id="monsterHp">100</span></div>
     
-    <!-- 这里加上了玩家名字 -->
     <div class="player stroke" id="playerEmoji">😃</div>
     <div class="info" style="font-size:20px; font-weight:bold; color:#76d8ff;" id="battlePlayerName">打怪升级117</div>
     
@@ -173,8 +172,10 @@ const formatNum = n => { n=Number(n)||0; n=Math.round(n); if(isNaN(n)) return "0
 const calcMonsterPower = (hp,atk) => Math.round((Number(hp)||0)+(Number(atk)||0)*2);
 
 const avatarList = ["😀","😃","😄","😁","😆","😅","😂","🤣","😊","😇","🙂","🙃","😉","😌","😍","🥰","😘","😗","😙","😚","😋","😜","😝","😛","🤑","🤪","🤨","🧐","🤓","😎","🥸","🤩","🥳","😏","😒","🙄","😬","😔","😪","😴","😷","🤒","🤕","🤢","🤮","🤧","🥺","😢","😭","😱","😨","😰","😥","😓","🤗","🤔","🤭","🤫"];
-const logData = [{ver:"正式发布 1.0.0",list:["1.增加基础功能","2.更新背包"]},{ver:"1.1.0",list:["1.更新头像功能","2.修改武器名称","3.修复bug","4.更新日志"]},{ver:"1.1.5",list:["1.修复了一些bug","2.增加属性面板","3.增加改名系统"]},{ver:"1.2.0",list:["1.增加特殊武器","2.修复一些bug","3.增加了攻击间隔特性"]},{ver:"1.2.1",list:["1.修复了一些bug","2.更新了设置","3.攻击间隔可以开关了","4.优化了特殊武器的强度","5.优化了各种奇奇怪怪的东西"]}];
-const specialWeaponList = [{ id:0, emoji:"⚔️", name:"星陨剑", unlockAttr:"玩家生命值加150，攻击力加100", equipAttr:"装备后增加玩家1500攻击力，25%暴击率", trait:"攻击时有25%概率造成3倍伤害", unlockWay:"第1关有1%概率掉落" },{ id:1, emoji:"🗡️", name:"虚空刃", unlockAttr:"玩家生命值加150，攻击力加100", equipAttr:"装备后增加玩家3000攻击力，15%伤害吸血", trait:"攻击时有1%概率直接回满血，5%概率扣除对手10%最大生命值的当前生命值", unlockWay:"首次通关第10关掉落" },{ id:2, emoji:"🔱", name:"雷霆长枪", unlockAttr:"玩家生命值加300，攻击力加500", equipAttr:"装备后增加玩家5555攻击力，20%暴击率", trait:"攻击时召唤⚡️劈向对手，造成50+x%玩家伤害的附加伤害，使用雷霆长枪击败怪物可永久增加0.1%", unlockWay:"击败200(x/x)次任意boss，小boss" },{ id:3, emoji:"🗡️", name:"暗影匕首", unlockAttr:"玩家生命值加50，攻击力加1000", equipAttr:"装备后增加玩家6767攻击力", trait:"玩家受到的伤害加50%，造成的伤害2倍，受到攻击时有10%的概率闪避", unlockWay:"击败100(x/x)只第10关Boss" },{ id:4, emoji:"✨", name:"圣光权杖", unlockAttr:"玩家生命值加2000，攻击力加500，最终减伤5%", equipAttr:"装备后增加玩家15%闪避率，10%最终减伤", trait:"玩家攻击时回复2%的血量，受到伤害减30%", unlockWay:"累计战败100(x/x)次" },{ id:5, emoji:"🪓", name:"熔岩巨斧", unlockAttr:"玩家生命值增加数值增加1.5倍，玩家攻击力增加数值增加2倍", equipAttr:"装备后提供100%的伤害加成，生命值50%的护盾", trait:"玩家攻击时有10%的概率直接秒杀，25%的概率削减掉对手的50%血量，攻击时必定造成3倍伤害", unlockWay:"通关全部关卡(x/x)，解锁全部普通武器(x/x)" }];
+const logData = [{ver:"正式发布 1.0.0",list:["1.增加基础功能","2.更新背包"]},{ver:"1.1.0",list:["1.更新头像功能","2.修改武器名称","3.修复bug","4.更新日志"]},{ver:"1.1.5",list:["1.修复了一些bug","2.增加属性面板","3.增加改名系统"]},{ver:"1.2.0",list:["1.增加特殊武器","2.修复一些bug","3.增加了攻击间隔特性"]},{ver:"1.2.1",list:["1.修复了一些bug","2.更新了设置","3.攻击间隔可以开关了","4.优化了特殊武器的强度","5.优化了各种奇奇怪怪的东西"]},{ver:"1.2.2",list:["1.修复雷霆长枪特性不生效的bug","2.修复部分特殊武器装备属性未计算问题","3.雷霆长枪叠加数值调整为0.01%"]}];
+
+// 更新特性描述：0.01%
+const specialWeaponList = [{ id:0, emoji:"⚔️", name:"星陨剑", unlockAttr:"玩家生命值加150，攻击力加100", equipAttr:"装备后增加玩家1500攻击力，25%暴击率", trait:"攻击时有25%概率造成3倍伤害", unlockWay:"第1关有1%概率掉落" },{ id:1, emoji:"🗡️", name:"虚空刃", unlockAttr:"玩家生命值加150，攻击力加100", equipAttr:"装备后增加玩家3000攻击力，15%伤害吸血", trait:"攻击时有1%概率直接回满血，5%概率扣除对手10%最大生命值的当前生命值", unlockWay:"首次通关第10关掉落" },{ id:2, emoji:"🔱", name:"雷霆长枪", unlockAttr:"玩家生命值加300，攻击力加500", equipAttr:"装备后增加玩家5555攻击力，20%暴击率", trait:"攻击时召唤⚡️劈向对手，造成50+x%玩家伤害的附加伤害，使用雷霆长枪击败怪物可永久增加0.01%", unlockWay:"击败200(x/x)次任意boss，小boss" },{ id:3, emoji:"🗡️", name:"暗影匕首", unlockAttr:"玩家生命值加50，攻击力加1000", equipAttr:"装备后增加玩家6767攻击力", trait:"玩家受到的伤害加50%，造成的伤害2倍，受到攻击时有10%的概率闪避", unlockWay:"击败100(x/x)只第10关Boss" },{ id:4, emoji:"✨", name:"圣光权杖", unlockAttr:"玩家生命值加2000，攻击力加500，最终减伤5%", equipAttr:"装备后增加玩家15%闪避率，10%最终减伤", trait:"玩家攻击时回复2%的血量，受到伤害减30%", unlockWay:"累计战败100(x/x)次" },{ id:5, emoji:"🪓", name:"熔岩巨斧", unlockAttr:"玩家生命值增加数值增加1.5倍，玩家攻击力增加数值增加2倍", equipAttr:"装备后提供100%的伤害加成，生命值50%的护盾", trait:"玩家攻击时有10%的概率直接秒杀，25%的概率削减掉对手的50%血量，攻击时必定造成3倍伤害", unlockWay:"通关全部关卡(x/x)，解锁全部普通武器(x/x)" }];
 const levelConfig = [{hp:100,atk:5,emoji:"👹",isBoss:false,isMiniBoss:false,exp:1},{hp:250,atk:20,emoji:"👺",isBoss:false,isMiniBoss:false,exp:4},{hp:400,atk:50,emoji:"👻",isBoss:false,isMiniBoss:false,exp:10},{hp:1500,atk:150,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:30},{hp:5000,atk:500,emoji:"👿",isBoss:false,isMiniBoss:true,exp:100},{hp:6000,atk:550,emoji:"👹",isBoss:false,isMiniBoss:false,exp:80},{hp:8000,atk:730,emoji:"👺",isBoss:false,isMiniBoss:false,exp:90},{hp:8500,atk:800,emoji:"👻",isBoss:false,isMiniBoss:false,exp:95},{hp:9100,atk:888,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:105},{hp:20000,atk:2222,emoji:"😈",isBoss:true,isMiniBoss:false,exp:200},{hp:19000,atk:1900,emoji:"👹",isBoss:false,isMiniBoss:false,exp:195},{hp:20000,atk:2000,emoji:"👺",isBoss:false,isMiniBoss:false,exp:195},{hp:21500,atk:2100,emoji:"👻",isBoss:false,isMiniBoss:false,exp:205},{hp:35500,atk:3650,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:250},{hp:42000,atk:4000,emoji:"😈",isBoss:false,isMiniBoss:true,exp:255},{hp:42800,atk:4100,emoji:"👹",isBoss:false,isMiniBoss:false,exp:270}];
 const weaponList = [{name:"锈铁剑",emoji:"🗡️",atk:1,maxTotal:1000},{name:"柴刀剑",emoji:"🗡️",atk:3,maxTotal:1500},{name:"清风剑",emoji:"🗡️",atk:30,maxTotal:2500},{name:"百炼剑",emoji:"🗡️",atk:80,maxTotal:4000},{name:"寒铁剑",emoji:"🗡️",atk:150,maxTotal:5000},{name:"精钢剑",emoji:"🗡️",atk:600,maxTotal:6000},{name:"玄铁重剑",emoji:"🗡️",atk:1000,maxTotal:6500},{name:"秋水剑",emoji:"🗡️",atk:1300,maxTotal:7000},{name:"断石剑",emoji:"🗡️",atk:1300,maxTotal:7000},{name:"斩风剑",emoji:"🗡️",atk:2000,maxTotal:8000}];
 const helmList = [{name:"布帽",emoji:"🪖",hp:1,maxTotal:200},{name:"草帽",emoji:"🪖",hp:2,maxTotal:400},{name:"斗笠帽",emoji:"🪖",hp:3,maxTotal:800},{name:"麻布帽",emoji:"🪖",hp:10,maxTotal:1000},{name:"皮帽",emoji:"🪖",hp:30,maxTotal:1500},{name:"毡帽",emoji:"🪖",hp:80,maxTotal:2000},{name:"竹编帽",emoji:"🪖",hp:160,maxTotal:3000},{name:"青布头巾帽",emoji:"🪖",hp:300,maxTotal:4000},{name:"防风帽",emoji:"🪖",hp:550,maxTotal:4500},{name:"遮雨帽",emoji:"🪖",hp:800,maxTotal:5000}];
@@ -195,7 +196,22 @@ function getUnlockedNormalWeaponCount(){ let c=0; for(let w of saveData.weaponCo
 function refreshSpecialProgress(){ $("specialProgressText").innerText=`已解锁：${getUnlockedSpecialCount()} / ${specialWeaponList.length}`; }
 function tryUnlockSpecial(i){ if(saveData.specialUnlocked[i]) return false; saveData.specialUnlocked[i]=true; saveGame(); showPopup(`✨解锁特殊武器：${specialWeaponList[i].name}`); renderSpecialEquipButtons(); refreshSpecialProgress(); return true; }
 function equipSpecialWeapon(i){ if(!saveData.specialUnlocked[i]){ showPopup("该武器尚未解锁！"); return; } if(saveData.specialEquipped===i){ saveData.specialEquipped=-1; showPopup(`卸下特殊武器：${specialWeaponList[i].name}`); }else{ saveData.specialEquipped=i; showPopup(`装备特殊武器：${specialWeaponList[i].name}`); } saveGame(); renderSpecialEquipButtons(); }
-function getPlayerStats(){ const lv=saveData.playerLevel||1, baseHp=100*Math.pow(1.1,lv-1), baseAtk=10*Math.pow(1.05,lv-1); const wi=saveData.currWeap??0, hi=saveData.currHelm??0, ai=saveData.currArmor??0; let hp=Math.round(baseHp+calcHelmHp(hi)), atk=Math.round(baseAtk+calcWeaponAtk(wi)), def=Math.round(calcArmorDef(ai)); const s=saveData.specialEquipped; if(s===0||s===1){hp+=150;atk+=100;} else if(s===2){hp+=300;atk+=500;} else if(s===3){hp+=50;atk+=1000;} else if(s===4){hp+=2000;atk+=500;} else if(s===5){hp=Math.round(hp*1.5);atk=Math.round(atk*2);} return {hp,atk,def,power:Math.round(hp+atk*2+def/2)}; }
+
+// ==== 修复核心：属性计算 ====
+function getPlayerStats(){ 
+    const lv=saveData.playerLevel||1, baseHp=100*Math.pow(1.1,lv-1), baseAtk=10*Math.pow(1.05,lv-1); 
+    const wi=saveData.currWeap??0, hi=saveData.currHelm??0, ai=saveData.currArmor??0; 
+    let hp=Math.round(baseHp+calcHelmHp(hi)), atk=Math.round(baseAtk+calcWeaponAtk(wi)), def=Math.round(calcArmorDef(ai)); 
+    const s=saveData.specialEquipped; 
+    if(s===0){hp+=150;atk+=100+1500;} // 星陨剑
+    else if(s===1){hp+=150;atk+=100+3000;} // 虚空刃
+    else if(s===2){hp+=300;atk+=500+5555;} // 雷霆长枪
+    else if(s===3){hp+=50;atk+=1000+6767;} // 暗影匕首
+    else if(s===4){hp+=2000;atk+=500;} // 圣光权杖
+    else if(s===5){hp=Math.round(hp*1.5);atk=Math.round(atk*2);} // 熔岩巨斧
+    
+    return {hp,atk,def,power:Math.round(hp+atk*2+def/2)}; 
+}
 
 function openWeaponDetail(i){
     currentSpecialIndex=i; const item=specialWeaponList[i];
@@ -204,9 +220,9 @@ function openWeaponDetail(i){
     
     let dynamicTrait = item.trait;
     if (i === 2) {
-        let currentX = (saveData.thunderKillCount || 0) * 0.1;
+        let currentX = (saveData.thunderKillCount || 0) * 0.01; // 这里也改成0.01
         if (currentX > 100) currentX = 100;
-        dynamicTrait = dynamicTrait.replace("x", currentX.toFixed(1));
+        dynamicTrait = dynamicTrait.replace("x", currentX.toFixed(2));
     }
     $("detailTrait").innerText = dynamicTrait;
 
@@ -277,7 +293,7 @@ $("atkBtn").onclick=function(){
             if(Math.random()<0.05){ const b=Math.floor(monsterHp*0.1); monsterHp-=b; extra+=`✨虚空撕裂额外扣除${formatNum(b)}血！`; }
         }
         else if(i===2){
-            let bonusRate = saveData.thunderKillCount * 0.001;
+            let bonusRate = saveData.thunderKillCount * 0.0001; // 每次击杀加 0.01% (0.0001)
             if (bonusRate > 1.0) bonusRate = 1.0; 
             const rate = 0.5 + bonusRate; 
             const b=Math.floor(baseDmg*rate); monsterHp-=b; extra+=`⚡雷霆万钧附加${formatNum(b)}伤害！`;
@@ -349,4 +365,4 @@ $("weaponDetailOverlay").onclick=e=>{ if(e.target===$("weaponDetailOverlay")) cl
 loadSave(); renderAll(); showPage($("selectPage"));
 </script>
 </body>
-    </html>
+                                                                       </html>
