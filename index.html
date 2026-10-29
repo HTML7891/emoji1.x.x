@@ -3,20 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>emoji打怪1.2.5</title>
+<title>emoji打怪1.3.0</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#222;color:white;font-family:system-ui;height:100dvh;overflow:hidden;}
 .page{display:none;position:absolute;top:0;left:0;width:100vw;height:100dvh;overflow-y:auto;text-align:center;padding:60px 12px 140px 12px;}
 .page.active{display:block;}
-.monster{font-size:120px;margin-bottom:12px;}
-.player{font-size:100px;margin-top:12px;}
+
+.monster-container{
+    height: 130px; 
+    width: 100%;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    margin: 10px 0;
+}
+.monster{
+    font-size: 100px; 
+    display: inline-block; 
+    transition: transform 0.1s;
+    -webkit-text-stroke: 1px black;
+}
+.player{font-size:80px;margin-top:12px;}
 .info{font-size:18px;margin:8px 0;}
 #msg{display:block;min-height:80px;}
 .crit-text{color:#ff4444;font-weight:bold;font-size:20px;}
 button{border:none;padding:9px 16px;font-size:16px;border-radius:6px;margin:4px;}
 button:disabled{opacity:0.35;pointer-events:none;}
 #atkBtn{-webkit-tap-highlight-color:transparent;}
+
 .level-btn{width:110px;min-height:110px;padding:10px 5px;font-size:18px;background:#ff5566;color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.2;white-space:nowrap;}
 .level-btn small{font-size:13px;margin-top:4px;white-space:nowrap;}
 .boss-btn{background:#e02424;} .boss-btn:disabled{background:#7c1313 !important;opacity:0.35;}
@@ -28,7 +43,7 @@ button:disabled{opacity:0.35;pointer-events:none;}
 .btn-special{background:#3377dd;color:white;font-size:15px;width:90px;height:64px;flex:0 0 90px;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .btn-special-locked{background:#444444;color:#aaaaaa;}
 .btn-special-equipped{outline:3px solid #ffdd00;outline-offset:2px;}
-.pop{position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);background:#111;border:2px solid #ffdd44;padding:20px 30px;font-size:20px;z-index:999;display:none;}
+.pop{position:fixed;top:30%;left:50%;transform:translate(-50%,-50%);background:#111;border:2px solid #ffdd44;padding:20px 30px;font-size:20px;z-index:999;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.8);}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;display:none;align-items:center;justify-content:center;padding:16px;}
 .modal-box{background:#1b1b1b;border:2px solid #ff3333;border-radius:10px;padding:24px;max-width:420px;width:90%;}
 .modal-box p{font-size:17px;line-height:1.6;margin-bottom:20px;}
@@ -59,6 +74,7 @@ button:disabled{opacity:0.35;pointer-events:none;}
 .avatar-modal-bottom button{flex:1;background:#27ae60;color:white;padding:12px;font-size:18px;}
 .page-btn-row{display:flex;gap:10px;justify-content:center;margin-top:16px;}
 .inpage-green-btn{background:#27ae60;color:white;font-size:16px;border-radius:30px;padding:10px 24px;}
+.btn-dungeon{background:#d32f2f;color:white;font-size:16px;border-radius:30px;padding:10px 24px;}
 .attr-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:260;display:none;align-items:center;justify-content:center;padding:16px;}
 .attr-modal-box{background:#1b1b1b;border:2px solid #27ae60;border-radius:12px;width:90%;max-width:360px;padding:20px;position:relative;}
 .attr-avatar{position:absolute;top:12px;right:16px;font-size:42px;}
@@ -85,6 +101,20 @@ button:disabled{opacity:0.35;pointer-events:none;}
 .bottom-fixed-bar{position:fixed;bottom:15px;left:0;width:100%;display:flex;gap:8px;justify-content:center;padding:0 12px;z-index:100;}
 .bottom-fixed-bar button{flex:1;max-width:115px;background:#27ae60;color:white;font-size:15px;border-radius:30px;padding:10px 0;white-space:nowrap;box-shadow:0 4px 8px rgba(0,0,0,0.4);margin:0;}
 .bottom-fixed-bar.hide{display:none;}
+
+.dungeon-banner{width: 100%; height: 160px; border-radius: 10px; background: linear-gradient(135deg, #2b0000, #6b0000); border: 2px solid #d32f2f; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 20px; cursor: pointer;}
+.dungeon-title{font-size: 24px; font-weight: bold; color: #ffaaaa; margin-bottom: 8px;}
+.dungeon-desc{font-size: 15px; color: #ff8888;}
+.dungeon-icon{font-size: 60px; margin-bottom: 10px;}
+
+.shake { animation: shake 0.5s infinite; }
+@keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
+
+.hp-bar-wrap{position:relative;width:80%;max-width:300px;height:24px;background:#333;border-radius:12px;overflow:hidden;margin:10px auto;}
+.hp-bar{height:100%;width:100%;border-radius:12px;transition:width 0.3s;}
+.hp-bar-player{background:linear-gradient(90deg, #e02424, #ff5555);}
+.hp-bar-monster{background:linear-gradient(90deg, #aa1111, #ff3333);}
+.hp-text{position:absolute;top:0;left:0;right:0;bottom:0;text-align:center;font-size:14px;line-height:24px;color:#fff;font-weight:bold;text-shadow:1px 1px 2px #000;}
 </style>
 </head>
 <body>
@@ -112,27 +142,59 @@ button:disabled{opacity:0.35;pointer-events:none;}
         <div>当前盔甲：<span id="selArmor">👕布甲</span></div>
         <div style="margin-top:8px">点左下角🎒装备按钮管理装备</div>
     </div>
-    <div class="page-btn-row"><button class="inpage-green-btn" id="logSetBtn">📘 更新日志</button></div>
+    <div class="page-btn-row">
+        <button class="inpage-green-btn" id="logSetBtn">📘 更新日志</button>
+        <button class="btn-dungeon" id="dungeonBtn">🔥 副本</button>
+    </div>
 </div>
 <div id="equipPage" class="page"><h2 style="font-size:30px;margin-bottom:12px">装备背包</h2><div class="info"><h3>武器</h3><div class="scroll-wrap"><div id="weapBtns" class="scroll-inner"></div></div></div><div class="info"><h3>头盔</h3><div class="scroll-wrap"><div id="helmBtns" class="scroll-inner"></div></div></div><div class="info"><h3>盔甲</h3><div class="scroll-wrap"><div id="armorBtns" class="scroll-inner"></div></div></div><div style="margin-top:20px"><button class="btn-back" id="equipBackBtn">返回选关</button></div></div>
 <div id="specialPage" class="page"><h2 style="font-size:30px;margin-bottom:8px">特殊装备</h2><div class="special-progress-text" id="specialProgressText">已解锁：0 / 8</div><div class="info"><h3>武器</h3><div class="scroll-wrap"><div id="specialWeapBtns" class="scroll-inner"></div></div></div><div style="margin-top:20px"><button class="btn-back" id="specialBackBtn">返回选关</button></div></div>
+<div id="dungeonPage" class="page">
+    <h2 style="font-size:30px;margin-bottom:12px">副本选择界面</h2>
+    <div class="scroll-wrap" style="margin-top: 20px;">
+        <div class="scroll-inner" style="padding: 10px;">
+            <div class="dungeon-banner" id="dungeonLv10">
+                <div class="dungeon-icon">🐢</div>
+                <div class="dungeon-title">10级副本</div>
+                <div class="dungeon-desc">6波怪物 · 需要等级≥10</div>
+            </div>
+        </div>
+    </div>
+    <div style="margin-top:20px"><button class="btn-back" id="dungeonBackBtn">返回选关</button></div>
+</div>
 <div id="battlePage" class="page">
-    <div class="info">关卡：第<span id="levelText">1</span>关</div>
+    <div class="info">关卡：<span id="levelText">第1关</span></div>
     <div class="info">武器：<span id="battleWeap">🗡️锈铁剑</span>｜头盔：<span id="battleHelm">🪖布帽</span></div>
     <div class="info">盔甲：<span id="battleArmor">👕布甲</span></div>
-    <div class="monster stroke" id="monsterEmoji">👹</div>
-    <div class="info">怪物血量：<span id="monsterHp">100</span></div>
-    <div class="player stroke" id="playerEmoji">😃</div>
+    
+    <div class="monster-container">
+        <div class="monster" id="monsterEmoji">👹</div>
+    </div>
+    
+    <div class="hp-bar-wrap">
+        <div class="hp-bar hp-bar-monster" id="monsterHpFill"></div>
+        <div class="hp-text" id="monsterHpText">100 / 100</div>
+    </div>
+    
+    <div class="player" id="playerEmoji">😃</div>
     <div class="info" style="font-size:20px; font-weight:bold; color:#76d8ff;" id="battlePlayerName">打怪升级117</div>
-    <div class="info">你的血量：<span id="playerHp">100</span> / <span id="playerMaxHp">100</span></div>
+    
+    <div class="hp-bar-wrap">
+        <div class="hp-bar hp-bar-player" id="hpBarFill"></div>
+        <div class="hp-text" id="hpTextDisplay">100 / 100</div>
+    </div>
+
     <div class="info" id="msg">战斗开始！点击攻击！</div>
-    <button id="atkBtn">攻击</button><button id="resetBtn">重试本关</button><button class="btn-back" id="backBtn">返回选关</button>
+    <button id="atkBtn">攻击</button>
+    <button id="resetBtn">重试本关</button>
+    <button class="btn-back" id="backBtn">返回选关</button>
 </div>
 <div id="logPage" class="page"><h2 class="log-page-title">更新日志</h2><div class="log-ver-title" id="logVerTitle"></div><div class="log-date-text" id="logDateText"></div><div class="log-content" id="logContent"></div><button class="btn-back" id="logBackBtn">返回选关</button><div class="log-pager-wrap"><button class="log-arrow-btn" id="logPrevBtn">◀</button><div class="log-page-num" id="logPageNum"></div><button class="log-arrow-btn" id="logNextBtn">▶</button></div></div>
 
 <script>
-let audioCtx=null, soundEnabled=false, tempSelectAvatar="", currentLevel=0, monsterHp, playerHp, playerMaxHp, logCurrentPage=0, currentSpecialIndex=0;
+let audioCtx=null, soundEnabled=false, tempSelectAvatar="", currentLevel=0, monsterHp, monsterMaxHp, playerHp, playerMaxHp, logCurrentPage=0, currentSpecialIndex=0;
 let attackIntervalEnabled = true; 
+let isDungeonMode = false, dungeonWave = 0;
 const $ = id => document.getElementById(id);
 const initAudio = () => { if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); };
 const playUiClickSound = () => { if(!soundEnabled || !audioCtx) return; const o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type="sine"; o.frequency.value=1760; g.gain.setValueAtTime(0.18,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.045); o.start(); o.stop(audioCtx.currentTime+0.045); };
@@ -149,34 +211,33 @@ const logData = [
     {ver:"1.1.5", date:"2026年10月26日", list:["1.修复了一些bug","2.增加属性面板","3.增加改名系统"]},
     {ver:"1.2.0", date:"2026年10月26日", list:["1.增加特殊武器","2.修复一些bug","3.增加了攻击间隔特性"]},
     {ver:"1.2.1", date:"2026年10月27日", list:["1.修复了一些bug","2.更新了设置","3.攻击间隔可以开关了","4.优化了特殊武器的强度","5.优化了各种奇奇怪怪的东西"]},
-    {ver:"1.2.5", date:"2026年10月28日", list:["1.增加若干新武器和关卡更新到20关","2.优化更新日志更新更新日期","3.修复了部分属性未生效的问题","4.新增两把特殊武器"]}
+    {ver:"1.2.5", date:"2026年10月28日", list:["1.增加若干新武器和关卡更新到20关","2.优化更新日志更新更新日期","3.修复了部分属性未生效的问题","4.新增两把特殊武器"]},
+    {ver:"1.3.0", date:"2026年10月29日", list:["1.增加副本功能","2.再次优化特殊武器强度","3.增加了升级的难度"]}
 ];
 
 const specialWeaponList = [
-    { id:0, emoji:"⚔️", name:"星陨剑", unlockAttr:"玩家生命值加200 攻击力加300", equipAttr:"装备后增加玩家1500攻击力 25%暴击率", trait:"攻击时有25%概率造成3倍伤害", unlockWay:"第1关有1%概率掉落" },
-    { id:1, emoji:"🗡️", name:"虚空刃", unlockAttr:"玩家生命值加150 攻击力加100", equipAttr:"装备后增加玩家3000攻击力 50%伤害吸血", trait:"攻击时有1%概率直接回满血 5%概率扣除对手10%最大生命值的当前生命值", unlockWay:"首次通关第10关掉落" },
-    { id:2, emoji:"🔱", name:"雷霆长枪", unlockAttr:"玩家生命值加300 攻击力加500", equipAttr:"装备后增加玩家3939攻击力 20%暴击率", trait:"攻击时召唤⚡️劈向对手，造成50+x%玩家伤害的附加伤害，每击败一次对手附加伤害永久加0.1%", unlockWay:"击败200(x/x)次任意boss，小boss" },
-    { id:3, emoji:"🗡️", name:"暗影匕首", unlockAttr:"玩家生命值加50 攻击力加1000", equipAttr:"装备后增加玩家4800攻击力", trait:"玩家受到的伤害加50%，造成的伤害2.5倍，有30%的概率闪避攻击，攻击时有3%的概率秒杀怪物", unlockWay:"击败100(x/x)只第10关Boss" },
+    { id:0, emoji:"⚔️", name:"星陨剑", unlockAttr:"玩家生命值加200 攻击力加300", equipAttr:"装备后增加玩家1000攻击力 25%暴击率", trait:"攻击时有25%概率造成3倍伤害", unlockWay:"10级副本我6波有1%的概率掉落" },
+    { id:1, emoji:"🗡️", name:"虚空刃", unlockAttr:"玩家生命值加150 攻击力加100", equipAttr:"装备后增加玩家1000攻击力 50%伤害吸血", trait:"攻击时有1%概率直接回满血 5%概率扣除对手10%最大生命值的当前生命值", unlockWay:"10级副本1-5波次有2%的概率掉落" },
+    { id:2, emoji:"🔱", name:"雷霆长枪", unlockAttr:"玩家生命值加300 攻击力加500", equipAttr:"装备后增加玩家2039攻击力 20%暴击率", trait:"攻击时召唤⚡️劈向对手，造成50+x%玩家伤害的附加伤害，每击败一次对手附加伤害永久加0.1%", unlockWay:"击败200(x/x)次任意boss，小boss" },
+    { id:3, emoji:"🗡️", name:"暗影匕首", unlockAttr:"玩家生命值加50 攻击力加1000", equipAttr:"装备后增加玩家2000攻击力", trait:"玩家受到的伤害加50%，造成的伤害2.5倍，有30%的概率闪避攻击，攻击时有3%的概率秒杀怪物", unlockWay:"击败100(x/x)只第10关Boss" },
     { id:4, emoji:"✨", name:"圣光权杖", unlockAttr:"玩家生命值加1000 攻击力加500 最终减伤5%", equipAttr:"装备后增加玩家15%闪避率 10%最终减伤", trait:"玩家攻击时回复2%的血量 受到伤害减30%", unlockWay:"累计战败100(x/x)次" },
     { id:5, emoji:"🪓", name:"熔岩巨斧", unlockAttr:"玩家生命值增加8000 玩家攻击力增加10000", equipAttr:"装备后提供300%的伤害加成 生命值100%的护盾", trait:"玩家攻击时有10%的概率直接秒杀 20%的概率削减掉对手的30%血量 攻击时必定造成2倍伤害，每击败1只怪物，玩家生命与攻击力永久加1", unlockWay:"通关全部关卡(x/x)，解锁全部普通武器(x/x)" },
-    { id:6, emoji:"⚔️", name:"杀手镰刀", unlockAttr:"玩家生命值增加500 玩家攻击力增加8000暴击率提高30%", equipAttr:"暴击率提高50% 1.5倍伤害", trait:"怪物血量低于20%时斩杀 对血量低于70%的怪物伤害增加50% 玩家受到的伤害增加0.5倍", unlockWay:"通关20关获取" },
-    { id:7, emoji:"🔮", name:"怨恨法球", unlockAttr:"全局减伤5% 攻击力增加10000 闪避率增加1%", equipAttr:"生命值减少500 攻击力提高20000 暴击率提高30%", trait:"小boss，大boss对玩家造成的伤害仅为原来的10%，对小boss，大boss造成的伤害为原来的5倍，每攻击一次，此次局内伤害增加1%，攻击时附加200%的伤害", unlockWay:"击败所有小boss，大boss关卡都有0.05%的概率掉落" }
+    { id:6, emoji:"⚔️", name:"杀手镰刀", unlockAttr:"玩家生命值增加500 玩家攻击力增加6000暴击率提高30%", equipAttr:"暴击率提高50% 1.5倍伤害", trait:"怪物血量低于20%时斩杀 对血量低于70%的怪物伤害增加50% 玩家受到的伤害增加0.5倍", unlockWay:"通关20关获取" },
+    { id:7, emoji:"🔮", name:"怨恨法球", unlockAttr:"全局减伤5% 攻击力增加7000 闪避率增加5%", equipAttr:"生命值减少500 攻击力提高7891 暴击率提高30%", trait:"小boss，大boss对玩家造成的伤害仅为原来的50%，对小boss，大boss造成的伤害为原来的3倍，每攻击一次，此次局内伤害增加1%，攻击时附加90%的伤害", unlockWay:"击败所有小boss，大boss关卡都有0.01%的概率掉落" }
 ];
 
 const levelConfig = [
-    {hp:100,atk:5,emoji:"👹",isBoss:false,isMiniBoss:false,exp:1},{hp:250,atk:20,emoji:"👺",isBoss:false,isMiniBoss:false,exp:4},{hp:400,atk:50,emoji:"👻",isBoss:false,isMiniBoss:false,exp:10},{hp:1500,atk:150,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:30},{hp:5000,atk:500,emoji:"👿",isBoss:false,isMiniBoss:true,exp:100},{hp:6000,atk:550,emoji:"👹",isBoss:false,isMiniBoss:false,exp:80},{hp:8000,atk:730,emoji:"👺",isBoss:false,isMiniBoss:false,exp:90},{hp:8500,atk:800,emoji:"👻",isBoss:false,isMiniBoss:false,exp:95},{hp:9100,atk:888,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:105},{hp:20000,atk:2222,emoji:"😈",isBoss:true,isMiniBoss:false,exp:200},
-    {hp:25000,atk:2500,emoji:"👹",isBoss:false,isMiniBoss:false,exp:195},{hp:31000,atk:3000,emoji:"👺",isBoss:false,isMiniBoss:false,exp:195},{hp:40500,atk:4000,emoji:"👻",isBoss:false,isMiniBoss:false,exp:280},{hp:70000,atk:7050,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:500},{hp:100000,atk:9000,emoji:"👿",isBoss:false,isMiniBoss:true,exp:1000},{hp:100000,atk:8500,emoji:"👹",isBoss:false,isMiniBoss:false,exp:1200},{hp:105000,atk:9500,emoji:"👺",isBoss:false,isMiniBoss:false,exp:1300},{hp:200000,atk:20600,emoji:"👻",isBoss:false,isMiniBoss:false,exp:1700},{hp:300500,atk:30008,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:2000},{hp:390000,atk:40000,emoji:"😈",isBoss:true,isMiniBoss:false,exp:5555}
+    {hp:100,atk:5,emoji:"👹",isBoss:false,isMiniBoss:false,exp:1},{hp:250,atk:20,emoji:"👺",isBoss:false,isMiniBoss:false,exp:4},{hp:400,atk:50,emoji:"👻",isBoss:false,isMiniBoss:false,exp:8},{hp:1500,atk:150,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:20},{hp:5000,atk:500,emoji:"👿",isBoss:false,isMiniBoss:true,exp:50},{hp:6000,atk:550,emoji:"👹",isBoss:false,isMiniBoss:false,exp:80},{hp:8000,atk:730,emoji:"👺",isBoss:false,isMiniBoss:false,exp:90},{hp:8500,atk:800,emoji:"👻",isBoss:false,isMiniBoss:false,exp:95},{hp:9100,atk:888,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:100},{hp:20000,atk:2222,emoji:"😈",isBoss:true,isMiniBoss:false,exp:150},
+    {hp:25000,atk:2500,emoji:"👹",isBoss:false,isMiniBoss:false,exp:150},{hp:31000,atk:3000,emoji:"👺",isBoss:false,isMiniBoss:false,exp:140},{hp:40500,atk:4000,emoji:"👻",isBoss:false,isMiniBoss:false,exp:180},{hp:70000,atk:7050,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:190},{hp:100000,atk:9000,emoji:"👿",isBoss:false,isMiniBoss:true,exp:250},{hp:100000,atk:8500,emoji:"👹",isBoss:false,isMiniBoss:false,exp:200},{hp:105000,atk:9500,emoji:"👺",isBoss:false,isMiniBoss:false,exp:210},{hp:200000,atk:20600,emoji:"👻",isBoss:false,isMiniBoss:false,exp:220},{hp:300500,atk:30008,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:230},{hp:500000,atk:50000,emoji:"😈",isBoss:true,isMiniBoss:false,exp:400}
 ];
 
-const weaponList = [
-    {name:"锈铁剑",emoji:"🗡️",atk:1,maxTotal:1000},{name:"柴刀剑",emoji:"🗡️",atk:3,maxTotal:1500},{name:"清风剑",emoji:"🗡️",atk:30,maxTotal:2500},{name:"百炼剑",emoji:"🗡️",atk:100,maxTotal:4000},{name:"寒铁剑",emoji:"🗡️",atk:300,maxTotal:5000},{name:"精钢剑",emoji:"🗡️",atk:1000,maxTotal:6000},{name:"玄铁重剑",emoji:"🗡️",atk:3000,maxTotal:6500},{name:"秋水剑",emoji:"🗡️",atk:7000,maxTotal:7000},{name:"断石剑",emoji:"🗡️",atk:15000,maxTotal:8000},{name:"斩风剑",emoji:"🗡️",atk:30000,maxTotal:9000},{name:"引灵剑",emoji:"🗡️",atk:55000,maxTotal:10000},{name:"聚气剑",emoji:"🗡️",atk:100000,maxTotal:20000}
+const dungeon10Waves = [
+    {hp:200,atk:40,emoji:"😾",exp:5},{hp:200,atk:50,emoji:"😾",exp:6},{hp:400,atk:80,emoji:"😼",exp:10},{hp:700,atk:100,emoji:"🕷",exp:70},{hp:1000,atk:200,emoji:"🕷",exp:200},{hp:10000,atk:2000,emoji:"🐢",exp:1000}
 ];
-const helmList = [
-    {name:"布帽",emoji:"🪖",hp:1,maxTotal:200},{name:"草帽",emoji:"🪖",hp:10,maxTotal:400},{name:"斗笠帽",emoji:"🪖",hp:30,maxTotal:800},{name:"麻布帽",emoji:"🪖",hp:100,maxTotal:1000},{name:"皮帽",emoji:"🪖",hp:400,maxTotal:1500},{name:"毡帽",emoji:"🪖",hp:2000,maxTotal:2000},{name:"竹编帽",emoji:"🪖",hp:4000,maxTotal:3000},{name:"青布头巾帽",emoji:"🪖",hp:6000,maxTotal:4000},{name:"防风帽",emoji:"🪖",hp:10000,maxTotal:4500},{name:"遮雨帽",emoji:"🪖",hp:20000,maxTotal:5000},{name:"引灵帽",emoji:"🪖",hp:30000,maxTotal:6000},{name:"聚气帽",emoji:"🪖",hp:60000,maxTotal:7000}
-];
-const armorList = [
-    {name:"布甲",emoji:"👕",baseDef:0.5,maxDef:80},{name:"皮甲",emoji:"👕",baseDef:1,maxDef:100},{name:"藤甲",emoji:"👕",baseDef:9,maxDef:200},{name:"木甲",emoji:"👕",baseDef:20,maxDef:300},{name:"麻甲",emoji:"👕",baseDef:50,maxDef:350},{name:"硬片甲",emoji:"👕",baseDef:100,maxDef:400},{name:"铁皮甲",emoji:"👕",baseDef:250,maxDef:500},{name:"锁子甲",emoji:"👕",baseDef:600,maxDef:600},{name:"札甲",emoji:"👕",baseDef:1300,maxDef:800},{name:"青鳞甲",emoji:"👕",baseDef:4000,maxDef:1000},{name:"引灵甲",emoji:"👕",baseDef:10000,maxDef:1300},{name:"聚气甲",emoji:"👕",baseDef:20000,maxDef:1500}
-];
+
+const weaponList = [{name:"锈铁剑",emoji:"🗡️",atk:1,maxTotal:1000},{name:"柴刀剑",emoji:"🗡️",atk:3,maxTotal:1500},{name:"清风剑",emoji:"🗡️",atk:30,maxTotal:2500},{name:"百炼剑",emoji:"🗡️",atk:100,maxTotal:4000},{name:"寒铁剑",emoji:"🗡️",atk:300,maxTotal:5000},{name:"精钢剑",emoji:"🗡️",atk:1000,maxTotal:6000},{name:"玄铁重剑",emoji:"🗡️",atk:3000,maxTotal:6500},{name:"秋水剑",emoji:"🗡️",atk:7000,maxTotal:7000},{name:"断石剑",emoji:"🗡️",atk:15000,maxTotal:8000},{name:"斩风剑",emoji:"🗡️",atk:30000,maxTotal:9000},{name:"引灵剑",emoji:"🗡️",atk:55000,maxTotal:10000},{name:"聚气剑",emoji:"🗡️",atk:100000,maxTotal:20000}];
+const helmList = [{name:"布帽",emoji:"🪖",hp:1,maxTotal:200},{name:"草帽",emoji:"🪖",hp:10,maxTotal:400},{name:"斗笠帽",emoji:"🪖",hp:30,maxTotal:800},{name:"麻布帽",emoji:"🪖",hp:100,maxTotal:1000},{name:"皮帽",emoji:"🪖",hp:400,maxTotal:1500},{name:"毡帽",emoji:"🪖",hp:2000,maxTotal:2000},{name:"竹编帽",emoji:"🪖",hp:4000,maxTotal:3000},{name:"青布头巾帽",emoji:"🪖",hp:6000,maxTotal:4000},{name:"防风帽",emoji:"🪖",hp:10000,maxTotal:4500},{name:"遮雨帽",emoji:"🪖",hp:20000,maxTotal:5000},{name:"引灵帽",emoji:"🪖",hp:30000,maxTotal:6000},{name:"聚气帽",emoji:"🪖",hp:60000,maxTotal:7000}];
+const armorList = [{name:"布甲",emoji:"👕",baseDef:0.5,maxDef:80},{name:"皮甲",emoji:"👕",baseDef:1,maxDef:100},{name:"藤甲",emoji:"👕",baseDef:9,maxDef:200},{name:"木甲",emoji:"👕",baseDef:20,maxDef:300},{name:"麻甲",emoji:"👕",baseDef:50,maxDef:350},{name:"硬片甲",emoji:"👕",baseDef:100,maxDef:400},{name:"铁皮甲",emoji:"👕",baseDef:250,maxDef:500},{name:"锁子甲",emoji:"👕",baseDef:600,maxDef:600},{name:"札甲",emoji:"👕",baseDef:1300,maxDef:800},{name:"青鳞甲",emoji:"👕",baseDef:4000,maxDef:1000},{name:"引灵甲",emoji:"👕",baseDef:10000,maxDef:1300},{name:"聚气甲",emoji:"👕",baseDef:20000,maxDef:1500}];
 
 const weaponWeight = [[95,60,25,0,0],[3,20,25,45,20],[1,10,25,25,49],[0.9,8,15,15,15],[0.1,2,10,10,10],[0,0,0,2,2],[0,0,0,1.8,2],[0,0,0,0.7,1],[0,0,0,0.5,1],[0,0,0,0.3,0.5],[0,0,0,0.1,0.2]];
 const helmWeight = [[96,40,20,0,0],[3,30,30,45,25],[0.8,20,30,30,45],[0.1,7,14,14,19],[0.1,3,6,6,6],[0,0,0,3,3],[0,0,0,1,1],[0,0,0,0.5,0.5],[0,0,0,0.5,0.5],[0,0,0,0.3,0.5],[0,0,0,0.1,0.2]];
@@ -187,7 +248,7 @@ let saveData;
 function loadSave(){ const str = localStorage.getItem("emojiGameSave"); let temp=null, isValid=true; if(str){ try{ temp=JSON.parse(str); if(!temp.unlockLevel||!Array.isArray(temp.weaponCount)) isValid=false; }catch(e){ isValid=false; } }else isValid=false; if(isValid){ saveData=temp; if(!saveData.playerAvatar) saveData.playerAvatar="😃"; if(!saveData.specialUnlocked) saveData.specialUnlocked=[false,false,false,false,false,false,false,false]; if(saveData.specialEquipped===undefined) saveData.specialEquipped=-1; if(saveData.thunderKillCount===undefined) saveData.thunderKillCount=0; if(saveData.axeKillCount===undefined) saveData.axeKillCount=0; if(saveData.orbKillCount===undefined) saveData.orbKillCount=0;} else{ saveData=getDefaultData(); localStorage.setItem("emojiGameSave",JSON.stringify(saveData)); } }
 function saveGame(){ localStorage.setItem("emojiGameSave",JSON.stringify(saveData)); }
 function clearSave(){ localStorage.removeItem("emojiGameSave"); saveData=getDefaultData(); showPopup("全部数据已删除！重新开始！"); renderAll(); }
-function expNeeded(l){ return Math.floor(l*10*(l*2/5)); }
+function expNeeded(l){ return l*l; }
 function gainExp(a){ saveData.playerExp+=a; let l=false; while(saveData.playerExp>=expNeeded(saveData.playerLevel)){ saveData.playerExp-=expNeeded(saveData.playerLevel); saveData.playerLevel++; l=true; } return l; }
 function getUnlockedSpecialCount(){ let c=0; for(let b of saveData.specialUnlocked){ if(b) c++; } return c; }
 function getUnlockedNormalWeaponCount(){ let c=0; for(let w of saveData.weaponCount){ if(w>0) c++; } return c; }
@@ -197,22 +258,22 @@ function equipSpecialWeapon(i){ if(!saveData.specialUnlocked[i]){ showPopup("该
 
 function getPlayerStats(){ 
     const lv=saveData.playerLevel||1;
-    const baseHp=100*Math.pow(1.1,lv-1), baseAtk=10*Math.pow(1.05,lv-1), baseDef=1*Math.pow(1.01,lv-1); 
+    const baseHp=100*Math.pow(1.01,lv-1), baseAtk=10*Math.pow(1.01,lv-1), baseDef=1*Math.pow(1.01,lv-1); 
     const wi=saveData.currWeap??0, hi=saveData.currHelm??0, ai=saveData.currArmor??0; 
     let hp=Math.round(baseHp+calcHelmHp(hi)), atk=Math.round(baseAtk+calcWeaponAtk(wi)), def=Math.round(baseDef+calcArmorDef(ai)); 
     const s=saveData.specialEquipped; 
-    if(s===0){hp+=200;atk+=300+1500;} 
-    else if(s===1){hp+=150;atk+=100+3000;} 
-    else if(s===2){hp+=300;atk+=500+3939;} 
-    else if(s===3){hp+=50;atk+=1000+4800;} 
+    if(s===0){hp+=200;atk+=300+1000;} 
+    else if(s===1){hp+=150;atk+=100+1000;} 
+    else if(s===2){hp+=300;atk+=500+2039;} 
+    else if(s===3){hp+=50;atk+=1000+2000;} 
     else if(s===4){hp+=1000;atk+=500;} 
     else if(s===5){
         hp+=8000; atk+=10000;
         hp += (saveData.axeKillCount || 0);
         atk += (saveData.axeKillCount || 0);
     } 
-    else if(s===6){hp+=500;atk+=8000;}
-    else if(s===7){hp-=500;atk+=10000+20000;}
+    else if(s===6){hp+=500;atk+=6000;}
+    else if(s===7){hp-=500;atk+=7000+7891;}
     
     return {hp,atk,def,power:Math.round(hp+atk*2+def*3)}; 
 }
@@ -268,10 +329,10 @@ function renderAvatarList(){ $("avatarScrollWrap").innerHTML=""; avatarList.forE
 function openAvatarModal(){ initAudio(); playUiClickSound(); $("settingsModal").style.display="none"; tempSelectAvatar=saveData.playerAvatar||"😃"; $("avatarPreview").textContent=tempSelectAvatar; renderAvatarList(); $("avatarModal").style.display="flex"; }
 function closeAvatarModalCancel(){ initAudio(); playUiClickSound(); $("avatarModal").style.display="none"; }
 function saveAvatarChange(){ initAudio(); playUiClickSound(); saveData.playerAvatar=tempSelectAvatar; saveGame(); $("playerEmoji").textContent=saveData.playerAvatar; $("avatarModal").style.display="none"; }
-function showPage(p){ document.querySelectorAll(".page").forEach(el=>el.classList.remove("active")); p.classList.add("active"); if(p===$("battlePage")||p===$("logPage")||p===$("specialPage")){ $("bottomBtnBar").classList.add("hide"); }else{ $("bottomBtnBar").classList.remove("hide"); } }
+function showPage(p){ document.querySelectorAll(".page").forEach(el=>el.classList.remove("active")); p.classList.add("active"); if(p===$("battlePage")||p===$("logPage")||p===$("specialPage")||p===$("dungeonPage")){ $("bottomBtnBar").classList.add("hide"); }else{ $("bottomBtnBar").classList.remove("hide"); } }
 function showPopup(t){ $("popMsg").innerText=t; $("popMsg").style.display="block"; setTimeout(()=>{ $("popMsg").style.display="none"; },1400); }
 
-function renderLevelButtons(){ $("levelWrap").innerHTML=""; levelConfig.forEach((lv,i)=>{ const btn=document.createElement("button"); btn.classList.add("level-btn"); if(lv.isBoss) btn.classList.add("boss-btn"); if(lv.isMiniBoss) btn.classList.add("mini-boss-btn"); btn.innerHTML=`<div>${i+1}</div><div>${lv.emoji}</div><small>战力:${formatNum(calcMonsterPower(lv.hp,lv.atk))}</small>`; btn.disabled=i>=saveData.unlockLevel; btn.onclick=()=>{ initAudio(); playUiClickSound(); currentLevel=i; loadLevel(i); showPage($("battlePage")); }; $("levelWrap").appendChild(btn); }); }
+function renderLevelButtons(){ $("levelWrap").innerHTML=""; levelConfig.forEach((lv,i)=>{ const btn=document.createElement("button"); btn.classList.add("level-btn"); if(lv.isBoss) btn.classList.add("boss-btn"); if(lv.isMiniBoss) btn.classList.add("mini-boss-btn"); btn.innerHTML=`<div>${i+1}</div><div>${lv.emoji}</div><small>战力:${formatNum(calcMonsterPower(lv.hp,lv.atk))}</small>`; btn.disabled=i>=saveData.unlockLevel; btn.onclick=()=>{ initAudio(); playUiClickSound(); isDungeonMode=false; currentLevel=i; loadLevel(i); showPage($("battlePage")); }; $("levelWrap").appendChild(btn); }); }
 function makeBadgeWrap(text,cnt,fn,dis,act){ const w=document.createElement("div"); w.className="badge-wrap"; const b=document.createElement("button"); b.className="btn-equip"; if(act) b.classList.add("equip-active"); b.innerText=text; b.disabled=dis; b.onclick=()=>{ initAudio(); playUiClickSound(); fn(); }; const bd=document.createElement("span"); bd.className="badge"; bd.textContent=cnt; if(cnt<=0) bd.classList.add("hide"); w.appendChild(b); w.appendChild(bd); return w; }
 function renderEquipButtons(){ 
     $("weapBtns").innerHTML=""; 
@@ -300,17 +361,102 @@ function tryDropEquipment(){ const n=currentLevel+1; if(n===1){ const r=Math.ran
 function calcWeaponAtk(i){ const w=weaponList[i]||weaponList[0],c=saveData.weaponCount[i]||0; return Math.min(w.atk*c,w.maxTotal); }
 function calcHelmHp(i){ const h=helmList[i]||helmList[0],c=saveData.helmCount[i]||0; return Math.min(h.hp*c,h.maxTotal); }
 function calcArmorDef(i){ const a=armorList[i]||armorList[0],c=saveData.armorCount[i]||0; return Math.min(a.baseDef*c,a.maxDef); }
-function loadLevel(i){ currentLevel=i; const lv=levelConfig[i]; monsterHp=lv.hp; $("monsterEmoji").innerText=lv.emoji; $("levelText").innerText=i+1; const s=getPlayerStats(); playerMaxHp=s.hp; playerHp=playerMaxHp; $("msg").className="info"; $("msg").innerText=lv.isBoss?`⚠ Boss关卡！准备战斗！`:`第${i+1}关，准备战斗！`; $("atkBtn").disabled=false; render(); $("battlePlayerName").innerText=saveData.playerName||"打怪升级117"; }
-function render(){ $("monsterHp").innerText=formatNum(Math.max(0,monsterHp)); $("playerHp").innerText=formatNum(Math.max(0,playerHp)); $("playerMaxHp").innerText=formatNum(Math.max(0,playerMaxHp)); $("playerEmoji").textContent=saveData.playerAvatar||"😃"; }
+
+// ====== 核心修复：普通关卡的加载 ======
+function loadLevel(i){ 
+    currentLevel=i; 
+    isDungeonMode=false; 
+    const lv=levelConfig[i]; 
+    monsterHp=lv.hp; 
+    monsterMaxHp=lv.hp; 
+    $("monsterEmoji").innerText=lv.emoji; 
+    $("levelText").innerText=i+1; 
+    const s=getPlayerStats(); 
+    playerMaxHp=s.hp; 
+    playerHp=playerMaxHp; 
+    $("msg").className="info"; 
+    $("msg").innerText=lv.isBoss?`⚠ Boss关卡！准备战斗！`:`第${i+1}关，准备战斗！`; 
+    $("atkBtn").disabled=false; 
+    $("resetBtn").style.display = "inline-block"; // 显示重试按钮
+    
+    // 清除一切动画状态
+    $("monsterEmoji").style.transform = "translateY(0)";
+    $("monsterEmoji").style.opacity = "1";
+    
+    render(); 
+    $("battlePlayerName").innerText=saveData.playerName||"打怪升级117"; 
+}
+
+// ====== 核心修复：副本的加载 ======
+function startDungeon(){
+    if(saveData.playerLevel < 10){ showPopup("等级不足10级，无法进入！"); return; }
+    isDungeonMode=true; dungeonWave=0;
+    const s=getPlayerStats(); playerMaxHp=s.hp; playerHp=playerMaxHp;
+    $("atkBtn").disabled=false;
+    showPage($("battlePage"));
+    loadDungeonWave();
+}
+
+function loadDungeonWave(){
+    const m = dungeon10Waves[dungeonWave];
+    if(!m){ 
+        showPopup("副本通关！获得大量经验！");
+        showPage($("selectPage")); 
+        return; 
+    }
+    monsterHp=m.hp;
+    monsterMaxHp=m.hp;
+    
+    // 隐藏重试按钮，防止副本卡回普通关
+    $("resetBtn").style.display = "none";
+    
+    // 修改：副本显示第几波
+    $("levelText").innerText = `副本 第${dungeonWave+1}波`;
+    $("msg").className="info"; $("msg").innerText=`第 ${dungeonWave+1} 波怪物来袭！`;
+    $("battlePlayerName").innerText=saveData.playerName||"打怪升级117";
+    
+    const mEl = $("monsterEmoji");
+    mEl.innerText = m.emoji;
+    
+    // 核心修复：只在第一波和最后一波播动画
+    if (dungeonWave === 0 || dungeonWave === 5) {
+        mEl.style.transform = "translateY(-300px)";
+        mEl.style.opacity = "0";
+        document.body.classList.remove("shake");
+        
+        setTimeout(()=>{
+            mEl.style.transition = "transform 2s ease-out, opacity 2s ease-out";
+            mEl.style.transform = "translateY(0)";
+            mEl.style.opacity = "1";
+            document.body.classList.add("shake");
+            setTimeout(()=>{ document.body.classList.remove("shake"); }, 2000);
+        }, 50);
+    } else {
+        mEl.style.transform = "translateY(0)";
+        mEl.style.opacity = "1";
+    }
+    render();
+}
+
+function render(){ 
+    $("playerEmoji").textContent=saveData.playerAvatar||"😃"; 
+    $("hpTextDisplay").innerText = `${formatNum(Math.max(0, playerHp))} / ${formatNum(playerMaxHp)}`;
+    $("hpBarFill").style.width = Math.max(0, (playerHp / playerMaxHp) * 100) + "%";
+    $("monsterHpText").innerText = `${formatNum(Math.max(0, monsterHp))} / ${formatNum(monsterMaxHp)}`;
+    $("monsterHpFill").style.width = Math.max(0, (monsterHp / monsterMaxHp) * 100) + "%";
+}
 
 function monsterAttack(){
-    playHitSound(); const lv=levelConfig[currentLevel], s=getPlayerStats();
-    let dc=0; if(saveData.specialEquipped===3) dc+=0.3; if(saveData.specialEquipped===4) dc+=0.15; if(saveData.specialEquipped===7) dc+=0.01;
+    playHitSound(); 
+    const lv = isDungeonMode ? dungeon10Waves[dungeonWave] : levelConfig[currentLevel];
+    if(!lv) return;
+    const s=getPlayerStats();
+    let dc=0; if(saveData.specialEquipped===3) dc+=0.3; if(saveData.specialEquipped===4) dc+=0.15; if(saveData.specialEquipped===7) dc+=0.05;
     if(Math.random()<dc){ $("msg").innerHTML += `<br><span style="color:#00ff00">✨ 你闪避了怪物的攻击！</span>`; render(); return; }
     let dmg=Math.max(1,lv.atk-s.def);
     if(saveData.specialEquipped===3) dmg=Math.floor(dmg*1.5); else if(saveData.specialEquipped===4){ dmg=Math.floor(dmg*0.7); dmg=Math.floor(dmg*0.9); }
     if(saveData.specialEquipped===6) dmg=Math.floor(dmg*1.5);
-    if(saveData.specialEquipped===7){ dmg=Math.floor(dmg*0.95); if(lv.isBoss||lv.isMiniBoss) dmg=Math.floor(dmg*0.1); }
+    if(saveData.specialEquipped===7){ dmg=Math.floor(dmg*0.95); if(lv.isBoss||lv.isMiniBoss) dmg=Math.floor(dmg*0.5); }
     playerHp-=dmg;
     if(playerHp<=0){ playerHp=0; render(); $("msg").innerHTML += `<br><span style="color:#ff4444">💀 你被打败了...</span>`; $("atkBtn").disabled=true; saveData.loseCount=(saveData.loseCount||0)+1; if(saveData.loseCount>=100&&!saveData.specialUnlocked[4]) tryUnlockSpecial(4); saveGame(); return; }
     render(); $("msg").innerHTML += `<br><span style="color:#ff8844">怪物反击！你受到了 ${formatNum(dmg)} 点伤害。</span>`;
@@ -318,7 +464,9 @@ function monsterAttack(){
 
 $("atkBtn").onclick=function(){
     initAudio(); playAttackSound(); if(monsterHp<=0||playerHp<=0) return;
-    const s=getPlayerStats(), lv=levelConfig[currentLevel]; let baseDmg=s.atk, isCrit=false, extra="", heal="";
+    const s=getPlayerStats(), lv = isDungeonMode ? dungeon10Waves[dungeonWave] : levelConfig[currentLevel]; 
+    if(!lv) return;
+    let baseDmg=s.atk, isCrit=false, extra="", heal="";
     if(saveData.specialEquipped!==-1){
         const i=saveData.specialEquipped;
         if(i===0){ if(Math.random()<0.25){ baseDmg*=3; isCrit=true; extra+="✨星陨爆发！"; } if(Math.random()<0.25){ isCrit=true; extra+="⚡暴击！"; } }
@@ -351,8 +499,8 @@ $("atkBtn").onclick=function(){
             if(Math.random()<0.5){ isCrit=true; baseDmg*=1.5; extra+="⚔️暴击！"; } 
         }
         else if(i===7){ 
-            baseDmg*=3.0; 
-            if(lv.isBoss||lv.isMiniBoss){ baseDmg*=5; extra+="🔮法球重创Boss！"; }
+            baseDmg*=1.9; 
+            if(lv.isBoss||lv.isMiniBoss){ baseDmg*=3; extra+="🔮法球重创Boss！"; }
             if(Math.random()<0.3){ isCrit=true; extra+="🔮暴击！"; }
         }
     }
@@ -362,20 +510,37 @@ $("atkBtn").onclick=function(){
     if(monsterHp<=0){
         monsterHp=0; playMonsterDeathOuhSound(); render();
         $("msg").innerHTML=`<span style="color:#00ffff">击败怪物！造成伤害 ${formatNum(baseDmg)}</span> ${heal} <br><span style="color:#ffaa00">${extra}</span>`;
-        const leveled=gainExp(lv.exp); tryDropEquipment();
-        if(lv.isBoss||lv.isMiniBoss){ saveData.bossKillCount=(saveData.bossKillCount||0)+1; if(saveData.bossKillCount>=200&&!saveData.specialUnlocked[2]) tryUnlockSpecial(2); }
-        if(currentLevel===9){ saveData.boss10KillCount=(saveData.boss10KillCount||0)+1; if(saveData.boss10KillCount>=100&&!saveData.specialUnlocked[3]) tryUnlockSpecial(3); if(!saveData.specialUnlocked[1]) tryUnlockSpecial(1); }
-        if(currentLevel===0&&Math.random()<0.01&&!saveData.specialUnlocked[0]) tryUnlockSpecial(0);
-        if(currentLevel===19&&!saveData.specialUnlocked[6]) tryUnlockSpecial(6);
-        if((lv.isBoss||lv.isMiniBoss) && Math.random()<0.0005 && !saveData.specialUnlocked[7]) tryUnlockSpecial(7);
-        if(currentLevel+1>=saveData.unlockLevel&&currentLevel+1<levelConfig.length) saveData.unlockLevel=currentLevel+2;
-        if(saveData.unlockLevel>=levelConfig.length&&!saveData.specialUnlocked[5]) tryUnlockSpecial(5);
-        if(leveled) showPopup("🎉 升级啦！");
-        saveGame(); renderLevelButtons(); $("atkBtn").disabled=true; 
+        const leveled=gainExp(lv.exp); 
         
-        if (saveData.specialEquipped === 2) { saveData.thunderKillCount = (saveData.thunderKillCount || 0) + 1; saveGame(); }
-        if (saveData.specialEquipped === 5) { saveData.axeKillCount = (saveData.axeKillCount || 0) + 1; saveGame(); }
-        return;
+        if(isDungeonMode){
+            if(dungeonWave===5 && Math.random()<0.01) tryUnlockSpecial(0);
+            else if(dungeonWave<5 && Math.random()<0.02) tryUnlockSpecial(1);
+            
+            dungeonWave++;
+            $("atkBtn").disabled=true;
+            setTimeout(()=>{ 
+                if(playerHp>0){ 
+                    loadDungeonWave(); 
+                    $("atkBtn").disabled=false; 
+                } 
+            }, 3000); 
+            saveGame();
+            return;
+        } else {
+            tryDropEquipment();
+            if(lv.isBoss||lv.isMiniBoss){ saveData.bossKillCount=(saveData.bossKillCount||0)+1; if(saveData.bossKillCount>=200&&!saveData.specialUnlocked[2]) tryUnlockSpecial(2); if(Math.random()<0.0001&&!saveData.specialUnlocked[7]) tryUnlockSpecial(7);}
+            if(currentLevel===9){ saveData.boss10KillCount=(saveData.boss10KillCount||0)+1; if(saveData.boss10KillCount>=100&&!saveData.specialUnlocked[3]) tryUnlockSpecial(3); }
+            if(currentLevel+1>=saveData.unlockLevel&&currentLevel+1<levelConfig.length) saveData.unlockLevel=currentLevel+2;
+            if(saveData.unlockLevel>=levelConfig.length&&!saveData.specialUnlocked[5]) tryUnlockSpecial(5);
+            if(currentLevel===19&&!saveData.specialUnlocked[6]) tryUnlockSpecial(6);
+            
+            if(leveled) showPopup("🎉 升级啦！");
+            saveGame(); renderLevelButtons(); $("atkBtn").disabled=true; 
+            
+            if (saveData.specialEquipped === 2) { saveData.thunderKillCount = (saveData.thunderKillCount || 0) + 1; saveGame(); }
+            if (saveData.specialEquipped === 5) { saveData.axeKillCount = (saveData.axeKillCount || 0) + 1; saveGame(); }
+            return;
+        }
     }
     let ct=isCrit?"<span class='crit-text'>暴击！</span>":"";
     $("msg").innerHTML=`<span style="color:#fff">你造成 ${formatNum(baseDmg)} 伤害</span> ${ct} ${heal} <br><span style="color:#88ccff">${extra}</span>`;
@@ -406,10 +571,13 @@ $("equipBackBtn").onclick=()=>{ initAudio(); playUiClickSound(); showPage($("sel
 $("specialBackBtn").onclick=()=>{ initAudio(); playUiClickSound(); showPage($("selectPage")); };
 $("resetBtn").onclick=()=>{ initAudio(); playUiClickSound(); playerMaxHp=getPlayerStats().hp; playerHp=playerMaxHp; loadLevel(currentLevel); };
 $("backBtn").onclick=()=>{ initAudio(); playUiClickSound(); showPage($("selectPage")); };
+$("dungeonBtn").onclick=()=>{ initAudio(); playUiClickSound(); showPage($("dungeonPage")); };
+$("dungeonBackBtn").onclick=()=>{ initAudio(); playUiClickSound(); showPage($("selectPage")); };
+$("dungeonLv10").onclick=()=>{ initAudio(); playUiClickSound(); startDungeon(); };
 $("cancelDetailBtn").onclick=closeWeaponDetail; $("doEquipSpecialBtn").onclick=clickEquipSpecial;
 $("weaponDetailOverlay").onclick=e=>{ if(e.target===$("weaponDetailOverlay")) closeWeaponDetail(); };
 
 loadSave(); renderAll(); showPage($("selectPage"));
 </script>
 </body>
-</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 </html>
+    </html>
