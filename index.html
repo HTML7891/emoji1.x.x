@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>emoji打怪1.3.5</title>
+<title>emoji打怪1.4.0</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#222;color:#fff;font-family:system-ui;height:100dvh;overflow:hidden}
@@ -86,7 +86,7 @@ button:disabled{opacity:.35;pointer-events:none}
 .bottom-fixed-bar{position:fixed;bottom:15px;left:0;width:100%;display:flex;gap:8px;justify-content:center;padding:0 12px;z-index:100}
 .bottom-fixed-bar button{flex:1;max-width:115px;background:#27ae60;color:#fff;font-size:15px;border-radius:30px;padding:10px 0;white-space:nowrap;box-shadow:0 4px 8px rgba(0,0,0,.4);margin:0}
 .bottom-fixed-bar.hide{display:none}
-.dungeon-banner{width:100%;height:160px;border-radius:10px;background:linear-gradient(135deg,#2b0000,#6b0000);border:2px solid #d32f2f;display:flex;flex-direction:column;justify-content:center;align-items:center;margin-bottom:20px;cursor:pointer}
+.dungeon-banner{width:100%;height:160px;border-radius:10px;background:linear-gradient(135deg,#2b0000,#6b0000);border:2px solid #d32f2f;display:flex;flex-direction:column;justify-content:center;align-items:center;margin-bottom:20px;cursor:pointer;transition:opacity .3s}
 .dungeon-title{font-size:24px;font-weight:bold;color:#faa;margin-bottom:8px}
 .dungeon-desc{font-size:15px;color:#f88}
 .dungeon-icon{font-size:60px;margin-bottom:10px}
@@ -104,6 +104,12 @@ button:disabled{opacity:.35;pointer-events:none}
 .status-pierce{color:#fc6;border-color:#fc6}
 #debugRow{border-top:1px dashed #555;padding-top:12px;margin-top:8px}
 #debugRow button{width:100%;margin:0 0 6px 0;padding:8px;font-size:15px}
+.endless-title-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:20px;margin-bottom:12px;}
+.endless-btn{background:#d32f2f;color:#fff;border:2px solid #ff8888;border-radius:8px;padding:6px 12px;font-size:18px;font-weight:bold;margin:0;box-shadow:0 0 10px rgba(255,0,0,0.5);}
+.endless-stats{background:#1b1b1b;border:1px solid #444;border-radius:8px;padding:16px;margin:10px auto;max-width:320px;text-align:left;}
+.endless-stats .y-text{color:#fd4;}
+.endless-stats .big-text{font-size:20px;font-weight:bold;margin:10px 0;color:#fd4;}
+.endless-stats .line-text{font-size:16px;margin:6px 0;color:#fd4;}
 </style>
 </head>
 <body>
@@ -123,21 +129,46 @@ button:disabled{opacity:.35;pointer-events:none}
 
 <div id="selectPage" class="page active">
 <button class="top-left-set-btn" id="openSettingsBtn">☸️ 设置</button>
-<h2 style="font-size:32px;margin-bottom:12px;margin-top:20px;">选择关卡</h2>
+<div class="endless-title-row">
+    <h2 style="font-size:32px;margin:0;">选择关卡</h2>
+    <button class="endless-btn" id="openEndlessBtn">🔺 无尽模式</button>
+</div>
 <div class="scroll-wrap"><div id="levelWrap" class="scroll-inner"></div></div>
 <div class="info" style="margin-top:16px;">
 <div>当前武器：<span id="selWeap">🗡️锈铁剑</span></div>
 <div>当前头盔：<span id="selHelm">🪖布帽</span></div>
 <div>当前盔甲：<span id="selArmor">👕布甲</span></div>
-<div style="margin-top:8px">点左下角🎒装备按钮管理装备</div>
+<div style="margin-top:8px;color:#fd4;">特殊装备：<span id="selSpecial">无</span></div>
 </div>
 <div class="page-btn-row">
 <button class="inpage-green-btn" id="logSetBtn">📘 更新日志</button>
 <button class="btn-dungeon" id="dungeonBtn">🔥 副本</button>
 </div>
 </div>
+
+<div id="endlessPage" class="page">
+    <h2 style="font-size:32px;margin-bottom:12px;margin-top:20px;">🔺 无尽挑战</h2>
+    <div class="endless-stats">
+        <div class="line-text">最高层数：<span id="endlessMaxLayer">0</span></div>
+        <div class="line-text">下一层战斗力：<span id="endlessNextPower">0</span></div>
+        
+        <button id="endlessNextBtn" style="background:#555;color:#888;width:100%;padding:10px;font-size:16px;margin:5px 0 5px 0;border-radius:6px;">击败第一层解锁</button>
+        <button id="startEndless1Btn" style="background:#2980b9;color:#fff;width:100%;padding:10px;font-size:16px;margin:0 0 15px 0;border-radius:6px;">从第一层开始攻打</button>
+
+        <div class="big-text">当前属性：</div>
+        <div class="line-text">生命：<span id="endlessHp">0</span></div>
+        <div class="line-text">攻击：<span id="endlessAtk">0</span></div>
+        <div class="line-text">防御：<span id="endlessDef">0</span></div>
+        <div class="line-text">战斗力：<span id="endlessPower">0</span></div>
+        <div class="big-text">当前装备：</div>
+        <div class="line-text" id="endlessEquip">无</div>
+        <div class="line-text" id="endlessSpecial">特殊：无</div>
+    </div>
+    <button class="btn-back" id="endlessBackBtn">返回选关</button>
+</div>
+
 <div id="equipPage" class="page"><h2 style="font-size:30px;margin-bottom:12px">装备背包</h2><div class="info"><h3>武器</h3><div class="scroll-wrap"><div id="weapBtns" class="scroll-inner"></div></div></div><div class="info"><h3>头盔</h3><div class="scroll-wrap"><div id="helmBtns" class="scroll-inner"></div></div></div><div class="info"><h3>盔甲</h3><div class="scroll-wrap"><div id="armorBtns" class="scroll-inner"></div></div></div><div style="margin-top:20px"><button class="btn-back" id="equipBackBtn">返回选关</button></div></div>
-<div id="specialPage" class="page"><h2 style="font-size:30px;margin-bottom:8px">特殊装备</h2><div class="special-progress-text" id="specialProgressText">已解锁：0 / 9</div><div class="info"><h3>武器</h3><div class="scroll-wrap"><div id="specialWeapBtns" class="scroll-inner"></div></div></div><div style="margin-top:20px"><button class="btn-back" id="specialBackBtn">返回选关</button></div></div>
+<div id="specialPage" class="page"><h2 style="font-size:30px;margin-bottom:8px">特殊装备</h2><div class="special-progress-text" id="specialProgressText">已解锁：0 / 10</div><div class="info"><h3>武器</h3><div class="scroll-wrap"><div id="specialWeapBtns" class="scroll-inner"></div></div></div><div style="margin-top:20px"><button class="btn-back" id="specialBackBtn">返回选关</button></div></div>
 <div id="dungeonPage" class="page">
 <h2 style="font-size:30px;margin-bottom:12px">副本选择界面</h2>
 <div class="scroll-wrap" style="margin-top:20px;">
@@ -163,6 +194,7 @@ button:disabled{opacity:.35;pointer-events:none}
 <div class="hp-bar-wrap"><div class="hp-bar hp-bar-player" id="hpBarFill"></div><div class="hp-text" id="hpTextDisplay">100 / 100</div></div>
 <div class="info" id="msg">战斗开始！点击攻击！</div>
 <button id="atkBtn">攻击</button>
+<button id="nextLayerBtn" disabled style="display:none; background:#555; color:#888;">下一关</button>
 <button id="resetBtn">重试本关</button>
 <button class="btn-back" id="backBtn">返回选关</button>
 </div>
@@ -171,8 +203,11 @@ button:disabled{opacity:.35;pointer-events:none}
 let audioCtx=null,soundEnabled=false,tempSelectAvatar="",currentLevel=0,monsterHp,monsterMaxHp,playerHp,playerMaxHp,logCurrentPage=0,currentSpecialIndex=0;
 let attackIntervalEnabled=true;
 let isDungeonMode=false,dungeonWave=0,currentDungeon=0;
+let isEndlessMode=false, endlessLayer=0, endlessCleared=false, dungeonWaveTimer=null;
 let monsterStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0},playerStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};
 let playerShield=0,comboDmgBonus=0,statusTimer=null;
+let isSettling=false; // [S2] 击杀结算幂等锁
+let atkDelayTimer=null; // [S6] 单次攻击延迟 timer，独立于波次生命周期
 const $=id=>document.getElementById(id);
 const initAudio=()=>{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();};
 const playUiClickSound=()=>{if(!soundEnabled||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type="sine";o.frequency.value=1760;g.gain.setValueAtTime(.18,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+.045);o.start();o.stop(audioCtx.currentTime+.045);};
@@ -191,7 +226,8 @@ const logData=[
 {ver:"1.2.1",date:"2026年10月27日",list:["1.修复了一些bug","2.更新了设置","3.攻击间隔可以开关了","4.优化了特殊武器的强度","5.优化了各种奇奇怪怪的东西"]},
 {ver:"1.2.5",date:"2026年10月28日",list:["1.增加若干新武器和关卡更新到20关","2.优化更新日志更新更新日期","3.修复了部分属性未生效的问题","4.新增两把特殊武器"]},
 {ver:"1.3.0",date:"2026年10月29日",list:["1.增加副本功能","2.再次优化特殊武器强度","3.增加了升级的难度"]},
-{ver:"1.3.5",date:"2026年11月1日",list:["1.修复bug","2.完善副本功能","3.大改特殊武器","4.调试"]}
+{ver:"1.3.5",date:"2026年11月1日",list:["1.修复bug","2.完善副本功能","3.大改特殊武器","4.调试"]},
+{ver:"1.4.0",date:"2026年11月2日",list:["1.增加无尽挑战","2.选关页面再优化","3.修复各种小问题"]}
 ];
 
 const specialWeaponList=[
@@ -199,11 +235,12 @@ const specialWeaponList=[
 {id:1,emoji:"⚔",name:"长须剑",unlockAttr:"生命+150 攻击+100",equipAttr:"攻击+500 吸血20%",trait:"攻击25%回5%血，5%造成双倍伤害",unlockWay:"10级副本1-5波有2%概率掉落"},
 {id:2,emoji:"⚔",name:"水之长枪",unlockAttr:"生命+100 攻击+1150",equipAttr:"攻击+3000 暴击20%",trait:"攻击附加50+x%伤害(每击败+0.1%)，被攻击10%闪避并冰冻敌方0.3秒",unlockWay:"80级副本5波有2%概率掉落"},
 {id:3,emoji:"⚔",name:"猴爪之刃",unlockAttr:"生命+50 攻击+1000",equipAttr:"攻击+1600",trait:"伤害+50%，攻击5%使敌方流血1秒(每0.1秒10%伤害)，受伤-10%",unlockWay:"30级副本1-6波有3%概率掉落"},
-{id:4,emoji:"⚔",name:"霸王权杖",unlockAttr:"生命+1000 攻击+1000 减伤10%",equipAttr:"20%闪避 减伤10% 生命+1000 攻击+1000",trait:"攻击回血2%，受伤-30%，1%秒杀，附加30%伤害和30%攻击*2伤害",unlockWay:"30级副本7波有2%概率掉落"},
+{id:4,emoji:"⚔",name:"霸王权杖",unlockAttr:"生命+1000 攻击+1000 减伤10%",equipAttr:"20%闪避 减伤10% 生命+1000 攻击+1000",trait:"攻击回血2%，受到伤害减30%，1%秒杀，附加30%伤害和30%攻击*2伤害",unlockWay:"30级副本7波有2%概率掉落"},
 {id:5,emoji:"⚔",name:"稀影之刃",unlockAttr:"攻击+2000",equipAttr:"伤害加成300%",trait:"攻击20%获得10%生命护盾，20%造成2倍伤害",unlockWay:"80级副本1-4波有2%概率掉落"},
 {id:6,emoji:"⚔",name:"白毛羽刃",unlockAttr:"生命+500 攻击+6000 暴击30%",equipAttr:"暴击50%",trait:"怪血量<20%斩杀，>70%增伤50%",unlockWay:"160级副本1-3波有5%概率掉落"},
-{id:7,emoji:"⚔",name:"龙鳞剑",unlockAttr:"减伤1% 攻击+7000",equipAttr:"攻击+10891 暴击10% 伤害加成40%",trait:"受伤80%，造成伤害1.2倍，攻击30%附加10%+攻击/2伤害，附加0.4秒刺穿",unlockWay:"160级副本6波有6%概率掉落"},
-{id:8,emoji:"⚔",name:"腕鳞剑",unlockAttr:"减伤3% 攻击+17000",equipAttr:"攻击+17891 暴击30% 伤害加成90%",trait:"受伤50%，造成伤害3倍，每攻击1次局内伤害+2%，攻击附加90%+攻击/2伤害，附加0.5秒流血",unlockWay:"160级副本8波有3%概率掉落"}
+{id:7,emoji:"⚔",name:"龙鳞剑",unlockAttr:"全局减伤1% 攻击+7000",equipAttr:"攻击+10891 暴击10% 伤害加成40%",trait:"受到的伤害为原来80%，造成伤害1.2倍，攻击30%附加10%+玩家攻击/2的伤害，附加0.4秒刺穿",unlockWay:"160级副本6波有6%概率掉落"},
+{id:8,emoji:"⚔",name:"腕鳞剑",unlockAttr:"全局减伤3% 攻击+17000",equipAttr:"攻击+17891 暴击30% 伤害加成90%",trait:"受到的伤害为原来50%，造成伤害3倍，每攻击1次局内伤害+2%，攻击附加90%+玩家攻击/2的伤害，附加0.5秒流血",unlockWay:"160级副本8波有3%概率掉落"},
+{id:9,emoji:"⚔",name:"无尽之枪",unlockAttr:"生命+层数²/10 攻击+层数²/5",equipAttr:"生命+层数²/6 攻击+层数²/3 闪避5% 暴击5% 减伤5%",trait:"攻击附带层数伤害；附加(层数/10)伤害；附加1%最大生命(不超攻击200%)；附加10%敌方最大生命(不超攻击50%)",unlockWay:"击败无尽第一波"}
 ];
 
 const levelConfig=[
@@ -217,35 +254,48 @@ const dungeonConfig=[
 {id:2,lv:80,name:"80级副本",emoji:"🐋",waves:[{hp:4000,atk:600,emoji:"🐧",exp:250},{hp:5500,atk:700,emoji:"🐧",exp:300},{hp:7000,atk:800,emoji:"🐥",exp:450},{hp:20000,atk:2200,emoji:"🦅",exp:500},{hp:200000,atk:1800,emoji:"🐋",exp:1000}]},
 {id:3,lv:160,name:"160级副本",emoji:"🦕",waves:[{hp:10000,atk:1000,emoji:"🦆",exp:600},{hp:16000,atk:2000,emoji:"🦆",exp:700},{hp:30000,atk:3530,emoji:"🦆",exp:850},{hp:55550,atk:6000,emoji:"🐺",exp:1000},{hp:90000,atk:8500,emoji:"🐺",exp:1700},{hp:454500,atk:40000,emoji:"🐲",exp:4500},{hp:300000,atk:40000,emoji:"🐲",exp:3600},{hp:900000,atk:75000,emoji:"🦕",exp:8000}]}
 ];
-const weaponList=[{name:"锈铁剑",emoji:"🗡️",atk:1,maxTotal:1000},{name:"柴刀剑",emoji:"🗡️",atk:3,maxTotal:1500},{name:"清风剑",emoji:"🗡️",atk:30,maxTotal:2500},{name:"百炼剑",emoji:"🗡️",atk:100,maxTotal:4000},{name:"寒铁剑",emoji:"🗡️",atk:300,maxTotal:5000},{name:"精钢剑",emoji:"🗡️",atk:1000,maxTotal:6000},{name:"玄铁重剑",emoji:"🗡️",atk:3000,maxTotal:6500},{name:"秋水剑",emoji:"🗡️",atk:7000,maxTotal:7000},{name:"断石剑",emoji:"🗡️",atk:15000,maxTotal:8000},{name:"斩风剑",emoji:"🗡️",atk:30000,maxTotal:9000},{name:"引灵剑",emoji:"🗡️",atk:55000,maxTotal:10000},{name:"聚气剑",emoji:"🗡️",atk:100000,maxTotal:20000}];
+const weaponList=[{name:"锈铁剑",emoji:"🗡️",atk:1,maxTotal:1000},{name:"柴刀剑",emoji:"🗡️",atk:3,maxTotal:1500},{name:"清风剑",emoji:"🗡️",atk:30,maxTotal:2500},{name:"百炼剑",emoji:"🗡️",atk:100,maxTotal:4000},{name:"寒铁剑",emoji:"🗡️",atk:300,maxTotal:5000},{name:"精钢剑",emoji:"🗡️",atk:1000,maxTotal:6000},{name:"玄铁重剑",emoji:"🗡️",atk:3000,maxTotal:6500},{name:"秋水剑",emoji:"🗡️",atk:7000,maxTotal:7000},{name:"断石剑",emoji:"🗡️",atk:15000,maxTotal:8000},{name:"斩风剑",emoji:"🗡️",atk:30000,maxTotal:9000},{name:"引灵剑",emoji:"🗡️",atk:30000,maxTotal:9000},{name:"聚气剑",emoji:"🗡️",atk:55000,maxTotal:10000}];
 const helmList=[{name:"布帽",emoji:"🪖",hp:1,maxTotal:200},{name:"草帽",emoji:"🪖",hp:10,maxTotal:400},{name:"斗笠帽",emoji:"🪖",hp:30,maxTotal:800},{name:"麻布帽",emoji:"🪖",hp:100,maxTotal:1000},{name:"皮帽",emoji:"🪖",hp:400,maxTotal:1500},{name:"毡帽",emoji:"🪖",hp:2000,maxTotal:2000},{name:"竹编帽",emoji:"🪖",hp:4000,maxTotal:3000},{name:"青布头巾帽",emoji:"🪖",hp:6000,maxTotal:4000},{name:"防风帽",emoji:"🪖",hp:10000,maxTotal:4500},{name:"遮雨帽",emoji:"🪖",hp:20000,maxTotal:5000},{name:"引灵帽",emoji:"🪖",hp:30000,maxTotal:6000},{name:"聚气帽",emoji:"🪖",hp:60000,maxTotal:7000}];
 const armorList=[{name:"布甲",emoji:"👕",baseDef:0.5,maxDef:80},{name:"皮甲",emoji:"👕",baseDef:1,maxDef:100},{name:"藤甲",emoji:"👕",baseDef:9,maxDef:200},{name:"木甲",emoji:"👕",baseDef:20,maxDef:300},{name:"麻甲",emoji:"👕",baseDef:50,maxDef:350},{name:"硬片甲",emoji:"👕",baseDef:100,maxDef:400},{name:"铁皮甲",emoji:"👕",baseDef:250,maxDef:500},{name:"锁子甲",emoji:"👕",baseDef:600,maxDef:600},{name:"札甲",emoji:"👕",baseDef:1300,maxDef:800},{name:"青鳞甲",emoji:"👕",baseDef:4000,maxDef:1000},{name:"引灵甲",emoji:"👕",baseDef:10000,maxDef:1300},{name:"聚气甲",emoji:"👕",baseDef:20000,maxDef:1500}];
 
-const weaponWeight=[[95,60,25,0,0],[3,20,25,45,20],[1,10,25,25,49],[0.9,8,15,15,15],[0.1,2,10,10,10],[0,0,0,2,2],[0,0,0,1.8,2],[0,0,0,0.7,1],[0,0,0,0.5,1],[0,0,0,0.3,0.5],[0,0,0,0.1,0.2]];
-const helmWeight=[[96,40,20,0,0],[3,30,30,45,25],[0.8,20,30,30,45],[0.1,7,14,14,19],[0.1,3,6,6,6],[0,0,0,3,3],[0,0,0,1,1],[0,0,0,0.5,0.5],[0,0,0,0.5,0.5],[0,0,0,0.3,0.5],[0,0,0,0.1,0.2]];
-const armorWeight=[[94,45,21,0,0],[4,30,30,42,15],[1,18,23,23,45],[0.5,5,18,18,18],[0.5,2,12,12,12],[0,0,0,3,5],[0,0,0,1,2.5],[0,0,0,0.5,1.5],[0,0,0,0.5,1],[0,0,0,0.3,0.5],[0,0,0,0.1,0.2]];
-
-function getDefaultData(){return{unlockLevel:1,currWeap:0,currHelm:0,currArmor:0,playerAvatar:"😃",playerName:"打怪升级117",playerLevel:1,playerExp:0,weaponCount:[1,0,0,0,0,0,0,0,0,0,0,0],helmCount:[1,0,0,0,0,0,0,0,0,0,0,0],armorCount:[1,0,0,0,0,0,0,0,0,0,0,0],specialUnlocked:[false,false,false,false,false,false,false,false,false],specialEquipped:-1,loseCount:0,bossKillCount:0,boss10KillCount:0,thunderKillCount:0,axeKillCount:0,orbKillCount:0,debugUnlocked:false,debugStats:null};}
+// 权重池按文档更新
+const weaponWeight=[[100,95,60,10,0,0,0],[0,3,20,40,40,0,0],[0,1,10,25,30,50,0],[0,0.9,8,15,15,25,55],[0,0.1,2,10,10,15,30],[0,0,0,2,5,8,30],[0,0,0,1.8,2,2,11],[0,0,0,0.6,1.5,2,4],[0,0,0,0.5,1,1.5,3],[0,0,0,0,0.4,1,1.5],[0,0,0,0,0.1,0.5,0.5]];
+const helmWeight=[[100,96,40,20,0,0,0],[0,3,30,30,45,0,0],[0,0.8,20,30,30,60,0],[0,0.1,7,14,14,20,55],[0,0.1,3,6,6,10,25],[0,0,0,3,5,10,20],[0,0,0,1,3,5,10],[0,0,0,0.5,1,2,5],[0,0,0,0.5,0.5,2,2.5],[0,0,0,0,0.3,0.5,1.5],[0,0,0,0,0.2,0.5,1]];
+const armorWeight=[[100,94,45,20,0,0,0],[0,4,30,30,40,0,0],[0,1,18,25,25,50,0],[0,0.5,5,15,20,20,55],[0,0.5,2,10,10,15,25],[0,0,0,3,8,10,20],[0,0,0,1,4,15,20],[0,0,0,0.5,1.5,2,5],[0,0,0,0.5,1,1.5,3],[0,0,0,0,0.4,1,1.5],[0,0,0,0,0.1,0.5,0.5]];
+  function getDefaultData(){return{unlockLevel:1,currWeap:0,currHelm:0,currArmor:0,playerAvatar:"😃",playerName:"打怪升级117",playerLevel:1,playerExp:0,weaponCount:[1,0,0,0,0,0,0,0,0,0,0,0],helmCount:[1,0,0,0,0,0,0,0,0,0,0,0],armorCount:[1,0,0,0,0,0,0,0,0,0,0,0],specialUnlocked:[false,false,false,false,false,false,false,false,false,false],specialEquipped:-1,loseCount:0,bossKillCount:0,boss10KillCount:0,thunderKillCount:0,axeKillCount:0,orbKillCount:0,debugUnlocked:false,debugStats:null,endlessMaxLayer:0};}
 let saveData;
 function loadSave(){
-const str=localStorage.getItem("emojiGameSave");
-let temp=null,isValid=true;
-if(str){try{temp=JSON.parse(str);if(!temp.unlockLevel||!Array.isArray(temp.weaponCount))isValid=false;}catch(e){isValid=false;}}
-else isValid=false;
-if(isValid){
-saveData=temp;
-if(!saveData.playerAvatar)saveData.playerAvatar="😃";
-if(!saveData.specialUnlocked||saveData.specialUnlocked.length!==9)saveData.specialUnlocked=[false,false,false,false,false,false,false,false,false];
-if(saveData.specialEquipped===undefined)saveData.specialEquipped=-1;
-if(saveData.thunderKillCount===undefined)saveData.thunderKillCount=0;
-if(saveData.axeKillCount===undefined)saveData.axeKillCount=0;
-if(saveData.orbKillCount===undefined)saveData.orbKillCount=0;
-if(saveData.debugUnlocked===undefined)saveData.debugUnlocked=false;
-if(saveData.debugStats===undefined)saveData.debugStats=null;
-}else{
-saveData=getDefaultData();
-localStorage.setItem("emojiGameSave",JSON.stringify(saveData));
-}
+    const str=localStorage.getItem("emojiGameSave");
+    let temp=null,isValid=true;
+    if(str){
+        try{
+            temp=JSON.parse(str);
+            if(!temp.unlockLevel||!Array.isArray(temp.weaponCount)) isValid=false;
+        }catch(e){isValid=false;}
+    }else isValid=false;
+
+    if(isValid){
+        saveData=temp;
+        if(!saveData.playerAvatar||saveData.playerAvatar==="??") saveData.playerAvatar="😃";
+        
+        if(saveData.specialUnlocked && saveData.specialUnlocked.length === 9){
+            saveData.specialUnlocked.push(false); 
+        }
+        if(!saveData.specialUnlocked || saveData.specialUnlocked.length !== 10){
+            saveData.specialUnlocked = [false,false,false,false,false,false,false,false,false,false];
+        }
+
+        if(saveData.specialEquipped===undefined) saveData.specialEquipped=-1;
+        if(saveData.thunderKillCount===undefined) saveData.thunderKillCount=0;
+        if(saveData.axeKillCount===undefined) saveData.axeKillCount=0;
+        if(saveData.orbKillCount===undefined) saveData.orbKillCount=0;
+        if(saveData.debugUnlocked===undefined) saveData.debugUnlocked=false;
+        if(saveData.debugStats===undefined) saveData.debugStats=null;
+        if(saveData.endlessMaxLayer===undefined) saveData.endlessMaxLayer=0;
+    }else{
+        saveData=getDefaultData();
+        localStorage.setItem("emojiGameSave",JSON.stringify(saveData));
+    }
 }
 function saveGame(){localStorage.setItem("emojiGameSave",JSON.stringify(saveData));}
 function clearSave(){localStorage.removeItem("emojiGameSave");saveData=getDefaultData();showPopup("全部数据已删除！重新开始！");renderAll();}
@@ -268,27 +318,40 @@ function calcArmorDef(i){const a=armorList[i]||armorList[0],c=saveData.armorCoun
 function getPlayerStats(){
 const lv=saveData.playerLevel||1;
 const baseHp=100*Math.pow(1.01,lv-1),baseAtk=10*Math.pow(1.01,lv-1),baseDef=1*Math.pow(1.01,lv-1);
-const wi=saveData.currWeap??0,hi=saveData.currHelm??0,ai=saveData.currArmor??0;
+const wi=saveData.currWeap||0,hi=saveData.currHelm||0,ai=saveData.currArmor||0;
 let hp=Math.round(baseHp+calcHelmHp(hi)),atk=Math.round(baseAtk+calcWeaponAtk(wi)),def=Math.round(baseDef+calcArmorDef(ai));
 let crit=0.05,dmgBonus=0,damageReduction=0,dodge=0,lifesteal=0;
 const s=saveData.specialEquipped;
+const maxLayer = saveData.endlessMaxLayer || 0;
+
 if(s===0){hp+=200;atk+=300+1000;crit+=0.25;}
 else if(s===1){hp+=150;atk+=100+500;lifesteal+=0.2;}
 else if(s===2){hp+=100;atk+=1150+3000;crit+=0.2;}
 else if(s===3){hp+=50;atk+=1000+1600;damageReduction+=0.1;}
-else if(s===4){hp+=1000+1000;atk+=1000+1000;damageReduction+=0.1+0.1;dodge+=0.2;}
+else if(s===4){hp+=1000+1000;atk+=1000+1000;damageReduction+=0.1+0.3;dodge+=0.2;}
 else if(s===5){atk+=2000;dmgBonus+=3.0;}
 else if(s===6){hp+=500;atk+=6000;crit+=0.3+0.5;}
-else if(s===7){atk+=7000+10891;crit+=0.1;damageReduction+=0.01;dmgBonus+=0.4;}
-else if(s===8){atk+=17000+17891;crit+=0.3;damageReduction+=0.03;dmgBonus+=0.9;}
+else if(s===7){atk+=7000+10891;crit+=0.1;damageReduction+=0.2;dmgBonus+=0.4;}
+else if(s===8){atk+=17000+17891;crit+=0.3;damageReduction+=0.5;dmgBonus+=0.9;}
+else if(s===9){
+    // [文档修正] 生命+层数²/6 攻击+层数²/3
+    const extraHp = Math.round(maxLayer * maxLayer / 6);
+    const extraAtk = Math.round(maxLayer * maxLayer / 3);
+    hp += extraHp;
+    atk += extraAtk;
+    dodge += 0.05;
+    crit += 0.05;
+    damageReduction += 0.05;
+}
+
 if(saveData.debugStats){
 const d=saveData.debugStats;
-if(d.hp!==null&&d.hp!==undefined)hp=d.hp;
+if(d.hp!==null&&d.hp!==undefined)hp=Math.max(1,d.hp);
 if(d.atk!==null&&d.atk!==undefined)atk=d.atk;
 if(d.def!==null&&d.def!==undefined)def=d.def;
 if(d.crit!==null&&d.crit!==undefined)crit=d.crit/100;
 if(d.red!==null&&d.red!==undefined)damageReduction=d.red/100;
-if(d.dodge!==null&&d.dodge!==undefined)dodge=d.dodge/100;
+if(d.dodge!==null&&d.dodge!==undefined)dodge=Math.min(0.95, d.dodge/100);
 if(d.lifesteal!==null&&d.lifesteal!==undefined)lifesteal=d.lifesteal/100;
 if(d.dmgBonus!==null&&d.dmgBonus!==undefined)dmgBonus=d.dmgBonus/100;
 }
@@ -298,10 +361,29 @@ return{hp,atk,def,power:Math.round(hp+atk*2+def*3),crit,dmgBonus,damageReduction
 function openWeaponDetail(i){
 currentSpecialIndex=i;const item=specialWeaponList[i];
 $("detailIcon").innerText=item.emoji;$("detailName").innerText=item.name;
-$("detailUnlockAttr").innerText=item.unlockAttr;$("detailEquipAttr").innerText=item.equipAttr;
-let dynamicTrait=item.trait;
-if(i===2){let currentX=(saveData.thunderKillCount||0)*0.1;if(currentX>100)currentX=100;dynamicTrait=dynamicTrait.replace("x",currentX.toFixed(1));}
-$("detailTrait").innerText=dynamicTrait;
+let unlockAttr=item.unlockAttr;
+let equipAttr=item.equipAttr;
+let trait=item.trait;
+const maxLayer = saveData.endlessMaxLayer || 0;
+
+if(i===9){
+    // [文档修正] 动态显示数值
+    const unlockHp = Math.round(maxLayer * maxLayer / 10);
+    const unlockAtk = Math.round(maxLayer * maxLayer / 5);
+    unlockAttr = `生命+${formatNum(unlockHp)} 攻击+${formatNum(unlockAtk)}`;
+    
+    const equipHp = Math.round(maxLayer * maxLayer / 6);
+    const equipAtk = Math.round(maxLayer * maxLayer / 3);
+    equipAttr = `生命+${formatNum(equipHp)} 攻击+${formatNum(equipAtk)} 闪避5% 暴击5% 减伤5%`;
+    
+    const bonusDmg = Math.round(maxLayer);
+    const bonusPct = (maxLayer / 10).toFixed(1);
+    trait = `攻击附带${formatNum(bonusDmg)}伤害；附加${bonusPct}%伤害；附加1%最大生命(不超攻击200%)；附加10%敌方最大生命(不超攻击50%)`;
+}
+
+$("detailUnlockAttr").innerText=unlockAttr;
+$("detailEquipAttr").innerText=equipAttr;
+$("detailTrait").innerText=trait;
 $("detailUnlockWay").innerText=item.unlockWay;
 if(saveData.specialUnlocked[i]){$("doEquipSpecialBtn").disabled=false;$("doEquipSpecialBtn").innerText=(saveData.specialEquipped===i)?"卸下":"装备";}
 else{$("doEquipSpecialBtn").disabled=true;$("doEquipSpecialBtn").innerText="🔒未解锁";}
@@ -309,7 +391,7 @@ $("weaponDetailOverlay").style.display="flex";
 }
 function closeWeaponDetail(){$("weaponDetailOverlay").style.display="none";}
 function clickEquipSpecial(){initAudio();playUiClickSound();equipSpecialWeapon(currentSpecialIndex);closeWeaponDetail();}
-function renderSpecialEquipButtons(){
+  function renderSpecialEquipButtons(){
 $("specialWeapBtns").innerHTML="";
 specialWeaponList.forEach((item,i)=>{
 const btn=document.createElement("button");
@@ -359,6 +441,7 @@ saveData.debugUnlocked=true;
 saveGame();
 $("renameModal").style.display="none";
 showPopup("🔧已解锁自由调试（名字未改）");
+openAttrModal();
 return;
 }
 saveData.debugUnlocked=false;
@@ -398,10 +481,68 @@ function saveAvatarChange(){initAudio();playUiClickSound();saveData.playerAvatar
 function showPage(p){
 document.querySelectorAll(".page").forEach(el=>el.classList.remove("active"));
 p.classList.add("active");
-if(p===$("battlePage")||p===$("logPage")||p===$("specialPage")||p===$("dungeonPage")){$("bottomBtnBar").classList.add("hide");}
+if(p===$("battlePage")||p===$("logPage")||p===$("specialPage")||p===$("dungeonPage")||p===$("endlessPage")){$("bottomBtnBar").classList.add("hide");}
 else{$("bottomBtnBar").classList.remove("hide");}
 }
 function showPopup(t){$("popMsg").innerText=t;$("popMsg").style.display="block";setTimeout(()=>{$("popMsg").style.display="none";},1400);}
+
+// [S2] 击杀结算幂等包装：同一只怪只结算一次，80ms 窗口兜住已排队的 statusTimer tick
+function settleKill(fn){
+    if(isSettling) return;
+    isSettling = true;
+    try { fn(); }
+    finally { setTimeout(()=>{ isSettling = false; }, 80); }
+}
+
+// [S5+S6] 波次/战斗生命周期统一清理：只清状态 + 波次级 timer，不碰 atkDelay
+function resetBattleState(){
+    monsterStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};
+    playerStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};
+    playerShield=0;
+    comboDmgBonus=0;
+    if(statusTimer){clearInterval(statusTimer);statusTimer=null;}
+    if(dungeonWaveTimer){clearTimeout(dungeonWaveTimer);dungeonWaveTimer=null;}
+}
+
+// 渲染无尽模式主页面的属性
+function renderEndlessPage() {
+    const maxL = saveData.endlessMaxLayer || 0;
+    $("endlessMaxLayer").innerText = maxL;
+    
+    const nextL = maxL + 1;
+    const nHp = Math.round(10 * nextL / 2 * nextL);
+    const nAtk = Math.round(1 * nextL / 5 * nextL);
+    $("endlessNextPower").innerText = formatNum(nHp + nAtk * 2);
+    
+    const s = getPlayerStats();
+    $("endlessHp").innerText = formatNum(s.hp);
+    $("endlessAtk").innerText = formatNum(s.atk);
+    $("endlessDef").innerText = formatNum(s.def);
+    $("endlessPower").innerText = formatNum(s.power);
+    
+    const wi=saveData.currWeap||0,hi=saveData.currHelm||0,ai=saveData.currArmor||0;
+    $("endlessEquip").innerText = `${weaponList[wi].emoji}${weaponList[wi].name} | ${helmList[hi].emoji}${helmList[hi].name} | ${armorList[ai].emoji}${armorList[ai].name}`;
+    
+    if (saveData.specialEquipped >= 0) {
+        const sw = specialWeaponList[saveData.specialEquipped];
+        $("endlessSpecial").innerText = `特殊：${sw.emoji}${sw.name}`;
+    } else {
+        $("endlessSpecial").innerText = "特殊：无";
+    }
+
+    const nextBtn = $("endlessNextBtn");
+    if (saveData.endlessMaxLayer > 0) {
+        nextBtn.style.background = "#2980b9";
+        nextBtn.style.color = "#fff";
+        nextBtn.style.pointerEvents = "auto";
+        nextBtn.innerText = `进入第 ${maxL + 1} 层`;
+    } else {
+        nextBtn.style.background = "#555";
+        nextBtn.style.color = "#888";
+        nextBtn.style.pointerEvents = "none";
+        nextBtn.innerText = "击败第一层解锁";
+    }
+}
 function renderLevelButtons(){
 $("levelWrap").innerHTML="";
 levelConfig.forEach((lv,i)=>{
@@ -411,7 +552,7 @@ if(lv.isBoss)btn.classList.add("boss-btn");
 if(lv.isMiniBoss)btn.classList.add("mini-boss-btn");
 btn.innerHTML=`<div>${i+1}</div><div>${lv.emoji}</div><small>战力:${formatNum(calcMonsterPower(lv.hp,lv.atk))}</small>`;
 btn.disabled=i>=saveData.unlockLevel;
-btn.onclick=()=>{initAudio();playUiClickSound();isDungeonMode=false;currentLevel=i;loadLevel(i);showPage($("battlePage"));};
+btn.onclick=()=>{initAudio();playUiClickSound();isDungeonMode=false;isEndlessMode=false;currentLevel=i;loadLevel(i);showPage($("battlePage"));};
 $("levelWrap").appendChild(btn);
 });
 }
@@ -434,15 +575,20 @@ $("armorBtns").innerHTML="";
 armorList.forEach((a,i)=>{const cnt=saveData.armorCount[i]||0;const wrap=makeBadgeWrap(`${a.emoji}${a.name}`,cnt,()=>{saveData.currArmor=i;saveGame();refreshEquipUi();renderEquipButtons();},cnt<=0,i===saveData.currArmor);$("armorBtns").appendChild(wrap);});
 }
 function refreshEquipUi(){
-const wi=saveData.currWeap??0,hi=saveData.currHelm??0,ai=saveData.currArmor??0;
+const wi=saveData.currWeap||0,hi=saveData.currHelm||0,ai=saveData.currArmor||0;
 $("selWeap").innerText=`${weaponList[wi].emoji}${weaponList[wi].name}`;
 $("selHelm").innerText=`${helmList[hi].emoji}${helmList[hi].name}`;
 $("selArmor").innerText=`${armorList[ai].emoji}${armorList[ai].name}`;
 $("battleWeap").innerText=`${weaponList[wi].emoji}${weaponList[wi].name}`;
 $("battleHelm").innerText=`${helmList[hi].emoji}${helmList[hi].name}`;
 $("battleArmor").innerText=`${armorList[ai].emoji}${armorList[ai].name}`;
+if (saveData.specialEquipped >= 0) {
+$("selSpecial").innerText=`${specialWeaponList[saveData.specialEquipped].emoji}${specialWeaponList[saveData.specialEquipped].name}`;
+} else {
+$("selSpecial").innerText="无";
 }
-function getPoolSeg(n){if(n>=2&&n<=4)return 0;if(n>=5&&n<=7)return 1;if(n>=8&&n<=10)return 2;if(n>=11&&n<=13)return 3;return 4;}
+}
+function getPoolSeg(n){if(n>=2&&n<=4)return 0;if(n>=5&&n<=7)return 1;if(n>=8&&n<=10)return 2;if(n>=11&&n<=13)return 3;if(n>=14&&n<=16)return 4;if(n>=17&&n<=19)return 5;return 6;}
 function weightedSelect(l){let t=0;l.forEach(x=>t+=x.w);let r=Math.random()*t;for(let i of l){r-=i.w;if(r<=0)return i;}return l[l.length-1];}
 function tryDropEquipment(){
 const n=currentLevel+1;
@@ -459,43 +605,104 @@ else if(pick.type==="helm"){saveData.helmCount[pick.idx]++;showPopup(`获得：$
 else{saveData.armorCount[pick.idx]++;showPopup(`获得：${armorList[pick.idx].emoji}${armorList[pick.idx].name}`);}
 saveGame();renderEquipButtons();
 }
-
-function loadLevel(i){
-currentLevel=i;isDungeonMode=false;currentDungeon=-1;
+  function loadLevel(i){
+currentLevel=i;isDungeonMode=false;isEndlessMode=false;currentDungeon=-1;
+isSettling=false; // [S2] 新一场战斗解锁
+resetBattleState(); // [S5+S6] 统一清理状态与波次 timer
 const lv=levelConfig[i];
 monsterHp=lv.hp;monsterMaxHp=lv.hp;
-monsterStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};playerStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};
-playerShield=0;comboDmgBonus=0;
 document.body.classList.remove("shake");
-if(statusTimer){clearInterval(statusTimer);statusTimer=null;}
 $("monsterEmoji").innerText=lv.emoji;$("levelText").innerText=i+1;
 const s=getPlayerStats();playerMaxHp=s.hp;playerHp=playerMaxHp;
 $("msg").className="info";$("msg").innerText=lv.isBoss?`⚠ Boss关卡！准备战斗！`:`第${i+1}关，准备战斗！`;
 $("atkBtn").disabled=false;$("resetBtn").style.display="inline-block";
+$("nextLayerBtn").style.display="none";
 $("monsterEmoji").style.transform="translateY(0)";$("monsterEmoji").style.opacity="1";
 render();$("battlePlayerName").innerText=saveData.playerName||"打怪升级117";
 }
+
+// ============ 无尽模式加载 ============
+function startEndless(startLayer) {
+    initAudio(); playUiClickSound();
+    isDungeonMode = false; isEndlessMode = true;
+    endlessLayer = startLayer;
+    endlessCleared = false;
+    isSettling = false; // [S2] 新一场战斗解锁
+    resetBattleState(); // [S5+S6] 统一清理状态与波次 timer
+    
+    const s = getPlayerStats();
+    playerMaxHp = s.hp; playerHp = playerMaxHp;
+    
+    showPage($("battlePage"));
+    loadEndlessWave();
+}
+
+function loadEndlessWave() {
+    document.body.classList.remove("shake");
+    endlessCleared = false;
+    isSettling = false; // [S2] 新一波解锁
+    resetBattleState(); // [S5+S6] 统一清理状态与波次 timer
+    
+    // 每层满血 + 状态清空
+    playerMaxHp = getPlayerStats().hp;
+    playerHp = playerMaxHp;
+    
+    let hp = Math.round(10 * endlessLayer / 2 * endlessLayer);
+    let atk = Math.round(1 * endlessLayer / 5 * endlessLayer);
+    
+    let emoji = "🐁";
+    if (endlessLayer >= 10000) emoji = "🐢";
+    else if (endlessLayer >= 8001) emoji = "🦅";
+    else if (endlessLayer >= 4001) emoji = "🐜";
+    else if (endlessLayer >= 2001) emoji = "🦁";
+    else if (endlessLayer >= 1001) emoji = "🐯";
+    else if (endlessLayer >= 501) emoji = "🐺";
+    else if (endlessLayer >= 101) emoji = "🦆";
+    
+    monsterHp = hp;
+    monsterMaxHp = hp;
+    
+    $("resetBtn").style.display = "none";
+    $("levelText").innerText = `无尽挑战 第 ${endlessLayer} 层`;
+    $("msg").className = "info";
+    $("msg").innerText = `第 ${endlessLayer} 层怪物来袭！`;
+    $("battlePlayerName").innerText = saveData.playerName || "打怪升级117";
+    
+    $("nextLayerBtn").style.display = "inline-block";
+    $("nextLayerBtn").style.background = "#555";
+    $("nextLayerBtn").style.color = "#888";
+    $("nextLayerBtn").disabled = true;
+    $("atkBtn").disabled = false;
+
+    const mEl = $("monsterEmoji");
+    mEl.innerText = emoji;
+    mEl.style.transform = "translateY(0)";
+    mEl.style.opacity = "1";
+    
+    render();
+}
+
 function startDungeon(did){
 const d=dungeonConfig[did];
 if(saveData.playerLevel<d.lv&&!saveData.debugUnlocked){showPopup(`等级不足${d.lv}级，无法进入！`);return;}
-isDungeonMode=true;currentDungeon=did;dungeonWave=0;
+isDungeonMode=true;isEndlessMode=false;currentDungeon=did;dungeonWave=0;
+isSettling=false; // [S2] 新一场战斗解锁
+resetBattleState(); // [S5+S6] 统一清理状态与波次 timer
 const s=getPlayerStats();playerMaxHp=s.hp;playerHp=playerMaxHp;
-monsterStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};playerStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};
-playerShield=0;comboDmgBonus=0;
 document.body.classList.remove("shake");
-if(statusTimer){clearInterval(statusTimer);statusTimer=null;}
 $("atkBtn").disabled=false;
+$("nextLayerBtn").style.display="none";
 showPage($("battlePage"));
 loadDungeonWave();
 }
 function loadDungeonWave(){
 document.body.classList.remove("shake");
-if(statusTimer){clearInterval(statusTimer);statusTimer=null;}
+isSettling=false; // [S2] 新一波解锁
+resetBattleState(); // [S5+S6] 统一清理状态与波次 timer
 const d=dungeonConfig[currentDungeon];
 const m=d.waves[dungeonWave];
 if(!m){showPopup("副本通关！获得大量经验！");showPage($("selectPage"));return;}
 monsterHp=m.hp;monsterMaxHp=m.hp;
-monsterStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};
 $("resetBtn").style.display="none";
 $("levelText").innerText=`${d.name} 第${dungeonWave+1}波`;
 $("msg").className="info";$("msg").innerText=`第 ${dungeonWave+1} 波怪物来袭！`;
@@ -531,9 +738,6 @@ if(playerShield>0)pr.innerHTML+=`<span class="status-icon" style="color:#6cf;bor
 function startStatusTimer(){
 if(statusTimer)return;
 statusTimer=setInterval(()=>{
-if(playerHp<=0 || monsterHp<=0){
-clearInterval(statusTimer);statusTimer=null;return;
-}
 let changed=false;
 if(monsterStatus.bleed>0){monsterStatus.bleed=Math.max(0,monsterStatus.bleed-0.1);if(monsterHp>0){monsterHp=Math.max(0,monsterHp-monsterStatus.bleedDmg);changed=true;}if(monsterStatus.bleed<=0)changed=true;}
 if(monsterStatus.freeze>0){monsterStatus.freeze=Math.max(0,monsterStatus.freeze-0.1);changed=true;}
@@ -542,18 +746,29 @@ if(playerStatus.bleed>0){playerStatus.bleed=Math.max(0,playerStatus.bleed-0.1);i
 if(playerStatus.freeze>0){playerStatus.freeze=Math.max(0,playerStatus.freeze-0.1);changed=true;}
 if(playerStatus.pierce>0){playerStatus.pierce=Math.max(0,playerStatus.pierce-0.1);changed=true;}
 if(changed)render();
-if(monsterStatus.bleed<=0 && monsterStatus.freeze<=0 && monsterStatus.pierce<=0 && playerStatus.bleed<=0 && playerStatus.freeze<=0 && playerStatus.pierce<=0){
-clearInterval(statusTimer);statusTimer=null;
-}
+if(playerHp<=0){clearInterval(statusTimer);statusTimer=null;onPlayerKilledByStatus();return;}
+if(monsterHp<=0){clearInterval(statusTimer);statusTimer=null;onMonsterKilledByStatus();return;}
+if(monsterStatus.bleed<=0 && monsterStatus.freeze<=0 && monsterStatus.pierce<=0 && playerStatus.bleed<=0 && playerStatus.freeze<=0 && playerStatus.pierce<=0){clearInterval(statusTimer);statusTimer=null;}
 },100);
 }
 function monsterAttack(){
+if(monsterHp<=0) return; // [BUG-78] 死怪不响
 playHitSound();
-const lv=isDungeonMode?dungeonConfig[currentDungeon].waves[dungeonWave]:levelConfig[currentLevel];
+let lv;
+if(isEndlessMode){lv={hp:Math.round(10*endlessLayer/2*endlessLayer),atk:Math.round(1*endlessLayer/5*endlessLayer)};}
+else{lv=isDungeonMode?dungeonConfig[currentDungeon].waves[dungeonWave]:levelConfig[currentLevel];}
 if(!lv)return;
 if(monsterStatus.freeze>0){$("msg").innerHTML+=`<br><span style="color:#6cf">❄ 怪物被冰冻，无法攻击！</span>`;render();return;}
 const s=getPlayerStats();
-if(Math.random()<s.dodge){$("msg").innerHTML+=`<br><span style="color:#0f0">✨ 你闪避了怪物的攻击！</span>`;render();return;}
+let isDodged = false;
+if(saveData.specialEquipped===2 && Math.random()<0.10){
+    isDodged = true;
+    monsterStatus.freeze = 0.3;
+    if(!statusTimer) startStatusTimer();
+    $("msg").innerHTML+=`<br><span style="color:#0f0">✨ 水之长枪触发闪避，并冰冻敌方0.3秒！</span>`;
+}
+if(!isDodged && Math.random()<s.dodge){ isDodged = true; $("msg").innerHTML+=`<br><span style="color:#0f0">✨ 你闪避了怪物的攻击！</span>`; }
+if(isDodged){ render(); return; }
 let dmg=Math.max(1,lv.atk-s.def);
 dmg=Math.floor(dmg*(1-s.damageReduction));
 if(playerStatus.pierce>0)dmg=Math.floor(dmg*1.2);
@@ -564,116 +779,186 @@ if(playerHp<=0){playerHp=0;render();$("msg").innerHTML+=`<br><span style="color:
 render();$("msg").innerHTML+=`<br><span style="color:#f84">怪物反击！你受到了 ${formatNum(dmg)} 点伤害。</span>`;
 }
 
-function onMonsterKilledByStatus(){playMonsterDeathOuhSound();$("msg").innerHTML=`<span style="color:#0ff">怪物被状态击败！</span>`;handleMonsterKilled(0);}
-function onPlayerKilledByStatus(){playerHp=0;render();$("msg").innerHTML+=`<br><span style="color:#f44">💀 你被流血击败了...</span>`;$("atkBtn").disabled=true;saveData.loseCount=(saveData.loseCount||0)+1;saveGame();}
-function handleMonsterKilled(finalDmg){
-const lv=isDungeonMode?dungeonConfig[currentDungeon].waves[dungeonWave]:levelConfig[currentLevel];
-if(!lv)return;
-const leveled=gainExp(lv.exp);
-if(isDungeonMode){
-const d=dungeonConfig[currentDungeon];
-const last=d.waves.length-1;
-if(d.id===0){if(dungeonWave===last&&Math.random()<0.01)tryUnlockSpecial(0);if(dungeonWave<5&&Math.random()<0.02)tryUnlockSpecial(1);}
-else if(d.id===1){if(dungeonWave<6&&Math.random()<0.03)tryUnlockSpecial(3);if(dungeonWave===6&&Math.random()<0.02)tryUnlockSpecial(4);}
-else if(d.id===2){if(dungeonWave<4&&Math.random()<0.02)tryUnlockSpecial(5);if(dungeonWave===4&&Math.random()<0.02)tryUnlockSpecial(2);}
-else if(d.id===3){if(dungeonWave<3&&Math.random()<0.05)tryUnlockSpecial(6);if(dungeonWave===5&&Math.random()<0.06)tryUnlockSpecial(7);if(dungeonWave===7&&Math.random()<0.03)tryUnlockSpecial(8);}
-if(leveled)showPopup("🎉 升级啦！");
-dungeonWave++;
-$("atkBtn").disabled=true;
-if(dungeonWave>=d.waves.length){saveGame();document.body.classList.remove("shake");if(statusTimer){clearInterval(statusTimer);statusTimer=null;}setTimeout(()=>{showPopup("副本通关！获得大量经验！");showPage($("selectPage"));},1500);return;}
-setTimeout(()=>{if(playerHp>0){loadDungeonWave();$("atkBtn").disabled=false;}},3000);
-saveGame();return;
+function onMonsterKilledByStatus(){
+if(isEndlessMode && endlessCleared) return;
+playMonsterDeathOuhSound();$("msg").innerHTML=`<span style="color:#0ff">怪物被状态击败！</span>`;
+if(isEndlessMode)handleEndlessWin();
+else handleMonsterKilled(0);
 }
-tryDropEquipment();
-if(lv.isBoss||lv.isMiniBoss){saveData.bossKillCount=(saveData.bossKillCount||0)+1;if(saveData.bossKillCount>=200&&!saveData.specialUnlocked[2])tryUnlockSpecial(2);}
-if(currentLevel===9){saveData.boss10KillCount=(saveData.boss10KillCount||0)+1;if(saveData.boss10KillCount>=100&&!saveData.specialUnlocked[3])tryUnlockSpecial(3);}
-if(currentLevel+1>=saveData.unlockLevel&&currentLevel+1<levelConfig.length)saveData.unlockLevel=currentLevel+2;
-if(saveData.unlockLevel>=levelConfig.length&&!saveData.specialUnlocked[5])tryUnlockSpecial(5);
-if(currentLevel===19&&!saveData.specialUnlocked[6])tryUnlockSpecial(6);
-if(leveled)showPopup("🎉 升级啦！");
-saveGame();renderLevelButtons();$("atkBtn").disabled=true;
+function onPlayerKilledByStatus(){playerHp=0;render();$("msg").innerHTML+=`<br><span style="color:#f44">💀 你被流血击败了...</span>`;$("atkBtn").disabled=true;saveData.loseCount=(saveData.loseCount||0)+1;saveGame();}
+
+// ============ 无尽胜利结算 (不自动进下一关) ============
+function handleEndlessWin(){
+    settleKill(()=>{ // [S2] 唯一锁点
+        if(statusTimer){clearInterval(statusTimer);statusTimer=null;} // [S2] 清掉已排队的 tick
+        let exp = Math.round(endlessLayer * endlessLayer / 2);
+        const leveled = gainExp(exp);
+        if(leveled)showPopup("🎉 升级啦！");
+        if (endlessLayer > (saveData.endlessMaxLayer || 0)) {
+            saveData.endlessMaxLayer = endlessLayer;
+            if (endlessLayer === 1 && !saveData.specialUnlocked[9]) {
+                tryUnlockSpecial(9);
+            }
+        }
+        saveGame();
+        $("atkBtn").disabled = true;
+        endlessCleared = true;
+        const nextBtn = $("nextLayerBtn");
+        nextBtn.style.background = "#2980b9";
+        nextBtn.style.color = "#fff";
+        nextBtn.disabled = false;
+    });
+}
+
+function handleMonsterKilled(finalDmg){
+    settleKill(()=>{ // [S2] 唯一锁点
+        if(isDungeonMode && dungeonWave >= dungeonConfig[currentDungeon].waves.length) return;
+        const lv=isDungeonMode?dungeonConfig[currentDungeon].waves[dungeonWave]:levelConfig[currentLevel];
+        if(!lv)return;
+        const leveled=gainExp(lv.exp);
+        if(isDungeonMode){
+            const d=dungeonConfig[currentDungeon];
+            const last=d.waves.length-1;
+            if(d.id===0){if(dungeonWave===last&&Math.random()<0.01)tryUnlockSpecial(0);if(dungeonWave<5&&Math.random()<0.02)tryUnlockSpecial(1);}
+            else if(d.id===1){if(dungeonWave<6&&Math.random()<0.03)tryUnlockSpecial(3);if(dungeonWave===6&&Math.random()<0.02)tryUnlockSpecial(4);}
+            else if(d.id===2){if(dungeonWave<4&&Math.random()<0.02)tryUnlockSpecial(5);if(dungeonWave===4&&Math.random()<0.02)tryUnlockSpecial(2);}
+            else if(d.id===3){if(dungeonWave<3&&Math.random()<0.05)tryUnlockSpecial(6);if(dungeonWave===5&&Math.random()<0.06)tryUnlockSpecial(7);if(dungeonWave===7&&Math.random()<0.03)tryUnlockSpecial(8);}
+            if(leveled)showPopup("🎉 升级啦！");
+            dungeonWave++;
+            $("atkBtn").disabled=true;
+            refreshDungeonOpacity();
+            if(dungeonWave>=d.waves.length){
+                saveGame();document.body.classList.remove("shake");
+                if(statusTimer){clearInterval(statusTimer);statusTimer=null;}
+                if(dungeonWaveTimer){clearTimeout(dungeonWaveTimer);dungeonWaveTimer=null;}
+                setTimeout(()=>{showPopup("副本通关！获得大量经验！");showPage($("selectPage"));},1500);
+                return;
+            }
+            if(dungeonWaveTimer)clearTimeout(dungeonWaveTimer);
+            dungeonWaveTimer=setTimeout(()=>{if(playerHp>0){loadDungeonWave();$("atkBtn").disabled=false;}},3000);
+            saveGame();return;
+        }
+        
+        tryDropEquipment();
+        if(saveData.specialEquipped===2) saveData.thunderKillCount=(saveData.thunderKillCount||0)+1;
+        
+        if(lv.isBoss||lv.isMiniBoss){saveData.bossKillCount=(saveData.bossKillCount||0)+1;if(saveData.bossKillCount>=200&&!saveData.specialUnlocked[2])tryUnlockSpecial(2);}
+        if(currentLevel===9){saveData.boss10KillCount=(saveData.boss10KillCount||0)+1;if(saveData.boss10KillCount>=100&&!saveData.specialUnlocked[3])tryUnlockSpecial(3);}
+        if(currentLevel+1>=saveData.unlockLevel&&currentLevel+1<levelConfig.length)saveData.unlockLevel=currentLevel+2;
+        if(saveData.unlockLevel>=levelConfig.length&&!saveData.specialUnlocked[5])tryUnlockSpecial(5);
+        if(currentLevel===19&&!saveData.specialUnlocked[6])tryUnlockSpecial(6);
+        if(leveled)showPopup("🎉 升级啦！");
+        saveGame();renderLevelButtons();refreshDungeonOpacity();$("atkBtn").disabled=true;
+    });
 }
 
 $("atkBtn").onclick=function(){
-initAudio();playAttackSound();
-if(monsterHp<=0||playerHp<=0)return;
-if(playerStatus.freeze>0){$("msg").innerHTML+=`<br><span style="color:#6cf">❄ 你被冰冻，无法攻击！</span>`;return;}
-const s=getPlayerStats();
-const lv=isDungeonMode?dungeonConfig[currentDungeon].waves[dungeonWave]:levelConfig[currentLevel];
-if(!lv)return;
-let baseDmg=s.atk,isCrit=false,extra="",heal="";
-if(Math.random()<s.crit){isCrit=true;baseDmg=Math.floor(baseDmg*1.5);}
-baseDmg=Math.floor(baseDmg*(1+s.dmgBonus));
-const sIdx=saveData.specialEquipped;
-if(sIdx===0){if(Math.random()<0.25){baseDmg*=3;extra+="⚔绿甲爆发！";}}
-else if(sIdx===1){
-if(Math.random()<0.25){const h=Math.floor(playerMaxHp*0.05);playerHp=Math.min(playerMaxHp,playerHp+h);heal+=` 长须回血${formatNum(h)}！`;}
-if(Math.random()<0.05){baseDmg*=2;extra+="⚔长须双倍！";}
-}
-else if(sIdx===2){
-let bonusRate=(saveData.thunderKillCount||0)*0.001;if(bonusRate>1)bonusRate=1;
-const b=Math.floor(baseDmg*(0.5+bonusRate));monsterHp-=b;extra+=`☄水之附加${formatNum(b)}伤害！`;
-if(Math.random()<0.10){monsterStatus.freeze=0.3;extra+="❄冰冻敌方0.3秒！";}
-}
-else if(sIdx===3){
-baseDmg=Math.floor(baseDmg*1.5);
-if(Math.random()<0.05){
-monsterStatus.bleed=1.0;
-monsterStatus.bleedDmg=Math.max(1,Math.floor(s.atk*0.1));
-extra+="🩸猴爪流血1秒！";
-if(!statusTimer)startStatusTimer();
-}
-}
-else if(sIdx===4){
-const h=Math.floor(playerMaxHp*0.02);playerHp=Math.min(playerMaxHp,playerHp+h);heal+=` 霸王回血${formatNum(h)}！`;
-if(Math.random()<0.01){monsterHp=0;extra+="🔮霸王秒杀！";}
-const b1=Math.floor(baseDmg*0.3);monsterHp-=b1;extra+=`霸王附加${formatNum(b1)}！`;
-if(Math.random()<0.3){const b2=Math.floor(s.atk*2);monsterHp-=b2;extra+=`霸王重击${formatNum(b2)}！`;}
-}
-else if(sIdx===5){
-baseDmg=Math.floor(baseDmg*4.0);
-if(Math.random()<0.2){const shield=Math.floor(playerMaxHp*0.1);playerShield+=shield;extra+=`🌑获得护盾${formatNum(shield)}！`;}
-if(Math.random()<0.2){baseDmg*=2;extra+="🌑稀影双倍！";}
-}
-else if(sIdx===6){
-if(monsterHp<lv.hp*0.2){monsterHp=0;extra+="⚔白毛斩杀！";}
-if(monsterHp>lv.hp*0.7){baseDmg=Math.floor(baseDmg*1.5);extra+="⚔白毛增伤50%！";}
-}
-else if(sIdx===7){
-baseDmg=Math.floor(baseDmg*1.2);
-const b=Math.floor(baseDmg*0.1+baseDmg*0.5);monsterHp-=b;extra+=`龙鳞附加${formatNum(b)}！`;
-monsterStatus.pierce=0.4;extra+="🗡刺穿0.4秒！";
-}
-else if(sIdx===8){
-baseDmg=Math.floor(baseDmg*3.0);
-comboDmgBonus+=0.02;baseDmg=Math.floor(baseDmg*(1+comboDmgBonus));
-const b=Math.floor(baseDmg*0.9+baseDmg*0.5);monsterHp-=b;extra+=`腕鳞附加${formatNum(b)}！`;
-monsterStatus.bleed=0.5;monsterStatus.bleedDmg=Math.max(1,Math.floor(s.atk*0.1));extra+="🩸腕鳞流血0.5秒！";if(!statusTimer)startStatusTimer();
-}
-if(s.lifesteal>0){const h=Math.floor(baseDmg*s.lifesteal);playerHp=Math.min(playerMaxHp,playerHp+h);heal+=` 吸血${formatNum(h)}！`;}
-if(monsterStatus.pierce>0)baseDmg=Math.floor(baseDmg*1.2);
-if(monsterHp>0)monsterHp-=baseDmg;
-playHitSound();
-if((monsterStatus.bleed>0||monsterStatus.freeze>0||monsterStatus.pierce>0)&&!statusTimer)startStatusTimer();
-if(monsterHp<=0){
-monsterHp=0;playMonsterDeathOuhSound();render();
-$("msg").innerHTML=`<span style="color:#0ff">击败怪物！造成伤害 ${formatNum(baseDmg)}</span> ${heal} <br><span style="color:#fa0">${extra}</span>`;
-handleMonsterKilled(baseDmg);
-return;
-}
-let ct=isCrit?"<span class='crit-text'>暴击！</span>":"";
-$("msg").innerHTML=`<span style="color:#fff">你造成 ${formatNum(baseDmg)} 伤害</span> ${ct} ${heal} <br><span style="color:#8cf">${extra}</span>`;
-$("atkBtn").disabled=true;
-setTimeout(()=>{if(playerHp>0&&monsterHp>0){monsterAttack();$("atkBtn").disabled=false;}},attackIntervalEnabled?300:0);
+    initAudio();playAttackSound();
+    if(monsterHp<=0||playerHp<=0)return;
+    if(playerStatus.freeze>0){$("msg").innerHTML+=`<br><span style="color:#6cf">❄ 你被冰冻，无法攻击！</span>`;return;}
+    const s=getPlayerStats();
+    let lv;
+    if(isEndlessMode){lv={hp:Math.round(10*endlessLayer/2*endlessLayer),atk:Math.round(1*endlessLayer/5*endlessLayer)};}
+    else{lv=isDungeonMode?dungeonConfig[currentDungeon].waves[dungeonWave]:levelConfig[currentLevel];}
+    if(!lv)return;
+    let baseDmg=s.atk,isCrit=false,extra="",heal="";
+    if(Math.random()<s.crit){isCrit=true;baseDmg=Math.floor(baseDmg*1.5);}
+    baseDmg=Math.floor(baseDmg*(1+s.dmgBonus));
+    const sIdx=saveData.specialEquipped;
+
+    if(sIdx===0){if(Math.random()<0.25){baseDmg*=3;extra+="⚔绿甲爆发！";}}
+    else if(sIdx===1){
+        if(Math.random()<0.25){const h=Math.floor(playerMaxHp*0.05);playerHp=Math.min(playerMaxHp,playerHp+h);heal+=` 长须回血${formatNum(h)}！`;}
+        if(Math.random()<0.05){baseDmg*=2;extra+="⚔长须双倍！";}
+    }
+    else if(sIdx===2){
+        let bonusRate=(saveData.thunderKillCount||0)*0.001;if(bonusRate>1)bonusRate=1;
+        const b=Math.floor(baseDmg*(0.5+bonusRate));monsterHp-=b;extra+=`☄水之附加${formatNum(b)}伤害！`;
+        if(Math.random()<0.10){monsterStatus.freeze=0.3;extra+="❄冰冻敌方0.3秒！";}
+    }
+    else if(sIdx===3){
+        baseDmg=Math.floor(baseDmg*1.5);
+        if(Math.random()<0.05){
+            monsterStatus.bleed=1.0;
+            monsterStatus.bleedDmg=Math.max(1,Math.floor(s.atk*0.1));
+            extra+="🩸猴爪流血1秒！";
+            if(!statusTimer)startStatusTimer();
+        }
+    }
+    else if(sIdx===4){
+        const h=Math.floor(playerMaxHp*0.02);playerHp=Math.min(playerMaxHp,playerHp+h);heal+=` 霸王回血${formatNum(h)}！`;
+        if(Math.random()<0.01){monsterHp=0;extra+="🔮霸王秒杀！";}
+        const b1=Math.floor(baseDmg*0.3);monsterHp-=b1;extra+=`霸王附加${formatNum(b1)}！`;
+        if(Math.random()<0.3){const b2=Math.floor(s.atk*2);monsterHp-=b2;extra+=`霸王重击${formatNum(b2)}！`;}
+    }
+    else if(sIdx===5){
+        baseDmg=Math.floor(baseDmg*4.0);
+        if(Math.random()<0.2){const shield=Math.floor(playerMaxHp*0.1);playerShield=Math.min(playerShield+shield, playerMaxHp*2);extra+=`🌑获得护盾${formatNum(shield)}！`;}
+        if(Math.random()<0.2){baseDmg*=2;extra+="🌑稀影双倍！";}
+    }
+    else if(sIdx===6){
+        if(monsterHp<lv.hp*0.2){monsterHp=0;extra+="⚔白毛斩杀！";}
+        if(monsterHp>lv.hp*0.7){baseDmg=Math.floor(baseDmg*1.5);extra+="⚔白毛增伤50%！";}
+    }
+    else if(sIdx===7){
+        baseDmg=Math.floor(baseDmg*1.2);
+        const b=Math.floor(baseDmg*0.1+s.atk*0.5);monsterHp-=b;extra+=`龙鳞附加${formatNum(b)}！`;
+        monsterStatus.pierce=0.4;extra+="🗡刺穿0.4秒！";
+    }
+    else if(sIdx===8){
+        baseDmg=Math.floor(baseDmg*3.0);
+        comboDmgBonus+=0.02;baseDmg=Math.floor(baseDmg*(1+comboDmgBonus));
+        const b=Math.floor(baseDmg*0.9+s.atk*0.5);monsterHp-=b;extra+=`腕鳞附加${formatNum(b)}！`;
+        monsterStatus.bleed=0.5;monsterStatus.bleedDmg=Math.max(1,Math.floor(s.atk*0.1));extra+="🩸腕鳞流血0.5秒！";if(!statusTimer)startStatusTimer();
+    }
+    else if(sIdx===9){
+        // [文档修正]
+        const maxL = saveData.endlessMaxLayer || 0;
+        const dmg1 = maxL; 
+        const dmg2 = Math.floor(baseDmg * (maxL / 10 / 100)); 
+        const dmg3 = Math.min(Math.floor(playerMaxHp * 0.01), s.atk * 2); 
+        const dmg4 = Math.min(Math.floor(lv.hp * 0.10), s.atk * 0.5); 
+        const totalAdd = dmg1 + dmg2 + dmg3 + dmg4;
+        monsterHp -= totalAdd;
+        extra += `🌌无尽附加${formatNum(totalAdd)}！`;
+    }
+    if(s.lifesteal>0){const h=Math.floor(baseDmg*s.lifesteal);playerHp=Math.min(playerMaxHp,playerHp+h);heal+=` 吸血${formatNum(h)}！`;}
+    if(monsterStatus.pierce>0)baseDmg=Math.floor(baseDmg*1.2);
+    if(monsterHp>0)monsterHp-=baseDmg;
+    playHitSound();
+    if((monsterStatus.bleed>0||monsterStatus.freeze>0||monsterStatus.pierce>0)&&!statusTimer)startStatusTimer();
+    if(monsterHp<=0){
+        monsterHp=0;playMonsterDeathOuhSound();
+        if(statusTimer){clearInterval(statusTimer);statusTimer=null;}
+        render();
+        $("msg").innerHTML=`<span style="color:#0ff">击败怪物！造成伤害 ${formatNum(baseDmg)}</span> ${heal} <br><span style="color:#fa0">${extra}</span>`;
+        if(isEndlessMode)handleEndlessWin(); // [#79] 修复：不套外层锁
+        else handleMonsterKilled(baseDmg);
+        return;
+    }
+    let ct=isCrit?"<span class='crit-text'>暴击！</span>":"";
+    $("msg").innerHTML=`<span style="color:#fff">你造成 ${formatNum(baseDmg)} 伤害</span> ${ct} ${heal} <br><span style="color:#8cf">${extra}</span>`;
+    $("atkBtn").disabled=true;
+    if(atkDelayTimer){clearTimeout(atkDelayTimer);} // [S6] 防连点
+    atkDelayTimer=setTimeout(()=>{atkDelayTimer=null;if(playerHp>0&&monsterHp>0){monsterAttack();$("atkBtn").disabled=false;}},attackIntervalEnabled?300:0);
 };
+  function refreshDungeonOpacity() {
+    const d1 = $("dungeonLv10"), d2 = $("dungeonLv30"), d3 = $("dungeonLv80"), d4 = $("dungeonLv160");
+    if(d1) d1.style.opacity = (saveData.playerLevel >= dungeonConfig[0].lv || saveData.debugUnlocked) ? "1" : "0.5";
+    if(d2) d2.style.opacity = (saveData.playerLevel >= dungeonConfig[1].lv || saveData.debugUnlocked) ? "1" : "0.5";
+    if(d3) d3.style.opacity = (saveData.playerLevel >= dungeonConfig[2].lv || saveData.debugUnlocked) ? "1" : "0.5";
+    if(d4) d4.style.opacity = (saveData.playerLevel >= dungeonConfig[3].lv || saveData.debugUnlocked) ? "1" : "0.5";
+}
 
 function renderAll(){
-refreshEquipUi();renderEquipButtons();renderSpecialEquipButtons();renderLevelButtons();
-$("playerEmoji").textContent=saveData.playerAvatar||"😃";
-$("attrAvatarShow").innerText=saveData.playerAvatar||"😃";
-$("battlePlayerName").innerText=saveData.playerName||"打怪升级117";
-render();
+    refreshEquipUi();renderEquipButtons();renderSpecialEquipButtons();renderLevelButtons();
+    $("playerEmoji").textContent=saveData.playerAvatar||"😃";
+    $("attrAvatarShow").innerText=saveData.playerAvatar||"😃";
+    $("battlePlayerName").innerText=saveData.playerName||"打怪升级117";
+    render();
+    refreshDungeonOpacity();
 }
+
 $("openSettingsBtn").onclick=()=>{initAudio();playUiClickSound();$("settingsModal").style.display="flex";};
 $("closeSettingsBtn").onclick=()=>{initAudio();playUiClickSound();$("settingsModal").style.display="none";};
 $("soundToggleBtn").onclick=function(){initAudio();soundEnabled=!soundEnabled;this.innerText=soundEnabled?"🔊 音效:开":"🔇 音效:关";playUiClickSound();};
@@ -697,8 +982,8 @@ $("openEquipPageBtn").onclick=()=>{initAudio();playUiClickSound();showPage($("eq
 $("openSpecialPageBtn").onclick=()=>{initAudio();playUiClickSound();renderSpecialEquipButtons();showPage($("specialPage"));};
 $("equipBackBtn").onclick=()=>{initAudio();playUiClickSound();showPage($("selectPage"));};
 $("specialBackBtn").onclick=()=>{initAudio();playUiClickSound();showPage($("selectPage"));};
-$("resetBtn").onclick=()=>{initAudio();playUiClickSound();document.body.classList.remove("shake");if(statusTimer){clearInterval(statusTimer);statusTimer=null;}playerMaxHp=getPlayerStats().hp;playerHp=playerMaxHp;monsterStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};playerStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};playerShield=0;loadLevel(currentLevel);};
-$("backBtn").onclick=()=>{initAudio();playUiClickSound();document.body.classList.remove("shake");if(statusTimer){clearInterval(statusTimer);statusTimer=null;}showPage($("selectPage"));};
+$("resetBtn").onclick=()=>{initAudio();playUiClickSound();document.body.classList.remove("shake");if(statusTimer){clearInterval(statusTimer);statusTimer=null;}if(dungeonWaveTimer){clearTimeout(dungeonWaveTimer);dungeonWaveTimer=null;}if(atkDelayTimer){clearTimeout(atkDelayTimer);atkDelayTimer=null;}playerMaxHp=getPlayerStats().hp;playerHp=playerMaxHp;monsterStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};playerStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};playerShield=0;if(isEndlessMode)loadEndlessWave();else loadLevel(currentLevel);};
+$("backBtn").onclick=()=>{initAudio();playUiClickSound();document.body.classList.remove("shake");if(statusTimer){clearInterval(statusTimer);statusTimer=null;}if(dungeonWaveTimer){clearTimeout(dungeonWaveTimer);dungeonWaveTimer=null;}if(atkDelayTimer){clearTimeout(atkDelayTimer);atkDelayTimer=null;}if(isEndlessMode){renderEndlessPage();showPage($("endlessPage"));}else{showPage($("selectPage"));}};
 $("dungeonBtn").onclick=()=>{initAudio();playUiClickSound();showPage($("dungeonPage"));};
 $("dungeonBackBtn").onclick=()=>{initAudio();playUiClickSound();showPage($("selectPage"));};
 $("dungeonLv10").onclick=()=>{initAudio();playUiClickSound();startDungeon(0);};
@@ -708,6 +993,21 @@ $("dungeonLv160").onclick=()=>{initAudio();playUiClickSound();startDungeon(3);};
 $("cancelDetailBtn").onclick=closeWeaponDetail;
 $("doEquipSpecialBtn").onclick=clickEquipSpecial;
 $("weaponDetailOverlay").onclick=e=>{if(e.target===$("weaponDetailOverlay"))closeWeaponDetail();};
+
+// 无尽模式专属按钮绑定
+$("openEndlessBtn").onclick=()=>{initAudio();playUiClickSound();renderEndlessPage();showPage($("endlessPage"));};
+$("endlessBackBtn").onclick=()=>{initAudio();playUiClickSound();showPage($("selectPage"));};
+$("startEndless1Btn").onclick=()=>{startEndless(1);};
+$("endlessNextBtn").onclick=()=>{if(saveData.endlessMaxLayer>0){startEndless(saveData.endlessMaxLayer+1);}};
+
+// 战斗界面新增的“下一关”按钮绑定
+$("nextLayerBtn").onclick=()=>{
+    if(endlessCleared){
+        endlessLayer++;
+        loadEndlessWave();
+    }
+};
+
 $("debugApplyBtn").onclick=()=>{
 initAudio();playUiClickSound();
 const num=id=>{const v=$(id).value.trim();return v===""?null:Number(v);};
@@ -719,26 +1019,27 @@ initAudio();playUiClickSound();
 let lv=parseInt($("dbgLevel").value)||1;
 if(lv<1)lv=1;if(lv>9999)lv=9999;
 saveData.playerLevel=lv;saveData.playerExp=0;
-saveGame();openAttrModal();showPopup(`等级已设为 ${lv}`);
+saveGame();openAttrModal();refreshDungeonOpacity();showPopup(`等级已设为 ${lv}`);
 };
 $("debugUnlockWeaponsBtn").onclick=()=>{
 initAudio();playUiClickSound();
 saveData.weaponCount=weaponList.map(()=>9999);
 saveData.helmCount=helmList.map(()=>9999);
 saveData.armorCount=armorList.map(()=>9999);
-saveData.specialUnlocked=[true,true,true,true,true,true,true,true,true];
+saveData.specialUnlocked=[true,true,true,true,true,true,true,true,true,true];
 saveGame();renderAll();openAttrModal();showPopup("已解锁全部武器和特殊武器");
 };
 $("debugUnlockLevelsBtn").onclick=()=>{
 initAudio();playUiClickSound();
 saveData.unlockLevel=levelConfig.length;
-saveGame();renderLevelButtons();openAttrModal();showPopup("已解锁全部关卡");
+saveGame();renderLevelButtons();openAttrModal();refreshDungeonOpacity();showPopup("已解锁全部关卡");
 };
 $("debugResetBtn").onclick=()=>{
 initAudio();playUiClickSound();
 saveData.debugStats=null;saveGame();openAttrModal();showPopup("调试属性已重置");
 };
+
 loadSave();renderAll();showPage($("selectPage"));
 </script>
 </body>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </html>
+</html>
