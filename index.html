@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>emoji打怪1.4.0</title>
+<title>emoji打怪1.6.1</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#222;color:#fff;font-family:system-ui;height:100dvh;overflow:hidden}
@@ -200,7 +200,7 @@ button:disabled{opacity:.35;pointer-events:none}
 </div>
 <div id="logPage" class="page"><h2 class="log-page-title">更新日志</h2><div class="log-ver-title" id="logVerTitle"></div><div class="log-date-text" id="logDateText"></div><div class="log-content" id="logContent"></div><button class="btn-back" id="logBackBtn">返回选关</button><div class="log-pager-wrap"><button class="log-arrow-btn" id="logPrevBtn">◀</button><div class="log-page-num" id="logPageNum"></div><button class="log-arrow-btn" id="logNextBtn">▶</button></div></div>
 <script>
-let audioCtx=null,soundEnabled=false,tempSelectAvatar="",currentLevel=0,monsterHp,monsterMaxHp,playerHp,playerMaxHp,logCurrentPage=0,currentSpecialIndex=0;
+	let audioCtx=null,soundEnabled=false,tempSelectAvatar="",currentLevel=0,monsterHp,monsterMaxHp,playerHp,playerMaxHp,logCurrentPage=0,currentSpecialIndex=0;
 let attackIntervalEnabled=true;
 let isDungeonMode=false,dungeonWave=0,currentDungeon=0;
 let isEndlessMode=false, endlessLayer=0, endlessCleared=false, dungeonWaveTimer=null;
@@ -221,13 +221,14 @@ const avatarList=["😀","😃","😄","😁","😆","😅","😂","🤣","😊"
 const logData=[
 {ver:"1.0.0",date:"2026年10月25日",list:["1.增加基础功能","2.更新背包"]},
 {ver:"1.1.0",date:"2026年10月25日",list:["1.更新头像功能","2.修改武器名称","3.修复bug","4.更新日志"]},
-{ver:"1.1.5",date:"2026年10月26日",list:["1.修复了一些bug","2.增加属性面板","3.增加改名系统"]},
-{ver:"1.2.0",date:"2026年10月26日",list:["1.增加特殊武器","2.修复一些bug","3.增加了攻击间隔特性"]},
-{ver:"1.2.1",date:"2026年10月27日",list:["1.修复了一些bug","2.更新了设置","3.攻击间隔可以开关了","4.优化了特殊武器的强度","5.优化了各种奇奇怪怪的东西"]},
-{ver:"1.2.5",date:"2026年10月28日",list:["1.增加若干新武器和关卡更新到20关","2.优化更新日志更新更新日期","3.修复了部分属性未生效的问题","4.新增两把特殊武器"]},
-{ver:"1.3.0",date:"2026年10月29日",list:["1.增加副本功能","2.再次优化特殊武器强度","3.增加了升级的难度"]},
-{ver:"1.3.5",date:"2026年11月1日",list:["1.修复bug","2.完善副本功能","3.大改特殊武器","4.调试"]},
-{ver:"1.4.0",date:"2026年11月2日",list:["1.增加无尽挑战","2.选关页面再优化","3.修复各种小问题"]}
+{ver:"1.2.0",date:"2026年10月26日",list:["1.修复了一些bug","2.增加属性面板","3.增加改名系统"]},
+{ver:"1.3.0",date:"2026年10月26日",list:["1.增加特殊武器","2.修复一些bug","3.增加了攻击间隔特性"]},
+{ver:"1.4.0",date:"2026年10月27日",list:["1.修复了一些bug","2.更新了设置","3.攻击间隔可以开关了","4.优化了特殊武器的强度","5.优化了各种奇奇怪怪的东西"]},
+{ver:"1.4.1",date:"2026年10月28日",list:["1.增加若干新武器和关卡更新到20关","2.优化更新日志更新更新日期","3.修复了部分属性未生效的问题","4.新增两把特殊武器"]},
+{ver:"1.5.0",date:"2026年10月29日",list:["1.增加副本功能","2.再次优化特殊武器强度","3.增加了升级的难度"]},
+{ver:"1.5.1",date:"2026年11月1日",list:["1.修复bug","2.完善副本功能","3.大改特殊武器","4.调试"]},
+{ver:"1.6.0",date:"2026年11月2日",list:["1.增加无尽挑战","2.选关页面再优化","3.修复各种小问题","4.进行基础底层代码重构"]},
+{ver:"1.6.1",date:"2026年11月2日",list:["1.新增副本掉落独立保底机制(1%保底100次，2%……)","2.修改版本号"]}
 ];
 
 const specialWeaponList=[
@@ -242,7 +243,6 @@ const specialWeaponList=[
 {id:8,emoji:"⚔",name:"腕鳞剑",unlockAttr:"全局减伤3% 攻击+17000",equipAttr:"攻击+17891 暴击30% 伤害加成90%",trait:"受到的伤害为原来50%，造成伤害3倍，每攻击1次局内伤害+2%，攻击附加90%+玩家攻击/2的伤害，附加0.5秒流血",unlockWay:"160级副本8波有3%概率掉落"},
 {id:9,emoji:"⚔",name:"无尽之枪",unlockAttr:"生命+层数²/10 攻击+层数²/5",equipAttr:"生命+层数²/6 攻击+层数²/3 闪避5% 暴击5% 减伤5%",trait:"攻击附带层数伤害；附加(层数/10)伤害；附加1%最大生命(不超攻击200%)；附加10%敌方最大生命(不超攻击50%)",unlockWay:"击败无尽第一波"}
 ];
-
 const levelConfig=[
 {hp:100,atk:5,emoji:"👹",isBoss:false,isMiniBoss:false,exp:1},{hp:250,atk:20,emoji:"👺",isBoss:false,isMiniBoss:false,exp:4},{hp:400,atk:50,emoji:"👻",isBoss:false,isMiniBoss:false,exp:8},{hp:1500,atk:150,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:20},{hp:5000,atk:500,emoji:"👿",isBoss:false,isMiniBoss:true,exp:50},{hp:6000,atk:550,emoji:"👹",isBoss:false,isMiniBoss:false,exp:80},{hp:8000,atk:730,emoji:"👺",isBoss:false,isMiniBoss:false,exp:90},{hp:8500,atk:800,emoji:"👻",isBoss:false,isMiniBoss:false,exp:95},{hp:9100,atk:888,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:100},{hp:20000,atk:2222,emoji:"😈",isBoss:true,isMiniBoss:false,exp:150},
 {hp:25000,atk:2500,emoji:"👹",isBoss:false,isMiniBoss:false,exp:150},{hp:31000,atk:3000,emoji:"👺",isBoss:false,isMiniBoss:false,exp:140},{hp:40500,atk:4000,emoji:"👻",isBoss:false,isMiniBoss:false,exp:180},{hp:70000,atk:7050,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:190},{hp:100000,atk:9000,emoji:"👿",isBoss:false,isMiniBoss:true,exp:250},{hp:100000,atk:8500,emoji:"👹",isBoss:false,isMiniBoss:false,exp:200},{hp:105000,atk:9500,emoji:"👺",isBoss:false,isMiniBoss:false,exp:210},{hp:200000,atk:20600,emoji:"👻",isBoss:false,isMiniBoss:false,exp:220},{hp:300500,atk:30008,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:230},{hp:500000,atk:50000,emoji:"😈",isBoss:true,isMiniBoss:false,exp:400}
@@ -258,11 +258,33 @@ const weaponList=[{name:"锈铁剑",emoji:"🗡️",atk:1,maxTotal:1000},{name:"
 const helmList=[{name:"布帽",emoji:"🪖",hp:1,maxTotal:200},{name:"草帽",emoji:"🪖",hp:10,maxTotal:400},{name:"斗笠帽",emoji:"🪖",hp:30,maxTotal:800},{name:"麻布帽",emoji:"🪖",hp:100,maxTotal:1000},{name:"皮帽",emoji:"🪖",hp:400,maxTotal:1500},{name:"毡帽",emoji:"🪖",hp:2000,maxTotal:2000},{name:"竹编帽",emoji:"🪖",hp:4000,maxTotal:3000},{name:"青布头巾帽",emoji:"🪖",hp:6000,maxTotal:4000},{name:"防风帽",emoji:"🪖",hp:10000,maxTotal:4500},{name:"遮雨帽",emoji:"🪖",hp:20000,maxTotal:5000},{name:"引灵帽",emoji:"🪖",hp:30000,maxTotal:6000},{name:"聚气帽",emoji:"🪖",hp:60000,maxTotal:7000}];
 const armorList=[{name:"布甲",emoji:"👕",baseDef:0.5,maxDef:80},{name:"皮甲",emoji:"👕",baseDef:1,maxDef:100},{name:"藤甲",emoji:"👕",baseDef:9,maxDef:200},{name:"木甲",emoji:"👕",baseDef:20,maxDef:300},{name:"麻甲",emoji:"👕",baseDef:50,maxDef:350},{name:"硬片甲",emoji:"👕",baseDef:100,maxDef:400},{name:"铁皮甲",emoji:"👕",baseDef:250,maxDef:500},{name:"锁子甲",emoji:"👕",baseDef:600,maxDef:600},{name:"札甲",emoji:"👕",baseDef:1300,maxDef:800},{name:"青鳞甲",emoji:"👕",baseDef:4000,maxDef:1000},{name:"引灵甲",emoji:"👕",baseDef:10000,maxDef:1300},{name:"聚气甲",emoji:"👕",baseDef:20000,maxDef:1500}];
 
-// 权重池按文档更新
-const weaponWeight=[[100,95,60,10,0,0,0],[0,3,20,40,40,0,0],[0,1,10,25,30,50,0],[0,0.9,8,15,15,25,55],[0,0.1,2,10,10,15,30],[0,0,0,2,5,8,30],[0,0,0,1.8,2,2,11],[0,0,0,0.6,1.5,2,4],[0,0,0,0.5,1,1.5,3],[0,0,0,0,0.4,1,1.5],[0,0,0,0,0.1,0.5,0.5]];
-const helmWeight=[[100,96,40,20,0,0,0],[0,3,30,30,45,0,0],[0,0.8,20,30,30,60,0],[0,0.1,7,14,14,20,55],[0,0.1,3,6,6,10,25],[0,0,0,3,5,10,20],[0,0,0,1,3,5,10],[0,0,0,0.5,1,2,5],[0,0,0,0.5,0.5,2,2.5],[0,0,0,0,0.3,0.5,1.5],[0,0,0,0,0.2,0.5,1]];
-const armorWeight=[[100,94,45,20,0,0,0],[0,4,30,30,40,0,0],[0,1,18,25,25,50,0],[0,0.5,5,15,20,20,55],[0,0.5,2,10,10,15,25],[0,0,0,3,8,10,20],[0,0,0,1,4,15,20],[0,0,0,0.5,1.5,2,5],[0,0,0,0.5,1,1.5,3],[0,0,0,0,0.4,1,1.5],[0,0,0,0,0.1,0.5,0.5]];
-  function getDefaultData(){return{unlockLevel:1,currWeap:0,currHelm:0,currArmor:0,playerAvatar:"😃",playerName:"打怪升级117",playerLevel:1,playerExp:0,weaponCount:[1,0,0,0,0,0,0,0,0,0,0,0],helmCount:[1,0,0,0,0,0,0,0,0,0,0,0],armorCount:[1,0,0,0,0,0,0,0,0,0,0,0],specialUnlocked:[false,false,false,false,false,false,false,false,false,false],specialEquipped:-1,loseCount:0,bossKillCount:0,boss10KillCount:0,thunderKillCount:0,axeKillCount:0,orbKillCount:0,debugUnlocked:false,debugStats:null,endlessMaxLayer:0};}
+const weaponWeight=[
+    [100, 95, 60, 10, 0, 0, 0],
+    [0, 3, 20, 40, 40, 0, 0],
+    [0, 1, 10, 25, 30, 50, 0],
+    [0, 0.9, 8, 15, 15, 25, 55],
+    [0, 0.1, 2, 10, 10, 15, 30],
+    [0, 0, 0, 2, 5, 8, 30],
+    [0, 0, 0, 1.8, 2, 2, 11],
+    [0, 0, 0, 0.6, 1.5, 2, 4],
+    [0, 0, 0, 0.5, 1, 1.5, 3],
+    [0, 0, 0, 0.4, 1, 1.5, 1.5],
+    [0, 0, 0, 0, 0.1, 0.5, 0.5],
+    [0, 0, 0, 0, 0, 0, 0]
+];
+const helmWeight=[
+    [100, 96, 40, 20, 0, 0, 0], [0, 3, 30, 30, 45, 0, 0], [0, 0.8, 20, 30, 30, 60, 0],
+    [0, 0.1, 7, 14, 14, 20, 55], [0, 0.1, 3, 6, 6, 10, 25], [0, 0, 0, 3, 5, 10, 20],
+    [0, 0, 0, 1, 3, 5, 10], [0, 0, 0, 0.5, 1, 2, 5], [0, 0, 0, 0.5, 0.5, 2, 2.5],
+    [0, 0, 0, 0, 0.3, 0.5, 1.5], [0, 0, 0, 0, 0.2, 0.5, 1], [0, 0, 0, 0, 0, 0, 0]
+];
+const armorWeight=[
+    [100, 94, 45, 20, 0, 0, 0], [0, 4, 30, 30, 40, 0, 0], [0, 1, 18, 25, 25, 50, 0],
+    [0, 0.5, 5, 15, 20, 20, 55], [0, 0.5, 2, 10, 10, 15, 25], [0, 0, 0, 3, 8, 10, 20],
+    [0, 0, 0, 1, 4, 15, 20], [0, 0, 0, 0.5, 1.5, 2, 5], [0, 0, 0, 0.5, 1, 1.5, 3],
+    [0, 0, 0, 0, 0.4, 1, 1.5], [0, 0, 0, 0, 0.1, 0.5, 0.5], [0, 0, 0, 0, 0, 0, 0]
+];
+function getDefaultData(){return{unlockLevel:1,currWeap:0,currHelm:0,currArmor:0,playerAvatar:"😃",playerName:"打怪升级117",playerLevel:1,playerExp:0,weaponCount:[1,0,0,0,0,0,0,0,0,0,0,0],helmCount:[1,0,0,0,0,0,0,0,0,0,0,0],armorCount:[1,0,0,0,0,0,0,0,0,0,0,0],specialUnlocked:[false,false,false,false,false,false,false,false,false,false],specialEquipped:-1,loseCount:0,bossKillCount:0,boss10KillCount:0,thunderKillCount:0,axeKillCount:0,orbKillCount:0,debugUnlocked:false,debugStats:null,endlessMaxLayer:0,pityCounts:[0,0,0,0,0,0,0,0,0,0]};}
 let saveData;
 function loadSave(){
     const str=localStorage.getItem("emojiGameSave");
@@ -292,6 +314,7 @@ function loadSave(){
         if(saveData.debugUnlocked===undefined) saveData.debugUnlocked=false;
         if(saveData.debugStats===undefined) saveData.debugStats=null;
         if(saveData.endlessMaxLayer===undefined) saveData.endlessMaxLayer=0;
+        if(!saveData.pityCounts) saveData.pityCounts=[0,0,0,0,0,0,0,0,0,0];
     }else{
         saveData=getDefaultData();
         localStorage.setItem("emojiGameSave",JSON.stringify(saveData));
@@ -305,6 +328,18 @@ function getUnlockedSpecialCount(){let c=0;for(let b of saveData.specialUnlocked
 function getUnlockedNormalWeaponCount(){let c=0;for(let w of saveData.weaponCount){if(w>0)c++;}return c;}
 function refreshSpecialProgress(){$("specialProgressText").innerText=`已解锁：${getUnlockedSpecialCount()} / ${specialWeaponList.length}`;}
 function tryUnlockSpecial(i){if(saveData.specialUnlocked[i])return false;saveData.specialUnlocked[i]=true;saveGame();showPopup(`✨解锁特殊武器：${specialWeaponList[i].name}`);renderSpecialEquipButtons();refreshSpecialProgress();return true;}
+function checkDrop(specialId, ratePercent){
+    if(saveData.specialUnlocked[specialId]) return false;
+    saveData.pityCounts[specialId] = (saveData.pityCounts[specialId] || 0) + 1;
+    const pityLimit = Math.round(100 / ratePercent);
+    const chance = ratePercent / 100;
+    if(Math.random() < chance || saveData.pityCounts[specialId] >= pityLimit){
+        tryUnlockSpecial(specialId);
+        saveData.pityCounts[specialId] = 0;
+        return true;
+    }
+    return false;
+}
 function equipSpecialWeapon(i){
 if(!saveData.specialUnlocked[i]){showPopup("该武器尚未解锁！");return;}
 if(saveData.specialEquipped===i){saveData.specialEquipped=-1;showPopup(`卸下特殊武器：${specialWeaponList[i].name}`);}
@@ -314,7 +349,6 @@ saveGame();renderSpecialEquipButtons();
 function calcWeaponAtk(i){const w=weaponList[i]||weaponList[0],c=saveData.weaponCount[i]||0;return Math.min(w.atk*c,w.maxTotal);}
 function calcHelmHp(i){const h=helmList[i]||helmList[0],c=saveData.helmCount[i]||0;return Math.min(h.hp*c,h.maxTotal);}
 function calcArmorDef(i){const a=armorList[i]||armorList[0],c=saveData.armorCount[i]||0;return Math.min(a.baseDef*c,a.maxDef);}
-
 function getPlayerStats(){
 const lv=saveData.playerLevel||1;
 const baseHp=100*Math.pow(1.01,lv-1),baseAtk=10*Math.pow(1.01,lv-1),baseDef=1*Math.pow(1.01,lv-1);
@@ -391,7 +425,7 @@ $("weaponDetailOverlay").style.display="flex";
 }
 function closeWeaponDetail(){$("weaponDetailOverlay").style.display="none";}
 function clickEquipSpecial(){initAudio();playUiClickSound();equipSpecialWeapon(currentSpecialIndex);closeWeaponDetail();}
-  function renderSpecialEquipButtons(){
+function renderSpecialEquipButtons(){
 $("specialWeapBtns").innerHTML="";
 specialWeaponList.forEach((item,i)=>{
 const btn=document.createElement("button");
@@ -486,7 +520,7 @@ else{$("bottomBtnBar").classList.remove("hide");}
 }
 function showPopup(t){$("popMsg").innerText=t;$("popMsg").style.display="block";setTimeout(()=>{$("popMsg").style.display="none";},1400);}
 
-// [S2] 击杀结算幂等包装：同一只怪只结算一次，80ms 窗口兜住已排队的 statusTimer tick
+// [S2] 击杀结算幂等包装
 function settleKill(fn){
     if(isSettling) return;
     isSettling = true;
@@ -494,14 +528,14 @@ function settleKill(fn){
     finally { setTimeout(()=>{ isSettling = false; }, 80); }
 }
 
-// [S5+S6] 波次/战斗生命周期统一清理：只清状态 + 波次级 timer，不碰 atkDelay
+// [S5+S6] 统一重置战斗状态
 function resetBattleState(){
     monsterStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};
     playerStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};
     playerShield=0;
     comboDmgBonus=0;
     if(statusTimer){clearInterval(statusTimer);statusTimer=null;}
-    if(dungeonWaveTimer){clearTimeout(dungeonWaveTimer);dungeonWaveTimer=null;}
+    // 注意：这里没有清 dungeonWaveTimer，防止误杀
 }
 
 // 渲染无尽模式主页面的属性
@@ -596,7 +630,7 @@ if(n===1){const r=Math.random();if(r<0.33){saveData.weaponCount[0]++;showPopup(`
 if(Math.random()>0.8)return;
 const seg=getPoolSeg(n),pr=Math.random();
 let pt=pr<0.33?"weapon":(pr<0.66?"helm":"armor"),pool=[];
-if(pt==="weapon"){for(let i=1;i<weaponWeight.length;i++){if(weaponWeight[i][seg]>0)pool.push({type:"weapon",idx:i,w:weaponWeight[i][seg]});}}
+if(pt==="weapon"){for(let i=0;i<weaponWeight.length;i++){if(weaponWeight[i][seg]>0)pool.push({type:"weapon",idx:i,w:weaponWeight[i][seg]});}}
 else if(pt==="helm"){for(let i=0;i<helmWeight.length;i++){if(helmWeight[i][seg]>0)pool.push({type:"helm",idx:i,w:helmWeight[i][seg]});}}
 else{for(let i=0;i<armorWeight.length;i++){if(armorWeight[i][seg]>0)pool.push({type:"armor",idx:i,w:armorWeight[i][seg]});}}
 const pick=weightedSelect(pool);if(!pick)return;
@@ -605,7 +639,7 @@ else if(pick.type==="helm"){saveData.helmCount[pick.idx]++;showPopup(`获得：$
 else{saveData.armorCount[pick.idx]++;showPopup(`获得：${armorList[pick.idx].emoji}${armorList[pick.idx].name}`);}
 saveGame();renderEquipButtons();
 }
-  function loadLevel(i){
+function loadLevel(i){
 currentLevel=i;isDungeonMode=false;isEndlessMode=false;currentDungeon=-1;
 isSettling=false; // [S2] 新一场战斗解锁
 resetBattleState(); // [S5+S6] 统一清理状态与波次 timer
@@ -643,7 +677,6 @@ function loadEndlessWave() {
     isSettling = false; // [S2] 新一波解锁
     resetBattleState(); // [S5+S6] 统一清理状态与波次 timer
     
-    // 每层满血 + 状态清空
     playerMaxHp = getPlayerStats().hp;
     playerHp = playerMaxHp;
     
@@ -792,7 +825,7 @@ function handleEndlessWin(){
     settleKill(()=>{ // [S2] 唯一锁点
         if(statusTimer){clearInterval(statusTimer);statusTimer=null;} // [S2] 清掉已排队的 tick
         let exp = Math.round(endlessLayer * endlessLayer / 2);
-        const leveled = gainExp(exp);
+                const leveled = gainExp(exp);
         if(leveled)showPopup("🎉 升级啦！");
         if (endlessLayer > (saveData.endlessMaxLayer || 0)) {
             saveData.endlessMaxLayer = endlessLayer;
@@ -819,10 +852,10 @@ function handleMonsterKilled(finalDmg){
         if(isDungeonMode){
             const d=dungeonConfig[currentDungeon];
             const last=d.waves.length-1;
-            if(d.id===0){if(dungeonWave===last&&Math.random()<0.01)tryUnlockSpecial(0);if(dungeonWave<5&&Math.random()<0.02)tryUnlockSpecial(1);}
-            else if(d.id===1){if(dungeonWave<6&&Math.random()<0.03)tryUnlockSpecial(3);if(dungeonWave===6&&Math.random()<0.02)tryUnlockSpecial(4);}
-            else if(d.id===2){if(dungeonWave<4&&Math.random()<0.02)tryUnlockSpecial(5);if(dungeonWave===4&&Math.random()<0.02)tryUnlockSpecial(2);}
-            else if(d.id===3){if(dungeonWave<3&&Math.random()<0.05)tryUnlockSpecial(6);if(dungeonWave===5&&Math.random()<0.06)tryUnlockSpecial(7);if(dungeonWave===7&&Math.random()<0.03)tryUnlockSpecial(8);}
+            if(d.id===0){if(dungeonWave===last)checkDrop(0,1);if(dungeonWave<5)checkDrop(1,2);}
+            else if(d.id===1){if(dungeonWave<6)checkDrop(3,3);if(dungeonWave===6)checkDrop(4,2);}
+            else if(d.id===2){if(dungeonWave<4)checkDrop(5,2);if(dungeonWave===4)checkDrop(2,2);}
+            else if(d.id===3){if(dungeonWave<3)checkDrop(6,5);if(dungeonWave===5)checkDrop(7,6);if(dungeonWave===7)checkDrop(8,3);}
             if(leveled)showPopup("🎉 升级啦！");
             dungeonWave++;
             $("atkBtn").disabled=true;
@@ -851,7 +884,6 @@ function handleMonsterKilled(finalDmg){
         saveGame();renderLevelButtons();refreshDungeonOpacity();$("atkBtn").disabled=true;
     });
 }
-
 $("atkBtn").onclick=function(){
     initAudio();playAttackSound();
     if(monsterHp<=0||playerHp<=0)return;
@@ -939,10 +971,10 @@ $("atkBtn").onclick=function(){
     let ct=isCrit?"<span class='crit-text'>暴击！</span>":"";
     $("msg").innerHTML=`<span style="color:#fff">你造成 ${formatNum(baseDmg)} 伤害</span> ${ct} ${heal} <br><span style="color:#8cf">${extra}</span>`;
     $("atkBtn").disabled=true;
-    if(atkDelayTimer){clearTimeout(atkDelayTimer);} // [S6] 防连点
+    if(atkDelayTimer){clearTimeout(atkDelayTimer);atkDelayTimer=null;} // [S6] 防连点 + 置空
     atkDelayTimer=setTimeout(()=>{atkDelayTimer=null;if(playerHp>0&&monsterHp>0){monsterAttack();$("atkBtn").disabled=false;}},attackIntervalEnabled?300:0);
 };
-  function refreshDungeonOpacity() {
+function refreshDungeonOpacity() {
     const d1 = $("dungeonLv10"), d2 = $("dungeonLv30"), d3 = $("dungeonLv80"), d4 = $("dungeonLv160");
     if(d1) d1.style.opacity = (saveData.playerLevel >= dungeonConfig[0].lv || saveData.debugUnlocked) ? "1" : "0.5";
     if(d2) d2.style.opacity = (saveData.playerLevel >= dungeonConfig[1].lv || saveData.debugUnlocked) ? "1" : "0.5";
@@ -982,8 +1014,27 @@ $("openEquipPageBtn").onclick=()=>{initAudio();playUiClickSound();showPage($("eq
 $("openSpecialPageBtn").onclick=()=>{initAudio();playUiClickSound();renderSpecialEquipButtons();showPage($("specialPage"));};
 $("equipBackBtn").onclick=()=>{initAudio();playUiClickSound();showPage($("selectPage"));};
 $("specialBackBtn").onclick=()=>{initAudio();playUiClickSound();showPage($("selectPage"));};
-$("resetBtn").onclick=()=>{initAudio();playUiClickSound();document.body.classList.remove("shake");if(statusTimer){clearInterval(statusTimer);statusTimer=null;}if(dungeonWaveTimer){clearTimeout(dungeonWaveTimer);dungeonWaveTimer=null;}if(atkDelayTimer){clearTimeout(atkDelayTimer);atkDelayTimer=null;}playerMaxHp=getPlayerStats().hp;playerHp=playerMaxHp;monsterStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};playerStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};playerShield=0;if(isEndlessMode)loadEndlessWave();else loadLevel(currentLevel);};
-$("backBtn").onclick=()=>{initAudio();playUiClickSound();document.body.classList.remove("shake");if(statusTimer){clearInterval(statusTimer);statusTimer=null;}if(dungeonWaveTimer){clearTimeout(dungeonWaveTimer);dungeonWaveTimer=null;}if(atkDelayTimer){clearTimeout(atkDelayTimer);atkDelayTimer=null;}if(isEndlessMode){renderEndlessPage();showPage($("endlessPage"));}else{showPage($("selectPage"));}};
+
+// 清理状态和幽灵攻击
+$("resetBtn").onclick=()=>{
+    initAudio();playUiClickSound();document.body.classList.remove("shake");
+    if(statusTimer){clearInterval(statusTimer);statusTimer=null;}
+    if(dungeonWaveTimer){clearTimeout(dungeonWaveTimer);dungeonWaveTimer=null;}
+    if(atkDelayTimer){clearTimeout(atkDelayTimer);atkDelayTimer=null;}
+    playerMaxHp=getPlayerStats().hp;playerHp=playerMaxHp;
+    monsterStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};playerStatus={bleed:0,bleedDmg:0,freeze:0,pierce:0};
+    playerShield=0;
+    if(isEndlessMode)loadEndlessWave();else loadLevel(currentLevel);
+};
+
+$("backBtn").onclick=()=>{
+    initAudio();playUiClickSound();document.body.classList.remove("shake");
+    if(statusTimer){clearInterval(statusTimer);statusTimer=null;}
+    if(dungeonWaveTimer){clearTimeout(dungeonWaveTimer);dungeonWaveTimer=null;}
+    if(atkDelayTimer){clearTimeout(atkDelayTimer);atkDelayTimer=null;} // 防止返回选关被幽灵攻击
+    if(isEndlessMode){renderEndlessPage();showPage($("endlessPage"));}else{showPage($("selectPage"));}
+};
+
 $("dungeonBtn").onclick=()=>{initAudio();playUiClickSound();showPage($("dungeonPage"));};
 $("dungeonBackBtn").onclick=()=>{initAudio();playUiClickSound();showPage($("selectPage"));};
 $("dungeonLv10").onclick=()=>{initAudio();playUiClickSound();startDungeon(0);};
@@ -1042,4 +1093,4 @@ saveData.debugStats=null;saveGame();openAttrModal();showPopup("调试属性已�
 loadSave();renderAll();showPage($("selectPage"));
 </script>
 </body>
-</html>
+    </html>
