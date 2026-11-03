@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>emoji打怪1.6.1</title>
+<title>emoji打怪1.6.2</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#222;color:#fff;font-family:system-ui;height:100dvh;overflow:hidden}
@@ -200,7 +200,7 @@ button:disabled{opacity:.35;pointer-events:none}
 </div>
 <div id="logPage" class="page"><h2 class="log-page-title">更新日志</h2><div class="log-ver-title" id="logVerTitle"></div><div class="log-date-text" id="logDateText"></div><div class="log-content" id="logContent"></div><button class="btn-back" id="logBackBtn">返回选关</button><div class="log-pager-wrap"><button class="log-arrow-btn" id="logPrevBtn">◀</button><div class="log-page-num" id="logPageNum"></div><button class="log-arrow-btn" id="logNextBtn">▶</button></div></div>
 <script>
-	let audioCtx=null,soundEnabled=false,tempSelectAvatar="",currentLevel=0,monsterHp,monsterMaxHp,playerHp,playerMaxHp,logCurrentPage=0,currentSpecialIndex=0;
+let audioCtx=null,soundEnabled=false,tempSelectAvatar="",currentLevel=0,monsterHp,monsterMaxHp,playerHp,playerMaxHp,logCurrentPage=0,currentSpecialIndex=0;
 let attackIntervalEnabled=true;
 let isDungeonMode=false,dungeonWave=0,currentDungeon=0;
 let isEndlessMode=false, endlessLayer=0, endlessCleared=false, dungeonWaveTimer=null;
@@ -228,79 +228,77 @@ const logData=[
 {ver:"1.5.0",date:"2026年10月29日",list:["1.增加副本功能","2.再次优化特殊武器强度","3.增加了升级的难度"]},
 {ver:"1.5.1",date:"2026年11月1日",list:["1.修复bug","2.完善副本功能","3.大改特殊武器","4.调试"]},
 {ver:"1.6.0",date:"2026年11月2日",list:["1.增加无尽挑战","2.选关页面再优化","3.修复各种小问题","4.进行基础底层代码重构"]},
-{ver:"1.6.1",date:"2026年11月2日",list:["1.新增副本掉落独立保底机制(1%保底100次，2%……)","2.修改版本号","3.修复装备爆率问题"]}
+{ver:"1.6.1",date:"2026年11月2日",list:["1.新增副本掉落独立保底机制(1%保底100次，2%……)","2.修改版本号","3.修复装备爆率问题"]},
+{ver:"1.6.2",date:"2026年11月3日",list:["1.平衡性调整：整体难度下调，通关更轻松","2.修复一些已知bug"]}
 ];
 
 const specialWeaponList=[
-{id:0,emoji:"⚔",name:"绿甲剑",unlockAttr:"生命+200 攻击+300",equipAttr:"攻击+1000 暴击25%",trait:"攻击25%造成3倍伤害",unlockWay:"10级副本6波有1%概率掉落"},
-{id:1,emoji:"⚔",name:"长须剑",unlockAttr:"生命+150 攻击+100",equipAttr:"攻击+500 吸血20%",trait:"攻击25%回5%血，5%造成双倍伤害",unlockWay:"10级副本1-5波有2%概率掉落"},
-{id:2,emoji:"⚔",name:"水之长枪",unlockAttr:"生命+100 攻击+1150",equipAttr:"攻击+3000 暴击20%",trait:"攻击附加50+x%伤害(每击败+0.1%)，被攻击10%闪避并冰冻敌方0.3秒",unlockWay:"80级副本5波有2%概率掉落"},
-{id:3,emoji:"⚔",name:"猴爪之刃",unlockAttr:"生命+50 攻击+1000",equipAttr:"攻击+1600",trait:"伤害+50%，攻击5%使敌方流血1秒(每0.1秒10%伤害)，受伤-10%",unlockWay:"30级副本1-6波有3%概率掉落"},
-{id:4,emoji:"⚔",name:"霸王权杖",unlockAttr:"生命+1000 攻击+1000 减伤10%",equipAttr:"20%闪避 减伤10% 生命+1000 攻击+1000",trait:"攻击回血2%，受到伤害减30%，1%秒杀，附加30%伤害和30%攻击*2伤害",unlockWay:"30级副本7波有2%概率掉落"},
-{id:5,emoji:"⚔",name:"稀影之刃",unlockAttr:"攻击+2000",equipAttr:"伤害加成300%",trait:"攻击20%获得10%生命护盾，20%造成2倍伤害",unlockWay:"80级副本1-4波有2%概率掉落"},
+{id:0,emoji:"⚔",name:"绿甲剑",unlockAttr:"生命+200 攻击+300",equipAttr:"攻击+1000 暴击25%",trait:"攻击25%造成3倍伤害",unlockWay:"10级副本6波有8%概率掉落"},
+{id:1,emoji:"⚔",name:"长须剑",unlockAttr:"生命+150 攻击+100",equipAttr:"攻击+500 吸血20%",trait:"攻击25%回5%血，5%造成双倍伤害",unlockWay:"10级副本1-5波有3%概率掉落"},
+{id:2,emoji:"⚔",name:"水之长枪",unlockAttr:"生命+100 攻击+1150",equipAttr:"攻击+3000 暴击20%",trait:"攻击附加50+x%伤害(每击败+0.1%)，被攻击10%闪避并冰冻敌方0.3秒",unlockWay:"80级副本5波有5%概率掉落"},
+{id:3,emoji:"⚔",name:"猴爪之刃",unlockAttr:"生命+50 攻击+1000",equipAttr:"攻击+1600",trait:"伤害+50%，攻击5%使敌方流血1秒(每0.1秒10%伤害)，受伤-10%",unlockWay:"30级副本1-6波有4%概率掉落"},
+{id:4,emoji:"⚔",name:"霸王权杖",unlockAttr:"生命+1000 攻击+1000 减伤10%",equipAttr:"20%闪避 减伤10% 生命+1000 攻击+1000",trait:"攻击回血2%，受到伤害减30%，1%秒杀，附加30%伤害和30%攻击*2伤害",unlockWay:"30级副本7波有3%概率掉落"},
+{id:5,emoji:"⚔",name:"稀影之刃",unlockAttr:"攻击+2000",equipAttr:"伤害加成300%",trait:"攻击20%获得10%生命护盾，20%造成2倍伤害",unlockWay:"80级副本1-4波有5%概率掉落"},
 {id:6,emoji:"⚔",name:"白毛羽刃",unlockAttr:"生命+500 攻击+6000 暴击30%",equipAttr:"暴击50%",trait:"怪血量<20%斩杀，>70%增伤50%",unlockWay:"160级副本1-3波有5%概率掉落"},
 {id:7,emoji:"⚔",name:"龙鳞剑",unlockAttr:"全局减伤1% 攻击+7000",equipAttr:"攻击+10891 暴击10% 伤害加成40%",trait:"受到的伤害为原来80%，造成伤害1.2倍，攻击30%附加10%+玩家攻击/2的伤害，附加0.4秒刺穿",unlockWay:"160级副本6波有6%概率掉落"},
-{id:8,emoji:"⚔",name:"腕鳞剑",unlockAttr:"全局减伤3% 攻击+17000",equipAttr:"攻击+17891 暴击30% 伤害加成90%",trait:"受到的伤害为原来50%，造成伤害3倍，每攻击1次局内伤害+2%，攻击附加90%+玩家攻击/2的伤害，附加0.5秒流血",unlockWay:"160级副本8波有3%概率掉落"},
+{id:8,emoji:"⚔",name:"腕鳞剑",unlockAttr:"全局减伤3% 攻击+17000",equipAttr:"攻击+17891 暴击30% 伤害加成90%",trait:"受到的伤害为原来50%，造成伤害3倍，每攻击1次局内伤害+2%，攻击附加90%+玩家攻击/2的伤害，附加0.5秒流血",unlockWay:"160级副本8波有6%概率掉落"},
 {id:9,emoji:"⚔",name:"无尽之枪",unlockAttr:"生命+层数²/10 攻击+层数²/5",equipAttr:"生命+层数²/6 攻击+层数²/3 闪避5% 暴击5% 减伤5%",trait:"攻击附带层数伤害；附加(层数/10)伤害；附加1%最大生命(不超攻击200%)；附加10%敌方最大生命(不超攻击50%)",unlockWay:"击败无尽第一波"}
 ];
 const levelConfig=[
-{hp:100,atk:5,emoji:"👹",isBoss:false,isMiniBoss:false,exp:1},{hp:250,atk:20,emoji:"👺",isBoss:false,isMiniBoss:false,exp:4},{hp:400,atk:50,emoji:"👻",isBoss:false,isMiniBoss:false,exp:8},{hp:1500,atk:150,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:20},{hp:5000,atk:500,emoji:"👿",isBoss:false,isMiniBoss:true,exp:50},{hp:6000,atk:550,emoji:"👹",isBoss:false,isMiniBoss:false,exp:80},{hp:8000,atk:730,emoji:"👺",isBoss:false,isMiniBoss:false,exp:90},{hp:8500,atk:800,emoji:"👻",isBoss:false,isMiniBoss:false,exp:95},{hp:9100,atk:888,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:100},{hp:20000,atk:2222,emoji:"😈",isBoss:true,isMiniBoss:false,exp:150},
-{hp:25000,atk:2500,emoji:"👹",isBoss:false,isMiniBoss:false,exp:150},{hp:31000,atk:3000,emoji:"👺",isBoss:false,isMiniBoss:false,exp:140},{hp:40500,atk:4000,emoji:"👻",isBoss:false,isMiniBoss:false,exp:180},{hp:70000,atk:7050,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:190},{hp:100000,atk:9000,emoji:"👿",isBoss:false,isMiniBoss:true,exp:250},{hp:100000,atk:8500,emoji:"👹",isBoss:false,isMiniBoss:false,exp:200},{hp:105000,atk:9500,emoji:"👺",isBoss:false,isMiniBoss:false,exp:210},{hp:200000,atk:20600,emoji:"👻",isBoss:false,isMiniBoss:false,exp:220},{hp:300500,atk:30008,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:230},{hp:500000,atk:50000,emoji:"😈",isBoss:true,isMiniBoss:false,exp:400}
+{hp:100,atk:5,emoji:"👹",isBoss:false,isMiniBoss:false,exp:1},{hp:250,atk:20,emoji:"👺",isBoss:false,isMiniBoss:false,exp:4},{hp:400,atk:50,emoji:"👻",isBoss:false,isMiniBoss:false,exp:8},{hp:1500,atk:150,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:20},{hp:5000,atk:500,emoji:"👿",isBoss:false,isMiniBoss:true,exp:50},{hp:6000,atk:550,emoji:"👹",isBoss:false,isMiniBoss:false,exp:80},{hp:8000,atk:730,emoji:"👺",isBoss:false,isMiniBoss:false,exp:90},{hp:8500,atk:800,emoji:"👻",isBoss:false,isMiniBoss:false,exp:95},{hp:9100,atk:888,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:100},{hp:20000,atk:1222,emoji:"😈",isBoss:true,isMiniBoss:false,exp:150},
+{hp:25000,atk:1500,emoji:"👹",isBoss:false,isMiniBoss:false,exp:150},{hp:31000,atk:1900,emoji:"👺",isBoss:false,isMiniBoss:false,exp:140},{hp:40500,atk:2000,emoji:"👻",isBoss:false,isMiniBoss:false,exp:180},{hp:70000,atk:2050,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:190},{hp:100000,atk:4000,emoji:"👿",isBoss:false,isMiniBoss:true,exp:250},{hp:100000,atk:5500,emoji:"👹",isBoss:false,isMiniBoss:false,exp:200},{hp:105000,atk:5500,emoji:"👺",isBoss:false,isMiniBoss:false,exp:210},{hp:200000,atk:6600,emoji:"👻",isBoss:false,isMiniBoss:false,exp:220},{hp:300500,atk:7008,emoji:"🤖",isBoss:false,isMiniBoss:false,exp:230},{hp:500000,atk:9000,emoji:"😈",isBoss:true,isMiniBoss:false,exp:400}
 ];
 
 const dungeonConfig=[
-{id:0,lv:10,name:"10级副本",emoji:"🐢",waves:[{hp:200,atk:40,emoji:"😾",exp:5},{hp:200,atk:50,emoji:"😾",exp:6},{hp:400,atk:80,emoji:"😼",exp:10},{hp:700,atk:100,emoji:"🕷",exp:70},{hp:1000,atk:200,emoji:"🕷",exp:200},{hp:10000,atk:2000,emoji:"🐢",exp:1000}]},
-{id:1,lv:30,name:"30级副本",emoji:"🦖",waves:[{hp:900,atk:180,emoji:"🐵",exp:150},{hp:1000,atk:220,emoji:"🐵",exp:170},{hp:1650,atk:300,emoji:"🐵",exp:220},{hp:3000,atk:450,emoji:"🐒",exp:300},{hp:4500,atk:600,emoji:"🐒",exp:400},{hp:7800,atk:900,emoji:"🐒",exp:500},{hp:89900,atk:9000,emoji:"🦖",exp:900}]},
-{id:2,lv:80,name:"80级副本",emoji:"🐋",waves:[{hp:4000,atk:600,emoji:"🐧",exp:250},{hp:5500,atk:700,emoji:"🐧",exp:300},{hp:7000,atk:800,emoji:"🐥",exp:450},{hp:20000,atk:2200,emoji:"🦅",exp:500},{hp:200000,atk:1800,emoji:"🐋",exp:1000}]},
-{id:3,lv:160,name:"160级副本",emoji:"🦕",waves:[{hp:10000,atk:1000,emoji:"🦆",exp:600},{hp:16000,atk:2000,emoji:"🦆",exp:700},{hp:30000,atk:3530,emoji:"🦆",exp:850},{hp:55550,atk:6000,emoji:"🐺",exp:1000},{hp:90000,atk:8500,emoji:"🐺",exp:1700},{hp:454500,atk:40000,emoji:"🐲",exp:4500},{hp:300000,atk:40000,emoji:"🐲",exp:3600},{hp:900000,atk:75000,emoji:"🦕",exp:8000}]}
+{id:0,lv:10,name:"10级副本",emoji:"🐢",waves:[{hp:200,atk:40,emoji:"😾",exp:5},{hp:200,atk:50,emoji:"😾",exp:6},{hp:400,atk:80,emoji:"😼",exp:10},{hp:700,atk:100,emoji:"🕷",exp:70},{hp:1000,atk:200,emoji:"🕷",exp:200},{hp:4000,atk:800,emoji:"🐢",exp:1000}]},
+{id:1,lv:30,name:"30级副本",emoji:"🦖",waves:[{hp:900,atk:100,emoji:"🐵",exp:150},{hp:1000,atk:200,emoji:"🐵",exp:170},{hp:1650,atk:300,emoji:"🐵",exp:220},{hp:3000,atk:400,emoji:"🐒",exp:300},{hp:4500,atk:500,emoji:"🐒",exp:400},{hp:7800,atk:700,emoji:"🐒",exp:500},{hp:89900,atk:2000,emoji:"🦖",exp:900}]},
+{id:2,lv:80,name:"80级副本",emoji:"🐋",waves:[{hp:4000,atk:600,emoji:"🐧",exp:250},{hp:5500,atk:700,emoji:"🐧",exp:300},{hp:7000,atk:800,emoji:"🐥",exp:450},{hp:20000,atk:2000,emoji:"🦅",exp:500},{hp:200000,atk:5000,emoji:"🐋",exp:5000}]},
+{id:3,lv:160,name:"160级副本",emoji:"🦕",waves:[{hp:10000,atk:1000,emoji:"🦆",exp:600},{hp:16000,atk:2000,emoji:"🦆",exp:700},{hp:30000,atk:3530,emoji:"🦆",exp:850},{hp:55550,atk:6000,emoji:"🐺",exp:1000},{hp:90000,atk:8000,emoji:"🐺",exp:1700},{hp:454500,atk:31000,emoji:"🐲",exp:5000},{hp:300000,atk:30000,emoji:"🐲",exp:3900},{hp:900000,atk:40000,emoji:"🦕",exp:10000}]}
 ];
-const weaponList=[{name:"锈铁剑",emoji:"🗡️",atk:1,maxTotal:1000},{name:"柴刀剑",emoji:"🗡️",atk:3,maxTotal:1500},{name:"清风剑",emoji:"🗡️",atk:30,maxTotal:2500},{name:"百炼剑",emoji:"🗡️",atk:100,maxTotal:4000},{name:"寒铁剑",emoji:"🗡️",atk:300,maxTotal:5000},{name:"精钢剑",emoji:"🗡️",atk:1000,maxTotal:6000},{name:"玄铁重剑",emoji:"🗡️",atk:3000,maxTotal:6500},{name:"秋水剑",emoji:"🗡️",atk:7000,maxTotal:7000},{name:"断石剑",emoji:"🗡️",atk:15000,maxTotal:8000},{name:"斩风剑",emoji:"🗡️",atk:30000,maxTotal:9000},{name:"引灵剑",emoji:"🗡️",atk:30000,maxTotal:9000},{name:"聚气剑",emoji:"🗡️",atk:55000,maxTotal:10000}];
-const helmList=[{name:"布帽",emoji:"🪖",hp:1,maxTotal:200},{name:"草帽",emoji:"🪖",hp:10,maxTotal:400},{name:"斗笠帽",emoji:"🪖",hp:30,maxTotal:800},{name:"麻布帽",emoji:"🪖",hp:100,maxTotal:1000},{name:"皮帽",emoji:"🪖",hp:400,maxTotal:1500},{name:"毡帽",emoji:"🪖",hp:2000,maxTotal:2000},{name:"竹编帽",emoji:"🪖",hp:4000,maxTotal:3000},{name:"青布头巾帽",emoji:"🪖",hp:6000,maxTotal:4000},{name:"防风帽",emoji:"🪖",hp:10000,maxTotal:4500},{name:"遮雨帽",emoji:"🪖",hp:20000,maxTotal:5000},{name:"引灵帽",emoji:"🪖",hp:30000,maxTotal:6000},{name:"聚气帽",emoji:"🪖",hp:60000,maxTotal:7000}];
-const armorList=[{name:"布甲",emoji:"👕",baseDef:0.5,maxDef:80},{name:"皮甲",emoji:"👕",baseDef:1,maxDef:100},{name:"藤甲",emoji:"👕",baseDef:9,maxDef:200},{name:"木甲",emoji:"👕",baseDef:20,maxDef:300},{name:"麻甲",emoji:"👕",baseDef:50,maxDef:350},{name:"硬片甲",emoji:"👕",baseDef:100,maxDef:400},{name:"铁皮甲",emoji:"👕",baseDef:250,maxDef:500},{name:"锁子甲",emoji:"👕",baseDef:600,maxDef:600},{name:"札甲",emoji:"👕",baseDef:1300,maxDef:800},{name:"青鳞甲",emoji:"👕",baseDef:4000,maxDef:1000},{name:"引灵甲",emoji:"👕",baseDef:10000,maxDef:1300},{name:"聚气甲",emoji:"👕",baseDef:20000,maxDef:1500}];
+const weaponList=[{name:"锈铁剑",emoji:"🗡️",atk:1,maxTotal:10000},{name:"柴刀剑",emoji:"🗡️",atk:3,maxTotal:10000},{name:"清风剑",emoji:"🗡️",atk:30,maxTotal:11000},{name:"百炼剑",emoji:"🗡️",atk:100,maxTotal:12000},{name:"寒铁剑",emoji:"🗡️",atk:300,maxTotal:12500},{name:"精钢剑",emoji:"🗡️",atk:1000,maxTotal:13000},{name:"玄铁重剑",emoji:"🗡️",atk:3000,maxTotal:14000},{name:"秋水剑",emoji:"🗡️",atk:7000,maxTotal:14300},{name:"断石剑",emoji:"🗡️",atk:15000,maxTotal:14500},{name:"斩风剑",emoji:"🗡️",atk:30000,maxTotal:14500},{name:"引灵剑",emoji:"🗡️",atk:30000,maxTotal:14800},{name:"聚气剑",emoji:"🗡️",atk:55000,maxTotal:15000}];
+const helmList=[{name:"布帽",emoji:"🪖",hp:1,maxTotal:10000},{name:"草帽",emoji:"🪖",hp:10,maxTotal:10000},{name:"斗笠帽",emoji:"🪖",hp:30,maxTotal:11000},{name:"麻布帽",emoji:"🪖",hp:100,maxTotal:11000},{name:"皮帽",emoji:"🪖",hp:400,maxTotal:12000},{name:"毡帽",emoji:"🪖",hp:2000,maxTotal:12000},{name:"竹编帽",emoji:"🪖",hp:4000,maxTotal:13000},{name:"青布头巾帽",emoji:"🪖",hp:6000,maxTotal:14000},{name:"防风帽",emoji:"🪖",hp:10000,maxTotal:14500},{name:"遮雨帽",emoji:"🪖",hp:20000,maxTotal:15000},{name:"引灵帽",emoji:"🪖",hp:30000,maxTotal:16000},{name:"聚气帽",emoji:"🪖",hp:60000,maxTotal:17000}];
+const armorList=[{name:"布甲",emoji:"👕",baseDef:0.5,maxDef:10080},{name:"皮甲",emoji:"👕",baseDef:1,maxDef:10900},{name:"藤甲",emoji:"👕",baseDef:9,maxDef:11200},{name:"木甲",emoji:"👕",baseDef:20,maxDef:11300},{name:"麻甲",emoji:"👕",baseDef:50,maxDef:11350},{name:"硬片甲",emoji:"👕",baseDef:100,maxDef:11400},{name:"铁皮甲",emoji:"👕",baseDef:250,maxDef:11500},{name:"锁子甲",emoji:"👕",baseDef:600,maxDef:11600},{name:"札甲",emoji:"👕",baseDef:1300,maxDef:11800},{name:"青鳞甲",emoji:"👕",baseDef:4000,maxDef:12100},{name:"引灵甲",emoji:"👕",baseDef:10000,maxDef:13300},{name:"聚气甲",emoji:"👕",baseDef:20000,maxDef:13500}];
 const weaponWeight=[
-    //        0    1     2     3     4      5      6      7
-    [100,   0,    0,    0,    0,     0,     0,     0],  // 锈铁剑 1(100)
-    [  0,  95,   60,   10,    0,     0,     0,     0],  // 柴刀剑 2-4(95) 5-7(60) 8-10(10) 11-13(0)
-    [  0,   3,   20,   40,   40,     0,     0,     0],  // 清风剑 2-4(3) 5-7(20) 8-10(40) 11-13(40) 14-16(0)
-    [  0,   1,   10,   25,   30,    50,     0,     0],  // 百炼剑 2-4(1) 5-7(10) 8-10(25) 11-13(30) 14-16(50) 17-19(0)
-    [  0, 0.9,    8,   15,   15,    25,    55,     0],  // 寒铁剑 2-4(0.9) 5-7(8) 8-10(15) 11-13(15) 14-16(25) 17-19(55) 20(0)
-    [  0, 0.1,    2,   10,   10,    15,    30,    50],  // 精钢剑 2-4(0.1) 5-7(2) 8-10(10) 11-13(10) 14-16(15) 17-19(30) 20(50)
-    [  0,   0,    0,    0,    2,     5,     8,    30],  // 玄铁重剑 11-13(2) 14-16(5) 17-19(8) 20(30)
-    [  0,   0,    0,    0,  1.8,     2,     2,    11],  // 秋水剑 11-13(1.8) 14-16(2) 17-19(2) 20(11)
-    [  0,   0,    0,    0,  0.6,   1.5,     2,     4],  // 断石剑 11-13(0.6) 14-16(1.5) 17-19(2) 20(4)
-    [  0,   0,    0,    0,  0.5,     1,   1.5,     3],  // 斩风剑 11-13(0.5) 14-16(1) 17-19(1.5) 20(3)
-    [  0,   0,    0,    0,    0,   0.4,     1,   1.5],  // 引灵剑 14-16(0.4) 17-19(1) 20(1.5)
-    [  0,   0,    0,    0,    0,   0.1,   0.5,   0.5]   // 聚气剑 14-16(0.1) 17-19(0.5) 20(0.5)
-]
-;const helmWeight=[
-    //        0    1     2     3     4      5      6      7
-    [100,   0,    0,    0,    0,     0,     0,     0],  // 布帽 1(100)
-    [  0,  96,   40,   20,    0,     0,     0,     0],  // 草帽 2-4(96) 5-7(40) 8-10(20) 11-13(0)
-    [  0,   3,   30,   30,   45,     0,     0,     0],  // 斗笠帽 2-4(3) 5-7(30) 8-10(30) 11-13(45) 14-16(0)
-    [  0, 0.8,   20,   30,   30,    60,     0,     0],  // 麻布帽 2-4(0.8) 5-7(20) 8-10(30) 11-13(30) 14-16(60) 17-19(0)
-    [  0, 0.1,    7,   14,   14,    20,    55,     0],  // 皮帽 2-4(0.1) 5-7(7) 8-10(14) 11-13(14) 14-16(20) 17-19(55) 20(0)
-    [  0, 0.1,    3,    6,    6,    10,    25,    60],  // 毡帽 2-4(0.1) 5-7(3) 8-10(6) 11-13(6) 14-16(10) 17-19(25) 20(60)
-    [  0,   0,    0,    0,    3,     5,    10,    20],  // 竹编帽 11-13(3) 14-16(5) 17-19(10) 20(20)
-    [  0,   0,    0,    0,    1,     3,     5,    10],  // 青布头巾帽 11-13(1) 14-16(3) 17-19(5) 20(10)
-    [  0,   0,    0,    0,  0.5,     1,     2,     5],  // 防风帽 11-13(0.5) 14-16(1) 17-19(2) 20(5)
-    [  0,   0,    0,    0,  0.5,   0.5,     2,   2.5],  // 遮雨帽 11-13(0.5) 14-16(0.5) 17-19(2) 20(2.5)
-    [  0,   0,    0,    0,    0,   0.3,   0.5,   1.5],  // 引灵帽 14-16(0.3) 17-19(0.5) 20(1.5)
-    [  0,   0,    0,    0,    0,   0.2,   0.5,     1]   // 聚气帽 14-16(0.2) 17-19(0.5) 20(1)
+    [100,   0,    0,    0,    0,     0,     0,     0],
+    [  0,  95,   60,   10,    0,     0,     0,     0],
+    [  0,   3,   20,   40,   40,     0,     0,     0],
+    [  0,   1,   10,   25,   30,    50,     0,     0],
+    [  0, 0.9,    8,   15,   15,    25,    55,     0],
+    [  0, 0.1,    2,   10,   10,    15,    30,    50],
+    [  0,   0,    0,    0,    2,     5,     8,    30],
+    [  0,   0,    0,    0,  1.8,     2,     2,    11],
+    [  0,   0,    0,    0,  0.6,   1.5,     2,     4],
+    [  0,   0,    0,    0,  0.5,     1,   1.5,     3],
+    [  0,   0,    0,    0,    0,   0.4,     1,   1.5],
+    [  0,   0,    0,    0,    0,   0.1,   0.5,   0.5]
+];
+const helmWeight=[
+    [100,   0,    0,    0,    0,     0,     0,     0],
+    [  0,  96,   40,   20,    0,     0,     0,     0],
+    [  0,   3,   30,   30,   45,     0,     0,     0],
+    [  0, 0.8,   20,   30,   30,    60,     0,     0],
+    [  0, 0.1,    7,   14,   14,    20,    55,     0],
+    [  0, 0.1,    3,    6,    6,    10,    25,    60],
+    [  0,   0,    0,    0,    3,     5,    10,    20],
+    [  0,   0,    0,    0,    1,     3,     5,    10],
+    [  0,   0,    0,    0,  0.5,     1,     2,     5],
+    [  0,   0,    0,    0,  0.5,   0.5,     2,   2.5],
+    [  0,   0,    0,    0,    0,   0.3,   0.5,   1.5],
+    [  0,   0,    0,    0,    0,   0.2,   0.5,     1]
 ];
 const armorWeight=[
-    //        0    1     2     3     4      5      6      7
-    [100,   0,    0,    0,    0,     0,     0,     0],  // 布甲 1(100)
-    [  0,  94,   45,   20,    0,     0,     0,     0],  // 皮甲 2-4(94) 5-7(45) 8-10(20) 11-13(0)
-    [  0,   4,   30,   30,   40,     0,     0,     0],  // 藤甲 2-4(4) 5-7(30) 8-10(30) 11-13(40) 14-16(0)
-    [  0,   1,   18,   25,   25,    50,     0,     0],  // 木甲 2-4(1) 5-7(18) 8-10(25) 11-13(25) 14-16(50) 17-19(0)
-    [  0, 0.5,    5,   15,   20,    20,    55,     0],  // 麻甲 2-4(0.5) 5-7(5) 8-10(15) 11-13(20) 14-16(20) 17-19(55) 20(0)
-    [  0, 0.5,    2,   10,   10,    15,    25,    50],  // 硬片甲 2-4(0.5) 5-7(2) 8-10(10) 11-13(10) 14-16(15) 17-19(25) 20(50)
-    [  0,   0,    0,    0,    3,     8,    10,    20],  // 铁皮甲 11-13(3) 14-16(8) 17-19(10) 20(20)
-    [  0,   0,    0,    0,    1,     4,    15,    20],  // 锁子甲 11-13(1) 14-16(4) 17-19(15) 20(20)
-    [  0,   0,    0,    0,  0.5,   1.5,     2,     5],  // 札甲 11-13(0.5) 14-16(1.5) 17-19(2) 20(5)
-    [  0,   0,    0,    0,  0.5,     1,   1.5,     3],  // 青鳞甲 11-13(0.5) 14-16(1) 17-19(1.5) 20(3)
-    [  0,   0,    0,    0,    0,   0.4,     1,   1.5],  // 引灵甲 14-16(0.4) 17-19(1) 20(1.5)
-    [  0,   0,    0,    0,    0,   0.1,   0.5,   0.5]   // 聚气甲 14-16(0.1) 17-19(0.5) 20(0.5)
+    [100,   0,    0,    0,    0,     0,     0,     0],
+    [  0,  94,   45,   20,    0,     0,     0,     0],
+    [  0,   4,   30,   30,   40,     0,     0,     0],
+    [  0,   1,   18,   25,   25,    50,     0,     0],
+    [  0, 0.5,    5,   15,   20,    20,    55,     0],
+    [  0, 0.5,    2,   10,   10,    15,    25,    50],
+    [  0,   0,    0,    0,    3,     8,    10,    20],
+    [  0,   0,    0,    0,    1,     4,    15,    20],
+    [  0,   0,    0,    0,  0.5,   1.5,     2,     5],
+    [  0,   0,    0,    0,  0.5,     1,   1.5,     3],
+    [  0,   0,    0,    0,    0,   0.4,     1,   1.5],
+    [  0,   0,    0,    0,    0,   0.1,   0.5,   0.5]
 ];
 function getDefaultData(){return{unlockLevel:1,currWeap:0,currHelm:0,currArmor:0,playerAvatar:"😃",playerName:"打怪升级117",playerLevel:1,playerExp:0,weaponCount:[1,0,0,0,0,0,0,0,0,0,0,0],helmCount:[1,0,0,0,0,0,0,0,0,0,0,0],armorCount:[1,0,0,0,0,0,0,0,0,0,0,0],specialUnlocked:[false,false,false,false,false,false,false,false,false,false],specialEquipped:-1,loseCount:0,bossKillCount:0,boss10KillCount:0,thunderKillCount:0,axeKillCount:0,orbKillCount:0,debugUnlocked:false,debugStats:null,endlessMaxLayer:0,pityCounts:[0,0,0,0,0,0,0,0,0,0]};}
 let saveData;
@@ -553,6 +551,7 @@ function resetBattleState(){
     playerShield=0;
     comboDmgBonus=0;
     if(statusTimer){clearInterval(statusTimer);statusTimer=null;}
+    if(atkDelayTimer){clearTimeout(atkDelayTimer);atkDelayTimer=null;}
     // 注意：这里没有清 dungeonWaveTimer，防止误杀
 }
 
@@ -845,14 +844,14 @@ playMonsterDeathOuhSound();$("msg").innerHTML=`<span style="color:#0ff">怪物�
 if(isEndlessMode)handleEndlessWin();
 else handleMonsterKilled(0);
 }
+// ⚠️ 历史上四次残码崩站，改此函数后必须 F12 验证
 function onPlayerKilledByStatus(){playerHp=0;render();$("msg").innerHTML+=`<br><span style="color:#f44">💀 你被流血击败了...</span>`;$("atkBtn").disabled=true;saveData.loseCount=(saveData.loseCount||0)+1;saveGame();}
 
-// ============ 无尽胜利结算 (不自动进下一关) ============
 function handleEndlessWin(){
     settleKill(()=>{ // [S2] 唯一锁点
         if(statusTimer){clearInterval(statusTimer);statusTimer=null;} // [S2] 清掉已排队的 tick
         let exp = Math.round(endlessLayer * endlessLayer / 2);
-                const leveled = gainExp(exp);
+        const leveled = gainExp(exp);
         if(leveled)showPopup("🎉 升级啦！");
         if (endlessLayer > (saveData.endlessMaxLayer || 0)) {
             saveData.endlessMaxLayer = endlessLayer;
@@ -879,10 +878,10 @@ function handleMonsterKilled(finalDmg){
         if(isDungeonMode){
             const d=dungeonConfig[currentDungeon];
             const last=d.waves.length-1;
-            if(d.id===0){if(dungeonWave===last)checkDrop(0,1);if(dungeonWave<5)checkDrop(1,2);}
-            else if(d.id===1){if(dungeonWave<6)checkDrop(3,3);if(dungeonWave===6)checkDrop(4,2);}
-            else if(d.id===2){if(dungeonWave<4)checkDrop(5,2);if(dungeonWave===4)checkDrop(2,2);}
-            else if(d.id===3){if(dungeonWave<3)checkDrop(6,5);if(dungeonWave===5)checkDrop(7,6);if(dungeonWave===7)checkDrop(8,3);}
+            if(d.id===0){if(dungeonWave===last)checkDrop(0,8);if(dungeonWave<5)checkDrop(1,3);}
+            else if(d.id===1){if(dungeonWave<6)checkDrop(3,4);if(dungeonWave===6)checkDrop(4,3);}
+            else if(d.id===2){if(dungeonWave<4)checkDrop(5,5);if(dungeonWave===4)checkDrop(2,5);}
+            else if(d.id===3){if(dungeonWave<3)checkDrop(6,5);if(dungeonWave===5)checkDrop(7,6);if(dungeonWave===7)checkDrop(8,6);}
             if(leveled)showPopup("🎉 升级啦！");
             dungeonWave++;
             $("atkBtn").disabled=true;
@@ -1120,4 +1119,4 @@ saveData.debugStats=null;saveGame();openAttrModal();showPopup("调试属性已�
 loadSave();renderAll();showPage($("selectPage"));
 </script>
 </body>
-</html>
+																																									</html>
